@@ -1,0 +1,23 @@
+# 不备份 resources 文件夹（PDF、PPT、R讲义）
+resources/
+
+# PDF 文件
+*.pdf
+
+# PowerPoint
+*.pptx
+*.ppt
+
+# macOS 系统文件
+.DS_Store
+
+# Quarto 缓存
+.quarto/
+
+# Claude Code 内部文件
+.claude/
+
+# R session
+.Rhistory
+.RData
+.Rproj.user/

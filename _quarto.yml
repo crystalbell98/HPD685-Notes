@@ -1,0 +1,24 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "HPD 685 线性纵向建模"
+  navbar:
+    left:
+      - href: index.qmd
+        text: 纵向建模笔记
+      - href: ols.qmd
+        text: OLS 回归笔记
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 4
+    toc-title: "目录"
+    number-sections: true
+    smooth-scroll: true
+    highlight-style: github
+    mainfont: "Noto Serif SC, serif"
+    monofont: "Fira Code, monospace"

@@ -1,0 +1,29 @@
+---
+title: "线性纵向建模笔记"
+subtitle: "HPD 685 — Linear Longitudinal Modeling"
+author: ""
+date: last-modified
+date-format: "YYYY年MM月DD日"
+lang: zh
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 4
+    toc-title: "目录"
+    toc-location: left
+    number-sections: true
+    smooth-scroll: true
+    highlight-style: github
+    code-fold: true
+    embed-resources: true
+    mainfont: "Noto Serif SC, serif"
+    monofont: "Fira Code, monospace"
+    css: styles.css
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+{{< include Longi.md >}}
