@@ -1,9 +1,13 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - index.qmd
+    - ols.qmd
 
 website:
   title: "HPD 685 线性纵向建模"
+  site-url: "https://crystalbell98.github.io/HPD685-Notes"
   navbar:
     left:
       - href: index.qmd
@@ -16,9 +20,12 @@ format:
     theme: cosmo
     toc: true
     toc-depth: 4
+    toc-location: left
     toc-title: "目录"
     number-sections: true
     smooth-scroll: true
     highlight-style: github
+    code-fold: true
     mainfont: "Noto Serif SC, serif"
     monofont: "Fira Code, monospace"
+    css: styles.css

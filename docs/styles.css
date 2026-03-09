@@ -1,0 +1,36 @@
+/* 正文字体与行距 */
+body {
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+/* 数学公式块与行内公式间距 */
+.math.display {
+  margin: 1.2em 0;
+  overflow-x: auto;
+}
+
+/* 代码块 */
+pre.sourceCode {
+  border-radius: 6px;
+  font-size: 0.88em;
+}
+
+/* 引用块（> ...）强调样式 */
+blockquote {
+  border-left: 4px solid #4e9af1;
+  background: #f0f6ff;
+  padding: 0.6em 1em;
+  border-radius: 0 6px 6px 0;
+  color: #333;
+}
+
+/* TOC 宽度与字体 */
+#TOC {
+  font-size: 0.88em;
+}
+
+/* 各级标题间距 */
+h2 { margin-top: 2em; border-bottom: 2px solid #ddd; padding-bottom: 0.3em; }
+h3 { margin-top: 1.5em; }
+h4 { margin-top: 1.2em; color: #444; }
