@@ -279,7 +279,10 @@ window.Quarto = {
 <h1 data-number="2"><span class="header-section-number">2</span> Part I: MLM — Antisocial Behavior Growth Model with Moderation</h1>
 <section id="background" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="background"><span class="header-section-number">2.1</span> Background</h2>
-<p><strong>Dataset</strong>: <code>antisocial.csv</code> (N = 405 children from the NLSY) <strong>Outcome</strong>: Antisocial behavior (composite score, higher = more antisocial) <strong>Time structure</strong>: Four assessments recorded at ages that vary by individual (ages 6–14), converted to a centered age variable <strong>Level-2 predictors</strong>: <code>male</code> (0 = girl, 1 = boy); <code>homecog</code> (home cognitive support, standardized)</p>
+<p><strong>Dataset</strong>: <code>antisocial.csv</code> (N = 405 children from the NLSY, National Longitudinal Surveys of Youth)</p>
+<p><strong>Outcome</strong>: Antisocial behavior (composite score, higher = more antisocial)</p>
+<p><strong>Time structure</strong>: Four assessments recorded at ages that vary by individual (ages 6–14), converted to a centered age variable</p>
+<p><strong>Level-2 predictors</strong>: <code>male</code> (0 = girl, 1 = boy); <code>homecog</code> (home cognitive support, standardized)</p>
 <p><strong>Research Questions</strong>:</p>
 <ul>
 <li>Q1: Is there a significant mean growth trend in antisocial behavior across childhood?</li>
@@ -316,20 +319,21 @@ window.Quarto = {
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  antisocial,</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">varying   =</span> <span class="fu">c</span>(<span class="st">"age_86"</span>,<span class="st">"age_88"</span>,<span class="st">"age_90"</span>,<span class="st">"age_92"</span>,</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                <span class="st">"anti_86"</span>,<span class="st">"anti_88"</span>,<span class="st">"anti_90"</span>,<span class="st">"anti_92"</span>),</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">direction =</span> <span class="st">"long"</span>,</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">idvar     =</span> <span class="st">"id"</span>,</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep       =</span> <span class="st">"_"</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>antisocial_long <span class="ot">&lt;-</span> antisocial_long[<span class="fu">order</span>(antisocial_long<span class="sc">$</span>id), ]</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Center age: subtract 6 so age=0 corresponds to ~age 6 at first wave</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>antisocial_long<span class="sc">$</span>age <span class="ot">&lt;-</span> antisocial_long<span class="sc">$</span>age <span class="sc">-</span> <span class="dv">6</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove rows with missing age or outcome</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>antisocial_long <span class="ot">&lt;-</span> antisocial_long[</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="sc">!</span><span class="fu">is.na</span>(antisocial_long<span class="sc">$</span>age) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(antisocial_long<span class="sc">$</span>anti), ]</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(antisocial_long, <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Continuous measure of child's antisocial behavior reported by the mother in 1986, 1988, 1990, 1992</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">direction =</span> <span class="st">"long"</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">idvar     =</span> <span class="st">"id"</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep       =</span> <span class="st">"_"</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>antisocial_long <span class="ot">&lt;-</span> antisocial_long[<span class="fu">order</span>(antisocial_long<span class="sc">$</span>id), ]</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Center age: subtract 6 so age=0 corresponds to ~age 6 at first wave</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>antisocial_long<span class="sc">$</span>age <span class="ot">&lt;-</span> antisocial_long<span class="sc">$</span>age <span class="sc">-</span> <span class="dv">6</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove rows with missing age or outcome</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>antisocial_long <span class="ot">&lt;-</span> antisocial_long[</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="sc">!</span><span class="fu">is.na</span>(antisocial_long<span class="sc">$</span>age) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(antisocial_long<span class="sc">$</span>anti), ]</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(antisocial_long, <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>     id male   homecog time age anti
@@ -500,18 +504,26 @@ age -0.496</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(m1, <span class="at">method =</span> <span class="st">"Wald"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>               2.5 %    97.5 %
-.sig01            NA        NA
-.sig02            NA        NA
-.sig03            NA        NA
-.sigma            NA        NA
-(Intercept) 1.460875 1.7969490
-age         0.039475 0.1090299</code></pre>
+<pre><code>                  2.5 %    97.5 %
+.sig01       0.77519527 1.2214317
+.sig02      -0.02410016 1.0000000
+.sig03       0.08581118 0.2094759
+.sigma       1.25155272 1.4016713
+(Intercept)  1.46080180 1.7974040
+age          0.03941064 0.1092060</code></pre>
 </div>
 </div>
+<p><strong>Interpretation</strong>:</p>
+<ul>
+<li><strong>Fixed intercept</strong> (<span class="math inline">\(\gamma_{00}\)</span>): 1.62891, Average antisocial behavior score at age 6 (centered age = 0).</li>
+<li><strong>Fixed slope</strong> (<span class="math inline">\(\gamma_{10}\)</span>): 0.07425, Average annual rate of change across childhood. A positive value indicates behavior increases over time on average.</li>
+<li><strong>Random intercept variance</strong> (<span class="math inline">\(\tau_{00}\)</span>): 1.01338, variance among the intercepts, between-person differences in starting level, also corresponding to the <strong>.sig01</strong> (Random Intercept Std.Dev.)</li>
+<li><strong>Random slope variance</strong> (<span class="math inline">\(\tau_{11}\)</span>): 0.02295, variance among the slopes, Children differ meaningfully in their rate of change — some increase faster, others plateau or decline, <strong>.sig03</strong> (Random Slope Std.Dev.)</li>
+<li><strong>Intercept–slope covariance</strong> (<span class="math inline">\(\tau_{01}\)</span>): 0.48, positive though not significant (C.I. from -0.02 to 1.00), higher starters accelerate further. <strong>.sig02 (Correlation)</strong></li>
+</ul>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -534,21 +546,13 @@ age         0.039475 0.1090299</code></pre>
 </div>
 </div>
 </div>
-<p><strong>Interpretation</strong>:</p>
-<ul>
-<li><strong>Fixed intercept</strong> (<span class="math inline">\(\gamma_{00}\)</span>): Average antisocial behavior score at age 6 (centered age = 0).</li>
-<li><strong>Fixed slope</strong> (<span class="math inline">\(\gamma_{10}\)</span>): Average annual rate of change across childhood. A positive value indicates behavior increases over time on average.</li>
-<li><strong>Random intercept variance</strong> (<span class="math inline">\(\tau_{00}\)</span>): Substantial between-person differences in starting level.</li>
-<li><strong>Random slope variance</strong> (<span class="math inline">\(\tau_{11}\)</span>): Children differ meaningfully in their rate of change — some increase faster, others plateau or decline.</li>
-<li><strong>Intercept–slope covariance</strong> (<span class="math inline">\(\tau_{01}\)</span>): If negative, children who start higher tend to grow more slowly (ceiling effect); if positive, higher starters accelerate further.</li>
-</ul>
 <hr>
 </section>
 <section id="step-3-moderation-by-sex" class="level2" data-number="2.5">
 <h2 data-number="2.5" class="anchored" data-anchor-id="step-3-moderation-by-sex"><span class="header-section-number">2.5</span> Step 3 — Moderation by Sex</h2>
 <p><strong>Research question</strong>: Do boys and girls differ in their baseline level of antisocial behavior <em>and</em> in their rate of change over time?</p>
 <p>We add <code>male</code> as a level-2 predictor of both the random intercept and random slope, yielding a cross-level interaction: <code>age × male</code>.</p>
-<p><span class="math display">\[y_{it} = \gamma_{00} + \gamma_{01}\text{male}_i + (\gamma_{10} + \gamma_{11}\text{male}_i)\cdot\text{age}_{it} + u_{0i} + u_{1i}\text{age}_{it} + \varepsilon_{it}\]</span></p>
+<p><span class="math display">\[y_{it} = (\gamma_{00} + u_{0i}) + \gamma_{01}\text{male}_i + (\gamma_{10} + u_{1i} +  \gamma_{11}\text{male}_i)\cdot\text{age}_{it} + \varepsilon_{it}\]</span></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -696,8 +700,8 @@ Conditional intercept         2.03   0.12    17.32   0.00</code></pre>
 </div>
 <p><strong>Interpretation</strong>:</p>
 <ul>
-<li><strong><span class="math inline">\(\gamma_{01}\)</span> (male on intercept)</strong>: If positive and significant, boys start with higher antisocial behavior at age 6 than girls.</li>
-<li><strong><span class="math inline">\(\gamma_{11}\)</span> (age × male)</strong>: If positive and significant, boys increase at a faster rate than girls over time. Simple slopes decompose this interaction into sex-specific slopes with standard errors.</li>
+<li><span class="math inline">\(\gamma_{01}\)</span> (male on intercept): If positive and significant, boys start with higher antisocial behavior at age 6 than girls.</li>
+<li><span class="math inline">\(\gamma_{11}\)</span> (age × male): If positive and significant, boys increase at a faster rate than girls over time. Simple slopes decompose this interaction into sex-specific slopes with standard errors.</li>
 <li><strong>Practical significance</strong>: Even if both trajectories are increasing, the <em>difference in slopes</em> indicates differential developmental risk.</li>
 </ul>
 <hr>
@@ -817,8 +821,8 @@ Conditional intercept         1.55   0.09    16.99   0.00</code></pre>
 </div>
 <p><strong>Interpretation</strong>:</p>
 <ul>
-<li><strong><span class="math inline">\(\gamma_{01}\)</span> (homecog on intercept)</strong>: If negative and significant, children from more cognitively stimulating homes start lower on antisocial behavior.</li>
-<li><strong><span class="math inline">\(\gamma_{11}\)</span> (age × homecog)</strong>: If negative and significant, a richer home cognitive environment buffers against the age-related <em>increase</em> in antisocial behavior — children from enriched environments show attenuated growth.</li>
+<li><span class="math inline">\(\gamma_{01}\)</span> (homecog on intercept): If negative and significant, children from more cognitively stimulating homes start lower on antisocial behavior.</li>
+<li><span class="math inline">\(\gamma_{11}\)</span> (age × homecog): If negative and significant, a richer home cognitive environment buffers against the age-related <em>increase</em> in antisocial behavior — children from enriched environments show attenuated growth.</li>
 <li><strong>Simple slopes</strong> at −1 SD, mean, +1 SD allow readers to see the growth trajectory separately for low, average, and high home cognitive support.</li>
 </ul>
 <hr>
@@ -939,10 +943,10 @@ m4      2 12 5272.172 5334.737 -2624.086 1 vs 2 16.81537  0.0021</code></pre>
 <h2 data-number="2.8" class="anchored" data-anchor-id="model-comparison-summary"><span class="header-section-number">2.8</span> Model Comparison Summary</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 14%">
-<col style="width: 29%">
-<col style="width: 33%">
-<col style="width: 22%">
+<col style="width: 21%">
+<col style="width: 26%">
+<col style="width: 30%">
+<col style="width: 21%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -1003,6 +1007,12 @@ m4      2 12 5272.172 5334.737 -2624.086 1 vs 2 16.81537  0.0021</code></pre>
 </ul>
 <p><strong>Model sequence</strong> (nested, increasingly constrained):</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 23%">
+<col style="width: 40%">
+<col style="width: 26%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Step</th>

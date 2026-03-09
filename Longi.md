@@ -1,8 +1,8 @@
 # Linear Longitudinal Modeling Notes
 
-## 0. Unified Notation
+## Unified Notation
 
-### 0.1 Basic Indices and Variables
+### Basic Indices and Variables
 
 - $i$: individual
 - $t,s$: time points
@@ -13,7 +13,7 @@
 - $z_{it}$: time-varying covariate (TVC)
 - $\Delta y_{it} = y_{it} - y_{i,t-1}$: change from $t-1$ to $t$
 
-### 0.2 Unified Linear Growth Notation
+### Unified Linear Growth Notation
 
 Throughout this document, "linear growth" consistently refers to the following equation:
 
@@ -49,7 +49,7 @@ $$
 - $\tau_{11}$: random slope variance
 - $\tau_{01}$: covariance between the random intercept and random slope
 
-### 0.3 Correspondence with SEM Notation
+### Correspondence with SEM Notation
 
 In the longitudinal SEM / LGM literature, the covariance matrix of the random growth factors is commonly denoted $\Psi$, and the residual covariance matrix is denoted $\Theta$. Throughout this document, the correspondence is understood as:
 
@@ -66,9 +66,9 @@ Similarly, the Level-1 residual structure $\mathbf R_i$ in MLM/LMM corresponds t
 
 ---
 
-## 1. Methodological Rationale for Longitudinal Research: Why Longitudinal Data Cannot Be Analyzed Directly with OLS
+## Methodological Rationale for Longitudinal Research: Why Longitudinal Data Cannot Be Analyzed Directly with OLS
 
-### 1.1 Violation of the Independence Assumption
+### Violation of the Independence Assumption
 
 The core prerequisite of classical OLS is that observations are independently and identically distributed (i.i.d.), such that the residual covariance matrix satisfies:
 
@@ -78,25 +78,25 @@ $$
 
 Longitudinal data violate this assumption by design: observations from the same individual at different time points are influenced by the same genetic, personality, environmental, and historical factors, and thus exhibit systematic dependence.
 
-### 1.2 Consequences of Applying OLS Naively
+### Consequences of Applying OLS Naively
 
 - **Positive autocorrelation**: standard errors are systematically underestimated, inflating $t$ / $F$ statistics and increasing Type I error rates
 - **Heterogeneity misattributed to noise**: genuine stable differences between individuals are incorrectly absorbed into random error
 - **Confounding of within-person change and between-person differences**: it becomes impossible to distinguish "who started higher" from "who grew faster"
 - **Poor handling of missing data**: OLS is ill-suited for unbalanced data structures and is prone to sample bias and information loss
 
-### 1.3 What Longitudinal Modeling Actually Addresses
+### What Longitudinal Modeling Actually Addresses
 
 Longitudinal models do not eliminate dependence; they **parameterize** it:
 the failure of the independence assumption is transformed into a question of how the covariance matrix is modeled.
 
 ---
 
-## 2. Classical Approaches to Two-Wave Change: Change Score vs. Residualized Change
+## Classical Approaches to Two-Wave Change: Change Score vs. Residualized Change
 
 This section integrates content from the original notes on **raw change scores, residualized change scores, Lord's Paradox, and the measurement and causal limitations of change scores**.
 
-### 2.1 Raw Change Score (Gain Score)
+### Raw Change Score (Gain Score)
 
 The most direct definition of change is:
 
@@ -125,7 +125,7 @@ $$
 - Influenced by baseline level
 - When two measurements are highly correlated, the reliability of the change score may actually be lower than that of the raw scores ("reliability paradox")
 
-### 2.2 Residualized Change Score (ANCOVA)
+### Residualized Change Score (ANCOVA)
 
 An alternative approach is to predict the posttest from the pretest, and treat the portion "unexplained by the initial state" as change.
 
@@ -150,7 +150,7 @@ Here, $r_i$ is the residualized change.
 - Among individuals with the same baseline level, whose posttest performance **exceeded the average expectation**?
 - Whose change represents a "deviation from expectation" rather than simply "how much they changed in absolute terms"?
 
-### 2.3 The Essential Distinction Between the Two Change Scores
+### The Essential Distinction Between the Two Change Scores
 
 The two approaches can be summarized in a single sentence:
 
@@ -162,7 +162,7 @@ That is:
 - $\Delta y_i = 0$ means "no absolute change"
 - $r_i = 0$ does not mean "no change"; it means "this person's change is exactly equal to the average expected change for individuals with the same baseline"
 
-### 2.4 A Concrete Example: Why Two Students with Equal Raw Gains Have Different Residualized Changes
+### A Concrete Example: Why Two Students with Equal Raw Gains Have Different Residualized Changes
 
 Suppose the class-level pretest–posttest regression line is:
 
@@ -185,7 +185,7 @@ Interpretation:
 - But B improved far more relative to the average expectation for individuals with the same baseline
 - C declined by $1$ point in absolute terms, but this is exactly the average change expected for individuals with the same baseline; hence residualized change = 0
 
-### 2.5 Lord's Paradox: Two Methods, Opposite Conclusions from the Same Data
+### Lord's Paradox: Two Methods, Opposite Conclusions from the Same Data
 
 Lord (1967) noted that, applied to the same dataset, the change score approach and ANCOVA can yield diametrically opposite conclusions.
 
@@ -201,7 +201,7 @@ The classic example involves the effect of a university dining hall's meal plan 
 
 In non-randomized observational studies, the two approaches do not target the same estimand, so it is not surprising that they conflict.
 
-### 2.6 When to Use Which Approach?
+### When to Use Which Approach?
 
 #### Randomized Controlled Trials (RCTs)
 
@@ -220,7 +220,7 @@ Caution is required:
 
 However, the prerequisite is: you must believe that "controlling for baseline" is consistent with your causal structure; otherwise, regression-to-the-mean (RTM) bias is easily introduced.
 
-### 2.7 Why Change Scores Can Be Misleading: Measurement-Level Reasons
+### Why Change Scores Can Be Misleading: Measurement-Level Reasons
 
 Suppose the two measurements are:
 
@@ -262,7 +262,7 @@ As long as the cross-time correlation is less than 1, this covariance tends to b
 
 This does not necessarily reflect genuine psychological or behavioral mechanisms.
 
-### 2.8 Why Change Scores Can Be Misleading: Causal Reasons
+### Why Change Scores Can Be Misleading: Causal Reasons
 
 In non-randomized data, regressing a change score as the outcome on some baseline exposure often does not correspond to a well-defined causal effect.
 
@@ -275,7 +275,7 @@ In such cases, the regression coefficient for the change score may even be in th
 
 **Conclusion**: change scores are not inherently unusable, but in non-randomized causal problems they frequently do not correspond to the effect one intends to estimate.
 
-### 2.9 What Questions Are These Methods Best Suited to Answer?
+### What Questions Are These Methods Best Suited to Answer?
 
 - "How much did it change?" → both change score and ANCOVA are appropriate
 - "What is the shape of the change trajectory?" → two-wave methods are insufficient
@@ -286,11 +286,11 @@ This is also why the distinction between "absolute change vs. conditional change
 
 ---
 
-## 3. A Unified Mathematical Perspective: Explicitly Modeling Dependence
+## A Unified Mathematical Perspective: Explicitly Modeling Dependence
 
 This section integrates content from the original notes on **the matrix representation of LMM, the implied covariance structure in SEM, and the translation dictionary and equivalence between MLM and SEM/LGM**.
 
-### 3.1 Matrix Form of MLM / LMM
+### Matrix Form of MLM / LMM
 
 For individual $i$, the LMM is written as:
 
@@ -316,7 +316,7 @@ $$
 This is how LMM "addresses dependence" at the matrix level:
 rather than requiring dependence to disappear, it explicitly specifies its sources.
 
-### 3.2 The Same Idea at the Scalar Level
+### The Same Idea at the Scalar Level
 
 For the linear growth model:
 
@@ -362,7 +362,7 @@ $$
 
 This indicates that errors at nearby time points are more similar, with the correlation weakening as the time interval increases.
 
-### 3.3 Matrix Form of Longitudinal SEM / LGM
+### Matrix Form of Longitudinal SEM / LGM
 
 In the SEM framework, the longitudinal growth model is written as:
 
@@ -405,7 +405,7 @@ where:
 - $\psi_{00}, \psi_{11}, \psi_{01}$: variances and covariance of the latent intercept and latent slope
 - $\theta_{ts}$: residual covariance, used to represent residual dependence of the same indicator across time
 
-### 3.4 From Conditional to Marginal Representation: MLM and SEM Are Mathematically the Same
+### From Conditional to Marginal Representation: MLM and SEM Are Mathematically the Same
 
 After integrating out the random effects, the marginal distribution of the LMM is:
 
@@ -429,7 +429,7 @@ $$
 
 The two forms are isomorphic.
 
-### 3.5 Translation Dictionary
+### Translation Dictionary
 
 - $Z_i$ (MLM random-effects design matrix) $\leftrightarrow$ $\Lambda_i$ (SEM factor loading matrix)
 - $\mathbf b_i$ (random intercept / slope) $\leftrightarrow$ $\zeta_i$ (individual deviation of the latent growth factor)
@@ -441,7 +441,7 @@ The most important thing to remember is:
 
 > **The row vector $[1, x_{it}]$ in MLM corresponds to a row of the factor loading matrix $\Lambda_i$ in SEM.**
 
-### 3.6 Concrete Correspondence for a Four-Wave Linear Growth Model
+### Concrete Correspondence for a Four-Wave Linear Growth Model
 
 For four equally spaced time points $t = 0,1,2,3$:
 
@@ -475,7 +475,7 @@ $$
 
 As long as the time coding and error structure are consistent, these are two representations of the same growth model.
 
-### 3.7 Random Intercept Only: Full Correspondence with the Null Model
+### Random Intercept Only: Full Correspondence with the Null Model
 
 When only a random intercept is included:
 
@@ -506,7 +506,7 @@ $$
 
 This is exactly equivalent to the random-intercept MLM / null model.
 
-### 3.8 Level-2 Predictors in Both Frameworks
+### Level-2 Predictors in Both Frameworks
 
 Let $w_i$ be a time-invariant covariate.
 
@@ -543,7 +543,7 @@ That is:
 
 are mathematically the same thing.
 
-### 3.9 When Does the Equivalence Break Down?
+### When Does the Equivalence Break Down?
 
 This equivalence holds under certain prerequisites:
 
@@ -567,9 +567,9 @@ Therefore, a more precise statement is:
 
 ---
 
-## 4. Three Major Frameworks: GEE, MLM/LMM, and Longitudinal SEM
+## Three Major Frameworks: GEE, MLM/LMM, and Longitudinal SEM
 
-### 4.1 GEE: A Marginal, Population-Averaged Perspective
+### GEE: A Marginal, Population-Averaged Perspective
 
 GEE focuses on:
 
@@ -587,7 +587,7 @@ It approximates within-cluster dependence by specifying a "working correlation m
 - Less effective at characterizing sources of individual variation
 - Missing data typically requires MCAR; handling missingness under MAR often requires multiple imputation (MI)
 
-### 4.2 MLM / LMM: A Conditional Individual Trajectory Perspective
+### MLM / LMM: A Conditional Individual Trajectory Perspective
 
 MLM / LMM focuses on:
 
@@ -601,7 +601,7 @@ For example, in logistic regression, the fixed-effect estimates from LMM are gen
 - LMM more closely approximates a "pure effect after controlling for individual heterogeneity"
 - The GEE effect is attenuated by between-individual heterogeneity
 
-### 4.3 Longitudinal SEM: A Latent Process Perspective
+### Longitudinal SEM: A Latent Process Perspective
 
 The key advantage of longitudinal SEM is that it:
 
@@ -611,7 +611,7 @@ The key advantage of longitudinal SEM is that it:
 
 This is its principal advantage over LMM alone.
 
-### 4.4 One-Page Comparison
+### One-Page Comparison
 
 - **Level of interpretation**
 
@@ -640,9 +640,9 @@ This is its principal advantage over LMM alone.
 
 ---
 
-## 5. MLM / LMM: Conditional Model for Individual Trajectories
+## MLM / LMM: Conditional Model for Individual Trajectories
 
-### 5.1 Basic Framework: Time at Level 1, Individuals at Level 2
+### Basic Framework: Time at Level 1, Individuals at Level 2
 
 The fundamental idea of longitudinal MLM is:
 
@@ -660,7 +660,7 @@ This can also be understood as:
 - Each person has their own starting point: $\mu_0 + b_{0i}$
 - Each person also has their own rate of growth: $\mu_1 + b_{1i}$
 
-### 5.2 Null Model / Random-Effects ANOVA: First Assessing the Strength of Dependence
+### Null Model / Random-Effects ANOVA: First Assessing the Strength of Dependence
 
 The simplest unconditional model is:
 
@@ -744,7 +744,7 @@ The ICC is not reliable in all situations:
 - **Models with random slopes**: within-cluster correlation varies as a function of the predictor value, and a single ICC is insufficient as a summary
 - **Very small clusters**: population mean estimates are unstable, and ICC estimates tend to be biased
 
-### 5.3 Random Intercept and Random Slope Models
+### Random Intercept and Random Slope Models
 
 #### Random Intercept Model
 
@@ -769,7 +769,7 @@ In this case:
 - $b_{0i}$: accounts for "who starts higher"
 - $b_{1i}$: accounts for "who changes faster"
 
-### 5.4 How Are the Parameters Interpreted?
+### How Are the Parameters Interpreted?
 
 - **$\mu_0$**: population mean level at time zero
 - **$\mu_1$**: population mean rate of change
@@ -782,14 +782,14 @@ The interpretation of $\tau_{01}$ is often of particular research interest:
 - **Positive correlation**: individuals who start higher subsequently grow faster (Matthew effect)
 - **Negative correlation**: individuals who start higher subsequently grow more slowly (ceiling / plateau effect)
 
-### 5.5 Four Key Quantities to Examine When Reading MLM Results
+### Four Key Quantities to Examine When Reading MLM Results
 
 - **Fixed time effect**: average growth / decline trend
 - **Random intercept variance**: between-individual differences in starting point
 - **Random slope variance**: between-individual differences in rate of change
 - **Intercept–slope covariance**: whether individuals who start higher subsequently accelerate or decelerate
 
-### 5.6 R / lmer Code Example (GPA Setting)
+### R / lmer Code Example (GPA Setting)
 
 ```r
 # Random intercept model: each student has a different starting point, slope is fixed
@@ -806,7 +806,7 @@ Interpretation:
 
 In LGM terms, "having a variable predict the intercept and slope" corresponds in MLM to "main effect + time interaction + random intercept / random slope."
 
-### 5.7 Applied Example: Adolescent Alcohol Use Trajectories
+### Applied Example: Adolescent Alcohol Use Trajectories
 
 Alcohol use frequency was measured at ages 14, 15, and 16. After fitting a random slope model:
 
@@ -824,7 +824,7 @@ Alcohol use frequency was measured at ages 14, 15, and 16. After fitting a rando
   - COA (children of alcoholics) significantly predicts higher initial use ($\beta = 0.743$)
   - But does not significantly predict the rate of growth
 
-### 5.8 Within-Person / Between-Person Decomposition: Why Separation Is Necessary
+### Within-Person / Between-Person Decomposition: Why Separation Is Necessary
 
 Understanding the WP/BP decomposition is central to MLM and longitudinal analysis. Without this decomposition, the estimated "total effect" conflates two fundamentally different processes, potentially resulting in an **Ecological Fallacy**—incorrectly inferring individual-level mechanisms from group-level associations.
 
@@ -892,9 +892,9 @@ A study of 60 students on 14 personality traits, with "trait importance" person-
 
 ---
 
-## 6. Longitudinal SEM / LGM: Latent Processes, Time Coding, and Measurement Models
+## Longitudinal SEM / LGM: Latent Processes, Time Coding, and Measurement Models
 
-### 6.1 Basic Structure of LGM: Growth Parameters as Latent Variables
+### Basic Structure of LGM: Growth Parameters as Latent Variables
 
 In LGM, repeated measurements are typically arranged in wide-format data, with each time point as a manifest variable. Latent growth factors are identified by fixing factor loadings according to the temporal design.
 
@@ -948,7 +948,7 @@ model <- '
 fit <- growth(model, data = widedat)
 ```
 
-### 6.2 LGM Simultaneously Estimates Mean Structure and Covariance Structure
+### LGM Simultaneously Estimates Mean Structure and Covariance Structure
 
 LGM does not merely estimate "whether the average is changing"; it simultaneously estimates:
 
@@ -960,7 +960,7 @@ you impose a functional form (e.g., linear growth), and the model then asks: can
 
 If fit indices (e.g., CFI, TLI, RMSEA, SRMR) are poor, the imposed growth form is too simple to explain the true pattern of mean shifts and covariance structure.
 
-### 6.3 Time Coding, Centering, and the Meaning of the Intercept
+### Time Coding, Centering, and the Meaning of the Intercept
 
 Time coding is not a technical detail; it determines "what moment the intercept represents."
 
@@ -991,7 +991,7 @@ The same logic applies:
   - Intercept variance
   - Intercept–slope covariance
 
-### 6.4 Latent Basis Model (LBM)
+### Latent Basis Model (LBM)
 
 To allow for growth that is not strictly linear, one may fix:
 
@@ -1005,7 +1005,7 @@ The freely estimated intermediate loadings then represent:
 
 This approach is well suited for describing developmental trajectories that are "fast early and slow late" or "slow early and fast late."
 
-### 6.5 Longitudinal Measurement Invariance: Verify the Scale Has Not Shifted Before Fitting a Growth Model
+### Longitudinal Measurement Invariance: Verify the Scale Has Not Shifted Before Fitting a Growth Model
 
 If the construct of interest is latent (e.g., depression, motivation, self-esteem), measurement invariance across time points must be established before comparing change over time.
 
@@ -1027,7 +1027,7 @@ If scalar invariance does not hold, observed "growth" may reflect only:
 
 rather than genuine change in the latent construct.
 
-## 9. Modeling Decisions: Which Type of Longitudinal Model Should Be Used?
+## Modeling Decisions: Which Type of Longitudinal Model Should Be Used?
 
 ### When MLM Is More Appropriate
 
@@ -1047,7 +1047,7 @@ rather than genuine change in the latent construct.
 - Need to evaluate overall model fit (CFI, RMSEA, etc.)
 - Uncertainty about the time scores, with a desire to let the data estimate them (e.g., latent basis model)
 
-## 10. One-Page Summary: The Core Thread of This Document
+## One-Page Summary: The Core Thread of This Document
 
 The entire set of longitudinal modeling notes can be compressed into the following thread:
 
