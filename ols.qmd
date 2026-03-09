@@ -1,10 +1,10 @@
 ---
-title: "统计模型笔记（OLS / GLM）"
-subtitle: "HPD 685 — 回归基础"
+title: "Statistical Modeling Notes (OLS / GLM)"
+subtitle: "HPD 685 — Regression Foundations"
 author: ""
 date: last-modified
-date-format: "YYYY年MM月DD日"
-lang: zh
+date-format: "MMMM DD, YYYY"
+lang: en
 execute:
   echo: true
   warning: false

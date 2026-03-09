@@ -1,35 +1,35 @@
-# 线性纵向建模笔记
+# Linear Longitudinal Modeling Notes
 
-## 0. 统一记号（Notation）
+## 0. Unified Notation
 
-### 0.1 基本索引与变量
+### 0.1 Basic Indices and Variables
 
-- $i$：个体
-- $t,s$：时间点
-- $y_{it}$：个体 $i$ 在时间点 $t$ 的观测结果
-- $\mathbf y_i = (y_{i1}, \dots, y_{iT_i})'$：个体 $i$ 的整条纵向观测向量
-- $x_{it}$：时间分数 / 时间度量（例如 $0,1,2,3$；也可以是年龄、治疗后天数等）
-- $w_i$：时间不变协变量（time-invariant covariate, TIC）
-- $z_{it}$：时变协变量（time-varying covariate, TVC）
-- $\Delta y_{it} = y_{it} - y_{i,t-1}$：从 $t-1$ 到 $t$ 的变化量
+- $i$: individual
+- $t,s$: time points
+- $y_{it}$: observed outcome for individual $i$ at time point $t$
+- $\mathbf y_i = (y_{i1}, \dots, y_{iT_i})'$: full longitudinal observation vector for individual $i$
+- $x_{it}$: time score / time metric (e.g., $0,1,2,3$; can also be age, days since treatment, etc.)
+- $w_i$: time-invariant covariate (TIC)
+- $z_{it}$: time-varying covariate (TVC)
+- $\Delta y_{it} = y_{it} - y_{i,t-1}$: change from $t-1$ to $t$
 
-### 0.2 统一的线性增长写法
+### 0.2 Unified Linear Growth Notation
 
-全文对“线性增长”统一使用下面这条式子：
+Throughout this document, "linear growth" consistently refers to the following equation:
 
 $$
 y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
 $$
 
-其中：
+where:
 
-- $\mu_0$：总体平均截距
-- $\mu_1$：总体平均斜率
-- $b_{0i}$：个体 $i$ 的随机截距偏差
-- $b_{1i}$：个体 $i$ 的随机斜率偏差
-- $\varepsilon_{it}$：时间点 $t$ 的残差 / 测量误差
+- $\mu_0$: population mean intercept
+- $\mu_1$: population mean slope
+- $b_{0i}$: random intercept deviation for individual $i$
+- $b_{1i}$: random slope deviation for individual $i$
+- $\varepsilon_{it}$: residual / measurement error at time point $t$
 
-随机效应向量记为：
+The random effects vector is denoted:
 
 $$
 \mathbf b_i =
@@ -45,97 +45,97 @@ b_{1i}
 \end{bmatrix}
 $$
 
-- $\tau_{00}$：随机截距方差
-- $\tau_{11}$：随机斜率方差
-- $\tau_{01}$：随机截距与随机斜率的协方差
+- $\tau_{00}$: random intercept variance
+- $\tau_{11}$: random slope variance
+- $\tau_{01}$: covariance between the random intercept and random slope
 
-### 0.3 与 SEM 记法的对应
+### 0.3 Correspondence with SEM Notation
 
-在纵向 SEM / LGM 文献中，常把随机增长因子的协方差矩阵记为 $\Psi$，把残差协方差矩阵记为 $\Theta$。本文统一理解为：
+In the longitudinal SEM / LGM literature, the covariance matrix of the random growth factors is commonly denoted $\Psi$, and the residual covariance matrix is denoted $\Theta$. Throughout this document, the correspondence is understood as:
 
-- MLM/LMM 中的随机效应协方差矩阵：$\mathbf D$
-- SEM/LGM 中的潜增长因子协方差矩阵：$\Psi$
+- Random effects covariance matrix in MLM/LMM: $\mathbf D$
+- Latent growth factor covariance matrix in SEM/LGM: $\Psi$
 
-两者在简单线性增长模型下是同一个东西，只是记号不同：
+Under a simple linear growth model, the two refer to the same quantity and differ only in notation:
 
 $$
 \mathbf D \equiv \Psi
 $$
 
-同理，MLM/LMM 中的 Level-1 残差结构 $\mathbf R_i$ 与 SEM 中的指标残差结构 $\Theta_i$ 也是对应的。
+Similarly, the Level-1 residual structure $\mathbf R_i$ in MLM/LMM corresponds to the indicator residual structure $\Theta_i$ in SEM.
 
 ---
 
-## 1. 方法论起点：为什么纵向数据不能直接套 OLS
+## 1. Methodological Rationale for Longitudinal Research: Why Longitudinal Data Cannot Be Analyzed Directly with OLS
 
-### 1.1 独立性假设的破裂
+### 1.1 Violation of the Independence Assumption
 
-经典 OLS 的核心前提是观测值独立同分布（i.i.d.），残差协方差矩阵满足：
+The core prerequisite of classical OLS is that observations are independently and identically distributed (i.i.d.), such that the residual covariance matrix satisfies:
 
 $$
 \Omega = \sigma^2 I
 $$
 
-纵向数据从设计层面就违背了这一假设：同一个体在不同时间点的得分受相同的基因、人格、环境及历史因素影响，因此必然存在系统性相关性。
+Longitudinal data violate this assumption by design: observations from the same individual at different time points are influenced by the same genetic, personality, environmental, and historical factors, and thus exhibit systematic dependence.
 
-### 1.2 强行使用 OLS 的后果
+### 1.2 Consequences of Applying OLS Naively
 
-- **正向自相关**：系统性低估标准误，导致 $t$ / $F$ 统计量虚高，假阳性（I 类错误）增多
-- **异质性被误当噪声**：个体之间真实存在的稳定差异被误归入随机误差
-- **组内变化与组间差异混淆**：无法分清“谁本来就高”和“谁后来增长更快”
-- **缺失数据处理能力差**：OLS 对非平衡数据结构不友好，容易造成样本偏差和信息损失
+- **Positive autocorrelation**: standard errors are systematically underestimated, inflating $t$ / $F$ statistics and increasing Type I error rates
+- **Heterogeneity misattributed to noise**: genuine stable differences between individuals are incorrectly absorbed into random error
+- **Confounding of within-person change and between-person differences**: it becomes impossible to distinguish "who started higher" from "who grew faster"
+- **Poor handling of missing data**: OLS is ill-suited for unbalanced data structures and is prone to sample bias and information loss
 
-### 1.3 纵向建模真正要解决的问题
+### 1.3 What Longitudinal Modeling Actually Addresses
 
-纵向模型并不是把相关性“消掉”，而是把相关性**参数化**：
-把“独立性假设失效”转化成“协方差矩阵如何被建模”的问题。
+Longitudinal models do not eliminate dependence; they **parameterize** it:
+the failure of the independence assumption is transformed into a question of how the covariance matrix is modeled.
 
 ---
 
-## 2. 两波变化的经典处理：Change Score vs. Residualized Change
+## 2. Classical Approaches to Two-Wave Change: Change Score vs. Residualized Change
 
-这一部分整合了原笔记中关于 **原始变化分数、残差化变化分数、Lord's Paradox、change score 的测量/因果局限** 的内容。
+This section integrates content from the original notes on **raw change scores, residualized change scores, Lord's Paradox, and the measurement and causal limitations of change scores**.
 
-### 2.1 原始变化分数（Raw Change / Gain Score）
+### 2.1 Raw Change Score (Gain Score)
 
-最直接的变化定义是：
+The most direct definition of change is:
 
 $$
 \Delta y_i = y_{i2} - y_{i1}
 $$
 
-若把变化量作为因变量，对某个基线预测变量 $w_i$ 回归，则模型为：
+If the change score is used as the outcome variable and regressed on a baseline predictor $w_i$, the model is:
 
 $$
 \Delta y_i = \beta_0 + \beta_1 w_i + e_i
 $$
 
-**它回答的问题是：**
+**The question this answers:**
 
-- 谁的指标变化得最多？
-- 哪些人经历了更大的**绝对变化量**？
+- Whose outcome changed the most?
+- Which individuals experienced the largest **absolute change**?
 
-**优点：**
+**Advantages:**
 
-- 直观
-- 在随机对照试验（RCT）中直接反映个体层面的前后变化
+- Intuitive
+- Directly reflects individual-level pre–post change in randomized controlled trials (RCTs)
 
-**局限：**
+**Limitations:**
 
-- 受基线水平影响
-- 当两次测量高度相关时，变化分数的可靠性反而可能低于原始分数（“可靠性悖论”）
+- Influenced by baseline level
+- When two measurements are highly correlated, the reliability of the change score may actually be lower than that of the raw scores ("reliability paradox")
 
-### 2.2 残差化变化分数（Residualized Change / ANCOVA）
+### 2.2 Residualized Change Score (ANCOVA)
 
-另一条思路是：以前测预测后测，把“无法由起始状态解释的剩余部分”当作变化。
+An alternative approach is to predict the posttest from the pretest, and treat the portion "unexplained by the initial state" as change.
 
-模型写为：
+The model is written as:
 
 $$
 y_{i2} = \beta_0 + \rho y_{i1} + \beta_1 w_i + e_i
 $$
 
-若只看“在给定基线后的偏离”，则可先做回归：
+If one is interested only in "deviation from a given baseline," one may first run the regression:
 
 $$
 \hat y_{i2} = \hat\beta_0 + \hat\rho y_{i1},
@@ -143,86 +143,86 @@ $$
 r_i = y_{i2} - \hat y_{i2}
 $$
 
-这里的 $r_i$ 就是 residualized change。
+Here, $r_i$ is the residualized change.
 
-**它回答的问题是：**
+**The question this answers:**
 
-- 在相同基线水平的人群中，谁的后测表现**超出了平均预期**？
-- 谁的变化是“相对预期的偏离”，而不是单纯“绝对多变了多少”？
+- Among individuals with the same baseline level, whose posttest performance **exceeded the average expectation**?
+- Whose change represents a "deviation from expectation" rather than simply "how much they changed in absolute terms"?
 
-### 2.3 两种变化分数的本质区别
+### 2.3 The Essential Distinction Between the Two Change Scores
 
-可以把两者概括成一句话：
+The two approaches can be summarized in a single sentence:
 
 - **change score** = **absolute change**
 - **residualized change** = **baseline-adjusted deviation from expected posttest**
 
-也就是说：
+That is:
 
-- $\Delta y_i = 0$ 表示“没有绝对变化”
-- $r_i = 0$ 不表示“没有变化”，而表示“此人的变化刚好等于同样基线人群的平均预期变化”
+- $\Delta y_i = 0$ means "no absolute change"
+- $r_i = 0$ does not mean "no change"; it means "this person's change is exactly equal to the average expected change for individuals with the same baseline"
 
-### 2.4 一个具体例子：为什么两人同样进步，residualized change 却不同
+### 2.4 A Concrete Example: Why Two Students with Equal Raw Gains Have Different Residualized Changes
 
-设全班的前测—后测回归线为：
+Suppose the class-level pretest–posttest regression line is:
 
 $$
 \hat y_{\text{post}} = 20 + 0.7\, y_{\text{pre}}
 $$
 
-斜率 $0.7 < 1$，反映向平均数回归。
+The slope $0.7 < 1$ reflects regression to the mean.
 
-- **学生 A**：pre = 40，post = 50predicted = 48raw change = $+10$residualized change = $+2$
-- **学生 B**：pre = 80，post = 90predicted = 76raw change = $+10$residualized change = $+14$
-- **学生 C**：pre = 70，post = 69
+- **Student A**: pre = 40, post = 50; predicted = 48; raw change = $+10$; residualized change = $+2$
+- **Student B**: pre = 80, post = 90; predicted = 76; raw change = $+10$; residualized change = $+14$
+- **Student C**: pre = 70, post = 69
   predicted = 69
   raw change = $-1$
   residualized change = $0$
 
-解释：
+Interpretation:
 
-- A 和 B 的绝对进步都一样，都是 $+10$
-- 但 B 相对于“同等基线者的平均预期”进步更多
-- C 虽然绝对退步了 $1$ 分，但这刚好就是相同基线人群的平均变化，因此 residualized change = 0
+- A and B show identical absolute gains of $+10$
+- But B improved far more relative to the average expectation for individuals with the same baseline
+- C declined by $1$ point in absolute terms, but this is exactly the average change expected for individuals with the same baseline; hence residualized change = 0
 
-### 2.5 Lord's Paradox：同一数据，两个方法可能得出相反结论
+### 2.5 Lord's Paradox: Two Methods, Opposite Conclusions from the Same Data
 
-Lord（1967）指出：在同一组数据上，change score 与 ANCOVA 可能得出完全相反的结论。
+Lord (1967) noted that, applied to the same dataset, the change score approach and ANCOVA can yield diametrically opposite conclusions.
 
-经典例子：大学食堂膳食对男女体重的影响。基线和随访时，男女总体体重分布看起来都一样。
+The classic example involves the effect of a university dining hall's meal plan on the weights of male and female students. At both baseline and follow-up, the overall weight distributions of males and females appear identical.
 
-- **change score 的结论**：男女平均变化都为 0，因此“无性别差异”
-- **ANCOVA 的结论**：控制基线后，相同初始体重的男生预期后测体重大于女生，因此“膳食对男生有显著正向影响”
+- **Change score conclusion**: average change is zero for both sexes, therefore "no sex difference"
+- **ANCOVA conclusion**: after controlling for baseline, males with the same initial weight are expected to have a higher posttest weight than females, therefore "the meal plan has a significant positive effect for males"
 
-**核心原因：**
+**The underlying reason:**
 
-- change score 相当于把前测系数固定为 1
-- ANCOVA 则让这个系数 $\rho$ 由数据估计（通常 $< 1$），因此会对初始差异进行“校正”
+- The change score approach implicitly fixes the coefficient on the pretest at 1
+- ANCOVA allows this coefficient $\rho$ to be estimated from the data (typically $< 1$), and thus "adjusts" for initial differences
 
-在非随机分组的观察研究中，两者给出的不是同一个 estimand，因此并不奇怪会冲突。
+In non-randomized observational studies, the two approaches do not target the same estimand, so it is not surprising that they conflict.
 
-### 2.6 什么时候用哪一种？
+### 2.6 When to Use Which Approach?
 
-#### 随机对照试验（RCT）
+#### Randomized Controlled Trials (RCTs)
 
-两种方法通常更接近：
+The two approaches tend to converge:
 
-- 随机分配使各组基线在统计上相等
-- 向平均数回归在组间会相互抵消
-- ANCOVA 往往有更高检验力
+- Random assignment makes baseline values statistically equivalent across groups
+- Regression to the mean cancels out across groups
+- ANCOVA typically achieves greater statistical power
 
-#### 观察性研究（组别非随机）
+#### Observational Studies (Non-random Group Assignment)
 
-必须谨慎：
+Caution is required:
 
-- 若你关心**总效应 / 绝对变化量** → 更接近 change score
-- 若你关心**控制起点后的相对变化** → 更接近 ANCOVA / residualized change
+- If you are interested in **total effects / absolute change** → change score is more appropriate
+- If you are interested in **relative change after accounting for starting point** → ANCOVA / residualized change is more appropriate
 
-但前提是：你必须相信“控制基线”符合你的因果结构；否则很容易引入向平均数回归（RTM）偏误。
+However, the prerequisite is: you must believe that "controlling for baseline" is consistent with your causal structure; otherwise, regression-to-the-mean (RTM) bias is easily introduced.
 
-### 2.7 为什么 change score 容易误导：测量层面的原因
+### 2.7 Why Change Scores Can Be Misleading: Measurement-Level Reasons
 
-设两次测量分别为：
+Suppose the two measurements are:
 
 $$
 y_{i1} = T_{i1} + e_{i1},
@@ -230,22 +230,22 @@ y_{i1} = T_{i1} + e_{i1},
 y_{i2} = T_{i2} + e_{i2}
 $$
 
-则 change score 为：
+Then the change score is:
 
 $$
 \Delta y_i = y_{i2} - y_{i1}
 = (T_{i2} - T_{i1}) + (e_{i2} - e_{i1})
 $$
 
-若两次误差独立，则：
+If the two errors are independent, then:
 
 $$
 \text{Var}(e_{i2} - e_{i1}) = \text{Var}(e_{i2}) + \text{Var}(e_{i1})
 $$
 
-也就是说，差值中的误差会**直接叠加**，因此 change score 往往比单次测量更不稳定。
+That is, measurement errors in the difference **accumulate directly**, so change scores are typically less stable than single-occasion measurements.
 
-此外，change score 与 baseline 还存在机械负相关：
+In addition, change scores exhibit a mechanical negative correlation with the baseline:
 
 $$
 \text{Cov}(\Delta y_i, y_{i1})
@@ -255,76 +255,76 @@ $$
 \text{Cov}(y_{i2}, y_{i1}) - \text{Var}(y_{i1})
 $$
 
-只要跨时相关小于 1，这个协方差往往为负：
+As long as the cross-time correlation is less than 1, this covariance tends to be negative:
 
-- baseline 高的人更容易显得“涨得少”
-- baseline 低的人更容易显得“涨得多”
+- Individuals with a higher baseline are more likely to appear to have gained less
+- Individuals with a lower baseline are more likely to appear to have gained more
 
-这不一定反映真实的心理或行为机制。
+This does not necessarily reflect genuine psychological or behavioral mechanisms.
 
-### 2.8 为什么 change score 容易误导：因果层面的原因
+### 2.8 Why Change Scores Can Be Misleading: Causal Reasons
 
-在非随机化数据中，把 change score 作为结果变量去回归某个基线暴露，往往并不对应一个清晰的因果效应。
+In non-randomized data, regressing a change score as the outcome on some baseline exposure often does not correspond to a well-defined causal effect.
 
-尤其当基线结局同时扮演：
+This is particularly problematic when the baseline outcome simultaneously serves as a:
 
-- confounder（混杂因素），或
-- mediator（中介）
+- confounder, or
+- mediator
 
-时，change score 的回归系数甚至可能与真实 total effect / direct effect 方向相反。
+In such cases, the regression coefficient for the change score may even be in the opposite direction from the true total effect / direct effect.
 
-**结论**：change score 不是绝对不能用，而是它在非随机化因果问题里，经常并不对应你以为自己在估计的那个效应。
+**Conclusion**: change scores are not inherently unusable, but in non-randomized causal problems they frequently do not correspond to the effect one intends to estimate.
 
-### 2.9 这一组方法真正适合回答什么问题？
+### 2.9 What Questions Are These Methods Best Suited to Answer?
 
-- “变了多少？” → change score / ANCOVA 都可以
-- “变化过程是什么形状？” → 两波方法不够
-- “不同人变化速率是否不同？” → 需要 MLM / LGM
-- “前一状态如何驱动后一状态的变化？” → 需要 CLPM 或 LCSM
+- "How much did it change?" → both change score and ANCOVA are appropriate
+- "What is the shape of the change trajectory?" → two-wave methods are insufficient
+- "Do different individuals change at different rates?" → MLM / LGM is required
+- "How does a prior state drive subsequent change?" → CLPM or LCSM is required
 
-这也是为什么“absolute change vs. conditional change”的差别，会在后面的 CLPM、LGM、LCSM 中被进一步展开。
+This is also why the distinction between "absolute change vs. conditional change" will be revisited in the subsequent discussions of CLPM, LGM, and LCSM.
 
 ---
 
-## 3. 统一数学视角：把相关性显式放进模型
+## 3. A Unified Mathematical Perspective: Explicitly Modeling Dependence
 
-这一部分整合了原笔记里关于 **LMM 的矩阵表达、SEM 的隐含协方差、MLM ↔ SEM/LGM 的翻译词典与等价关系** 的内容。
+This section integrates content from the original notes on **the matrix representation of LMM, the implied covariance structure in SEM, and the translation dictionary and equivalence between MLM and SEM/LGM**.
 
-### 3.1 MLM / LMM 的矩阵形式
+### 3.1 Matrix Form of MLM / LMM
 
-对个体 $i$，LMM 写成：
+For individual $i$, the LMM is written as:
 
 $$
 \mathbf y_i = X_i\beta + Z_i\mathbf b_i + \boldsymbol\varepsilon_i
 $$
 
-其中：
+where:
 
-- $X_i\beta$：固定效应，代表群体平均结构
-- $Z_i\mathbf b_i$：随机效应，代表个体相对平均轨迹的偏离
-- $\boldsymbol\varepsilon_i$：残差
+- $X_i\beta$: fixed effects, representing the population mean structure
+- $Z_i\mathbf b_i$: random effects, representing individual deviations from the mean trajectory
+- $\boldsymbol\varepsilon_i$: residuals
 
-该模型隐含的边际协方差矩阵为：
+The marginal covariance matrix implied by this model is:
 
 $$
 V_i = \text{Cov}(\mathbf y_i) = Z_i\mathbf D Z_i' + R_i
 $$
 
-- $\mathbf D$：随机效应协方差矩阵，对应截距和斜率的异质性
-- $R_i$：个体内残差结构，表示测量误差或短期波动
+- $\mathbf D$: random effects covariance matrix, corresponding to heterogeneity in intercepts and slopes
+- $R_i$: within-individual residual structure, representing measurement error or short-term fluctuation
 
-这就是 LMM 在矩阵层面“解决相关性”的方式：
-不是要求相关性消失，而是直接说明相关性从哪里来。
+This is how LMM "addresses dependence" at the matrix level:
+rather than requiring dependence to disappear, it explicitly specifies its sources.
 
-### 3.2 同一个思想在标量层面的展开
+### 3.2 The Same Idea at the Scalar Level
 
-对于线性增长模型：
+For the linear growth model:
 
 $$
 y_{it} = \mu_0 + \mu_1x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
 $$
 
-同一个体在两个时间点 $t$ 和 $s$ 上的协方差为：
+the covariance between two time points $t$ and $s$ for the same individual is:
 
 $$
 \text{Cov}(y_{it}, y_{is})
@@ -336,23 +336,23 @@ $$
 + \text{Cov}(\varepsilon_{it}, \varepsilon_{is})
 $$
 
-若假设给定随机效应后 Level-1 残差独立，则：
+If Level-1 residuals are assumed to be independent conditional on the random effects, then:
 
 $$
 \text{Cov}(\varepsilon_{it}, \varepsilon_{is}) = 0
 \qquad (t \neq s)
 $$
 
-于是相关性完全来自共享的随机截距与随机斜率。
+and the dependence arises entirely from the shared random intercept and random slope.
 
-最简单的随机截距模型中：
+In the simplest random-intercept model:
 
 $$
 \text{Cov}(y_{it}, y_{is}) = \tau_{00}
 \qquad (t \neq s)
 $$
 
-在密集测量下，还常需要额外加入残差序列相关，例如 AR(1)：
+Under intensive longitudinal measurement, it is often necessary to additionally model residual serial dependence, for example AR(1):
 
 $$
 \text{Cov}(\varepsilon_{it}, \varepsilon_{is})
@@ -360,11 +360,11 @@ $$
 \sigma^2 \rho^{|x_{it} - x_{is}|}
 $$
 
-这表示相近时间点的误差更相似，时间间隔越远，相关越弱。
+This indicates that errors at nearby time points are more similar, with the correlation weakening as the time interval increases.
 
-### 3.3 纵向 SEM / LGM 的矩阵形式
+### 3.3 Matrix Form of Longitudinal SEM / LGM
 
-在 SEM 语言里，纵向增长模型写为：
+In the SEM framework, the longitudinal growth model is written as:
 
 $$
 \mathbf y_i = \Lambda_i \eta_i + \varepsilon_i,
@@ -372,7 +372,7 @@ $$
 \eta_i = \alpha + \zeta_i
 $$
 
-因此：
+Therefore:
 
 $$
 E(\mathbf y_i) = \Lambda_i \alpha
@@ -382,13 +382,13 @@ $$
 \Sigma_i = \text{Var}(\mathbf y_i) = \Lambda_i \Psi \Lambda_i' + \Theta_i
 $$
 
-其中：
+where:
 
-- $\Lambda_i$：载荷矩阵，定义时间形状（线性、二次、潜基底等）
-- $\Psi$：潜增长因子协方差矩阵
-- $\Theta_i$：指标残差协方差矩阵
+- $\Lambda_i$: factor loading matrix, defining the temporal shape (linear, quadratic, latent basis, etc.)
+- $\Psi$: latent growth factor covariance matrix
+- $\Theta_i$: indicator residual covariance matrix
 
-对第 $t$ 个时间点，若载荷行为 $\lambda_t = [1, x_t]$，则任意两时间点的协方差为：
+For the $t$-th time point, if the loading row is $\lambda_t = [1, x_t]$, then the covariance between any two time points is:
 
 $$
 \text{Cov}(y_{it}, y_{is})
@@ -400,14 +400,14 @@ $$
 + \theta_{ts}
 $$
 
-这里：
+where:
 
-- $\psi_{00}, \psi_{11}, \psi_{01}$：潜截距和潜斜率的方差、协方差
-- $\theta_{ts}$：残差协方差，可用来表示同题项跨时间的 residual dependence
+- $\psi_{00}, \psi_{11}, \psi_{01}$: variances and covariance of the latent intercept and latent slope
+- $\theta_{ts}$: residual covariance, used to represent residual dependence of the same indicator across time
 
-### 3.4 从条件表示到边际表示：MLM 与 SEM 在数学上其实是同一件事
+### 3.4 From Conditional to Marginal Representation: MLM and SEM Are Mathematically the Same
 
-把随机效应积分掉后，MLM 的边际分布是：
+After integrating out the random effects, the marginal distribution of the LMM is:
 
 $$
 E(\mathbf y_i) = X_i\beta
@@ -417,7 +417,7 @@ $$
 \text{Var}(\mathbf y_i) = Z_i\mathbf D Z_i' + R_i
 $$
 
-而 SEM/LGM 给出的边际结构是：
+The marginal structure implied by SEM/LGM is:
 
 $$
 E(\mathbf y_i) = \Lambda_i\alpha
@@ -427,23 +427,23 @@ $$
 \text{Var}(\mathbf y_i) = \Lambda_i\Psi\Lambda_i' + \Theta_i
 $$
 
-两者的形式是同构的。
+The two forms are isomorphic.
 
-### 3.5 翻译词典
+### 3.5 Translation Dictionary
 
-- $Z_i$（MLM 的 random-effects design matrix）$\leftrightarrow$ $\Lambda_i$（SEM 的 factor loading matrix）
-- $\mathbf b_i$（random intercept / slope）$\leftrightarrow$ $\zeta_i$（潜增长因子的个体偏差）
+- $Z_i$ (MLM random-effects design matrix) $\leftrightarrow$ $\Lambda_i$ (SEM factor loading matrix)
+- $\mathbf b_i$ (random intercept / slope) $\leftrightarrow$ $\zeta_i$ (individual deviation of the latent growth factor)
 - $\mathbf D$ $\leftrightarrow$ $\Psi$
 - $R_i$ $\leftrightarrow$ $\Theta_i$
 - $X_i\beta$ $\leftrightarrow$ $\Lambda_i\alpha$
 
-最值得记住的一句话是：
+The most important thing to remember is:
 
-> **MLM 里的 $[1, x_{it}]$ 行向量，到了 SEM 里就是载荷矩阵 $\Lambda_i$ 的一行。**
+> **The row vector $[1, x_{it}]$ in MLM corresponds to a row of the factor loading matrix $\Lambda_i$ in SEM.**
 
-### 3.6 四波线性增长的具体对应
+### 3.6 Concrete Correspondence for a Four-Wave Linear Growth Model
 
-若有四个等距时间点 $t = 0,1,2,3$，则：
+For four equally spaced time points $t = 0,1,2,3$:
 
 $$
 Z_i = \Lambda_i =
@@ -455,13 +455,13 @@ Z_i = \Lambda_i =
 \end{bmatrix}
 $$
 
-- **MLM 读法**：
+- **MLM reading**:
 
 $$
 y_{it} = \mu_0 + \mu_1 t + b_{0i} + b_{1i}t + \varepsilon_{it}
 $$
 
-- **SEM 读法**：
+- **SEM reading**:
 
 $$
 \mathbf y_i = \Lambda_i \eta_i + \varepsilon_i,
@@ -473,17 +473,17 @@ $$
 \end{bmatrix}
 $$
 
-只要时间编码一致、误差结构一致，它们就是同一个增长模型的两种表示。
+As long as the time coding and error structure are consistent, these are two representations of the same growth model.
 
-### 3.7 只有随机截距时：与 null model 的完全对应
+### 3.7 Random Intercept Only: Full Correspondence with the Null Model
 
-若只有随机截距，则：
+When only a random intercept is included:
 
 $$
 \mathbf D = [\tau_{00}]
 $$
 
-相应的 SEM 就是一个 intercept-only 的潜因子，所有载荷固定为 1：
+The corresponding SEM is an intercept-only latent factor with all loadings fixed to 1:
 
 $$
 \lambda =
@@ -494,7 +494,7 @@ $$
 \end{bmatrix}
 $$
 
-此时：
+In this case:
 
 $$
 \text{Var}(\mathbf y_i)
@@ -504,13 +504,13 @@ $$
 \tau_{00}J + \sigma^2 I
 $$
 
-这与随机截距的 MLM / null model 完全一致。
+This is exactly equivalent to the random-intercept MLM / null model.
 
-### 3.8 Level-2 预测变量在两套语言里的翻译
+### 3.8 Level-2 Predictors in Both Frameworks
 
-设 $w_i$ 为时间不变协变量。
+Let $w_i$ be a time-invariant covariate.
 
-在 MLM 中，它既可以预测截距，也可以预测斜率：
+In MLM, it can predict both the intercept and the slope:
 
 $$
 y_{it}
@@ -526,7 +526,7 @@ b_{1i}x_{it}
 \varepsilon_{it}
 $$
 
-在 SEM 中，同一个效应写成：
+In SEM, the same effect is written as:
 
 $$
 \eta_{0i} = \mu_0 + \beta_0 w_i + b_{0i}
@@ -536,139 +536,139 @@ $$
 \eta_{1i} = \mu_1 + \beta_1 w_i + b_{1i}
 $$
 
-也就是说：
+That is:
 
-- **MLM 里的 cross-level interaction**
-- **SEM 里的 “预测 latent slope factor”**
+- **Cross-level interaction in MLM**
+- **"Predicting the latent slope factor" in SEM**
 
-在数学上是同一个东西。
+are mathematically the same thing.
 
-### 3.9 两者什么时候不再等价？
+### 3.9 When Does the Equivalence Break Down?
 
-这种等价关系有前提：
+This equivalence holds under certain prerequisites:
 
-- 线性高斯模型
-- 时间编码一致
-- 残差结构设定一致
-- 没有额外的显式测量模型
+- Linear Gaussian model
+- Consistent time coding
+- Consistent residual structure specification
+- No additional explicit measurement model
 
-一旦下面任一条件出现，两者就会分叉：
+Once any of the following conditions arise, the two approaches diverge:
 
-1. **残差结构不同**
+1. **Different residual structures**
 
-   - LGM 默认更容易允许各时间点残差方差不同
-   - MLM 常默认 Level-1 残差同质
-2. **SEM 显式处理测量模型**
-   若每个时间点本身是潜构念（例如抑郁由 5 个题目测量），那么 SEM 可以先建测量模型，再建增长模型；MLM 若仍以总分为结果变量，则两者就不再同构。
+   - LGM more readily allows residual variances to differ across time points by default
+   - MLM commonly assumes homogeneous Level-1 residuals by default
+2. **SEM explicitly incorporates a measurement model**
+   If each time point itself is a latent construct (e.g., depression measured by 5 items), SEM can first specify a measurement model and then a growth model; if MLM still uses sum scores as the outcome, the two are no longer isomorphic.
 
-因此，更精确的说法是：
+Therefore, a more precise statement is:
 
-> **MLM 与 LGM 的等价，成立于“观测层面的简单线性增长模型”。当 SEM 进一步显式建模测量误差与测量结构时，它就超出了简单一一翻译的范围。**
-
----
-
-## 4. 三类主流框架：GEE、MLM/LMM、纵向 SEM
-
-### 4.1 GEE：群体平均的边际视角
-
-GEE 关注的是：
-
-- 协变量变化一个单位时，**整个人群平均响应**会如何变化
-
-它通过指定一个“工作相关矩阵” $R(\alpha)$ 来近似描述组内相关，并用 **夹心方差估计（sandwich estimator）** 修正标准误。
-
-**优点：**
-
-- 即使工作相关矩阵设错，只要均值模型正确，参数估计仍然一致
-- 特别适合公共卫生、政策评估这类关注总体平均趋势的问题
-
-**局限：**
-
-- 不擅长刻画个体差异来源
-- 缺失数据通常更依赖 MCAR；若希望在 MAR 下处理，往往需要多重插补（MI）
-
-### 4.2 MLM / LMM：个体条件轨迹的视角
-
-MLM / LMM 关注的是：
-
-- 在给定个体随机效应的条件下，某个体的轨迹如何变化
-- 个体之间在起点、变化速率上的差异有多大
-
-**在非线性模型中，LMM 与 GEE 的系数往往不同：**
-
-例如在逻辑回归里，LMM 的固定效应估计通常大于 GEE 的边际效应，因为：
-
-- LMM 更接近“控制了个体异质性后的纯效应”
-- GEE 的效应会被个体间异质性稀释
-
-### 4.3 纵向 SEM：潜在过程的视角
-
-纵向 SEM 的关键优势在于：
-
-- 可以用多个指标定义同一个潜在构念
-- 在增长建模时显式分离“真实变化”与“测量误差”
-- 便于引入中介、调节、并行过程增长等复杂路径
-
-这也是它相对于单纯 LMM 的“杀手锏”所在。
-
-### 4.4 一页式对比
-
-- **解释层次**
-
-  - GEE = 群体平均趋势
-  - MLM/LMM = 个体条件轨迹
-  - 纵向 SEM = 潜在过程轨迹
-- **数据格式**
-
-  - GEE / MLM = 通常更常用长格式（long）
-  - 纵向 SEM / LGM = 通常更常用宽格式（wide）
-- **统计基础**
-
-  - GEE = 拟似然 / 边际模型
-  - MLM = 极大似然（ML / REML）
-  - 纵向 SEM = 协方差结构分析
-- **缺失值机制**
-
-  - GEE = 更依赖 MCAR（或需借助 MI）
-  - MLM = 可在 MAR 下直接估计
-  - 纵向 SEM = 可在 MAR 下使用 FIML
-- **测量误差**
-
-  - GEE = 不显式处理
-  - MLM = 视为残差的一部分
-  - 纵向 SEM = 可显式建模并“纯化”潜变量
+> **The equivalence between MLM and LGM holds for observed-variable simple linear growth models. When SEM further explicitly models measurement error and measurement structure, it goes beyond the scope of a simple one-to-one translation.**
 
 ---
 
-## 5. MLM / LMM：个体轨迹的条件模型
+## 4. Three Major Frameworks: GEE, MLM/LMM, and Longitudinal SEM
 
-### 5.1 基本框架：时间是 Level 1，个体是 Level 2
+### 4.1 GEE: A Marginal, Population-Averaged Perspective
 
-纵向 MLM 的基本思想是：
+GEE focuses on:
 
-- **Level 1**：个体内随时间变化的观测
-- **Level 2**：个体之间的差异
+- How the **population-averaged response** changes when a covariate changes by one unit
 
-最基本的线性增长模型写为：
+It approximates within-cluster dependence by specifying a "working correlation matrix" $R(\alpha)$, and uses a **sandwich variance estimator** to correct the standard errors.
+
+**Advantages:**
+
+- Even if the working correlation matrix is misspecified, the parameter estimates remain consistent as long as the mean model is correctly specified
+- Particularly well-suited for public health and policy evaluation contexts where the interest lies in population-level average trends
+
+**Limitations:**
+
+- Less effective at characterizing sources of individual variation
+- Missing data typically requires MCAR; handling missingness under MAR often requires multiple imputation (MI)
+
+### 4.2 MLM / LMM: A Conditional Individual Trajectory Perspective
+
+MLM / LMM focuses on:
+
+- How a given individual's trajectory changes, conditional on that individual's random effects
+- How much individuals differ in their starting points and rates of change
+
+**In nonlinear models, the coefficients from LMM and GEE typically differ:**
+
+For example, in logistic regression, the fixed-effect estimates from LMM are generally larger than the marginal effects from GEE, because:
+
+- LMM more closely approximates a "pure effect after controlling for individual heterogeneity"
+- The GEE effect is attenuated by between-individual heterogeneity
+
+### 4.3 Longitudinal SEM: A Latent Process Perspective
+
+The key advantage of longitudinal SEM is that it:
+
+- Can define a latent construct using multiple indicators
+- Explicitly separates "true change" from "measurement error" in growth modeling
+- Readily accommodates complex pathways involving mediation, moderation, and parallel process growth
+
+This is its principal advantage over LMM alone.
+
+### 4.4 One-Page Comparison
+
+- **Level of interpretation**
+
+  - GEE = population-averaged trend
+  - MLM/LMM = individual conditional trajectory
+  - Longitudinal SEM = latent process trajectory
+- **Data format**
+
+  - GEE / MLM = long format is typically preferred
+  - Longitudinal SEM / LGM = wide format is typically preferred
+- **Statistical basis**
+
+  - GEE = quasi-likelihood / marginal model
+  - MLM = maximum likelihood (ML / REML)
+  - Longitudinal SEM = covariance structure analysis
+- **Missing data mechanism**
+
+  - GEE = relies more heavily on MCAR (or requires MI)
+  - MLM = can be estimated directly under MAR
+  - Longitudinal SEM = can use FIML under MAR
+- **Measurement error**
+
+  - GEE = not explicitly addressed
+  - MLM = treated as part of the residual
+  - Longitudinal SEM = can be explicitly modeled to "purify" the latent variable
+
+---
+
+## 5. MLM / LMM: Conditional Model for Individual Trajectories
+
+### 5.1 Basic Framework: Time at Level 1, Individuals at Level 2
+
+The fundamental idea of longitudinal MLM is:
+
+- **Level 1**: within-individual observations varying over time
+- **Level 2**: between-individual differences
+
+The most basic linear growth model is:
 
 $$
 y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
 $$
 
-也可以理解成：
+This can also be understood as:
 
-- 每个人都有自己的起点：$\mu_0 + b_{0i}$
-- 每个人也有自己的增长速率：$\mu_1 + b_{1i}$
+- Each person has their own starting point: $\mu_0 + b_{0i}$
+- Each person also has their own rate of growth: $\mu_1 + b_{1i}$
 
-### 5.2 Null Model / 随机效应 ANOVA：先看相关性有多强
+### 5.2 Null Model / Random-Effects ANOVA: First Assessing the Strength of Dependence
 
-最简无条件模型是：
+The simplest unconditional model is:
 
 $$
 y_{it} = \mu_0 + b_{0i} + \varepsilon_{it}
 $$
 
-其中：
+where:
 
 $$
 b_{0i} \sim N(0, \tau_{00}),
@@ -676,41 +676,41 @@ b_{0i} \sim N(0, \tau_{00}),
 \varepsilon_{it} \sim N(0, \sigma^2)
 $$
 
-#### 三条核心推论
+#### Three Core Implications
 
-1. **期望值**
+1. **Expected value**
 
 $$
 E(y_{it}) = \mu_0
 $$
 
-1. **总方差**
+1. **Total variance**
 
 $$
 \text{Var}(y_{it}) = \tau_{00} + \sigma^2
 $$
 
-1. **同一个体内两次测量的协方差**
+1. **Covariance between two measurements from the same individual**
 
 $$
 \text{Cov}(y_{it}, y_{is}) = \tau_{00}
 \qquad (t \neq s)
 $$
 
-只要 $\tau_{00} > 0$，同一个体的重复测量就不是独立的。
+As long as $\tau_{00} > 0$, repeated measurements from the same individual are not independent.
 
-#### 组内相关系数（ICC）
+#### Intraclass Correlation Coefficient (ICC)
 
 $$
 \text{ICC} = \frac{\tau_{00}}{\tau_{00} + \sigma^2}
 $$
 
-ICC 表示：总变异中有多大比例来自个体间差异，同时量化了数据依赖性的强弱。
+The ICC indicates what proportion of total variance is attributable to between-individual differences, and simultaneously quantifies the strength of data dependence.
 
-- ICC 越高，重复测量越不独立
-- ICC 越高，越不适合用 OLS
+- Higher ICC means repeated measurements are less independent
+- Higher ICC means OLS is less appropriate
 
-#### 显式协方差矩阵（以 3 个时间点为例）
+#### Explicit Covariance Matrix (for 3 Time Points)
 
 $$
 V_i =
@@ -721,187 +721,187 @@ V_i =
 \end{bmatrix}
 $$
 
-- 对角线：总方差
-- 非对角线：同一个体内两次测量的协方差
+- Diagonal entries: total variance
+- Off-diagonal entries: covariance between two measurements from the same individual
 
-这也是为什么 OLS 会失败：
-OLS 隐含假设的是 $V_i = \sigma^2 I$，也就是非对角线全为 0。
+This is why OLS fails:
+OLS implicitly assumes $V_i = \sigma^2 I$, i.e., all off-diagonal entries are zero.
 
-#### 为什么又叫“随机效应 ANOVA”？
+#### Why Is It Also Called "Random-Effects ANOVA"?
 
-在一般聚类数据中，这个模型也可写成“群体随机效应 ANOVA”：
+In general clustered data, this model can also be written as a "random-effects ANOVA":
 
-- 传统 ANOVA 把组别视为固定因子
-- 随机效应 ANOVA 把组别视为从总体中随机抽到的一组 cluster
+- Traditional ANOVA treats group membership as a fixed factor
+- Random-effects ANOVA treats group membership as a set of clusters randomly sampled from a population
 
-在纵向场景里，cluster 就是“个体”，所以这套逻辑完全一样。
+In the longitudinal setting, the cluster is the "individual," so the same logic applies directly.
 
-#### ICC 的局限
+#### Limitations of the ICC
 
-ICC 不是任何情况下都可靠：
+The ICC is not reliable in all situations:
 
-- **二分结果变量**：logistic 等模型中没有一个简单、统一的 Level-1 方差项，ICC 的定义不再直接
-- **含随机斜率时**：组内相关性会随自变量取值变化，单一 ICC 总结不够
-- **每个 cluster 很小**：群体均值估计不稳定，ICC 容易偏
+- **Binary outcomes**: in models such as logistic regression, there is no simple, unified Level-1 variance term, so the ICC is no longer straightforwardly defined
+- **Models with random slopes**: within-cluster correlation varies as a function of the predictor value, and a single ICC is insufficient as a summary
+- **Very small clusters**: population mean estimates are unstable, and ICC estimates tend to be biased
 
-### 5.3 随机截距模型与随机斜率模型
+### 5.3 Random Intercept and Random Slope Models
 
-#### 随机截距模型
+#### Random Intercept Model
 
-若只允许起点不同，变化速率相同：
+If only starting points are allowed to vary while the rate of change is fixed:
 
 $$
 y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + \varepsilon_{it}
 $$
 
-这表示每个人的基线不同，但时间效应是固定的。
+This indicates that each person has a different baseline, but the time effect is fixed.
 
-#### 随机斜率模型
+#### Random Slope Model
 
-若个体不仅起点不同，变化速率也不同：
+If individuals differ not only in their starting points but also in their rates of change:
 
 $$
 y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
 $$
 
-这时：
+In this case:
 
-- $b_{0i}$：解释“谁起点高”
-- $b_{1i}$：解释“谁变化更快”
+- $b_{0i}$: accounts for "who starts higher"
+- $b_{1i}$: accounts for "who changes faster"
 
-### 5.4 参数怎么解读？
+### 5.4 How Are the Parameters Interpreted?
 
-- **$\mu_0$**：时间零点上的总体平均水平
-- **$\mu_1$**：总体平均变化速率
-- **$\tau_{00}$**：个体起点差异有多大
-- **$\tau_{11}$**：个体增长速率差异有多大
-- **$\tau_{01}$**：起点与增长速率是否相关
+- **$\mu_0$**: population mean level at time zero
+- **$\mu_1$**: population mean rate of change
+- **$\tau_{00}$**: magnitude of between-individual differences in starting point
+- **$\tau_{11}$**: magnitude of between-individual differences in rate of growth
+- **$\tau_{01}$**: whether starting point and rate of growth are correlated
 
-其中 $\tau_{01}$ 的解释常很有研究意义：
+The interpretation of $\tau_{01}$ is often of particular research interest:
 
-- **正相关**：起点高的人后来增长更快（马太效应）
-- **负相关**：起点高的人后来增长更慢（高原效应）
+- **Positive correlation**: individuals who start higher subsequently grow faster (Matthew effect)
+- **Negative correlation**: individuals who start higher subsequently grow more slowly (ceiling / plateau effect)
 
-### 5.5 读 MLM 结果时，至少看这四项
+### 5.5 Four Key Quantities to Examine When Reading MLM Results
 
-- **固定时间效应**：平均增长 / 下降趋势
-- **随机截距方差**：个体起点差异
-- **随机斜率方差**：个体变化速率差异
-- **截距—斜率协方差**：起点高的人后来是加速还是放缓
+- **Fixed time effect**: average growth / decline trend
+- **Random intercept variance**: between-individual differences in starting point
+- **Random slope variance**: between-individual differences in rate of change
+- **Intercept–slope covariance**: whether individuals who start higher subsequently accelerate or decelerate
 
-### 5.6 R / lmer 代码示例（GPA 场景）
+### 5.6 R / lmer Code Example (GPA Setting)
 
 ```r
-# 随机截距模型：每个学生起点不同，斜率固定
+# Random intercept model: each student has a different starting point, slope is fixed
 m1 <- lmer(gpa ~ time + (1 | student), data = longdat)
 
-# 随机截距 + 随机斜率 + 性别交互：起点和增长速率均因人而异
+# Random intercept + random slope + sex interaction: starting point and growth rate both vary by individual
 m2 <- lmer(gpa ~ time * sex + (time | student), data = longdat)
 ```
 
-解释：
+Interpretation:
 
-- `(1 | student)`：只允许截距随个体变化
-- `(time | student)`：截距和时间斜率都随个体变化
+- `(1 | student)`: allows only the intercept to vary across individuals
+- `(time | student)`: both the intercept and the time slope vary across individuals
 
-在 LGM 的语言里，“让某个变量预测截距与斜率”对应到 MLM 中，往往就是“主效应 + time 交互项 + 随机截距 / 随机斜率”。
+In LGM terms, "having a variable predict the intercept and slope" corresponds in MLM to "main effect + time interaction + random intercept / random slope."
 
-### 5.7 应用例子：青少年酒精使用轨迹
+### 5.7 Applied Example: Adolescent Alcohol Use Trajectories
 
-在 14、15、16 岁三个时间点测量酒精使用频率，拟合随机斜率模型后：
+Alcohol use frequency was measured at ages 14, 15, and 16. After fitting a random slope model:
 
-- **固定效应**
+- **Fixed effects**
 
-  - 截距 = 0.651：14 岁平均使用水平显著不为零
-  - 时间斜率 = 0.271：平均每年增加 0.271 个单位
-- **随机效应**
+  - Intercept = 0.651: mean usage at age 14 is significantly different from zero
+  - Time slope = 0.271: average increase of 0.271 units per year
+- **Random effects**
 
-  - 截距方差 = 0.624：基线差异显著
-  - 斜率方差 = 0.151：增长速度存在个体差异
-  - 截距—斜率协方差 = -0.07：14 岁起点越高，之后增长越慢
-- **Level-2 预测变量**
+  - Intercept variance = 0.624: significant between-individual differences at baseline
+  - Slope variance = 0.151: individual differences in rate of growth are present
+  - Intercept–slope covariance = −0.07: higher initial use at age 14 is associated with slower subsequent growth
+- **Level-2 predictors**
 
-  - COA（酗酒者子女）显著预测更高的初始使用量（$\beta = 0.743$）
-  - 但对增长速度无显著影响
+  - COA (children of alcoholics) significantly predicts higher initial use ($\beta = 0.743$)
+  - But does not significantly predict the rate of growth
 
-### 5.8 Within-Person / Between-Person 分解：为什么必须拆开
+### 5.8 Within-Person / Between-Person Decomposition: Why Separation Is Necessary
 
-理解 WP/BP 分解是 MLM 和纵向分析的核心。若不拆开，模型估计出的”总效应”同时混入两种截然不同的过程，可能导致**生态谬误（Ecological Fallacy）**——用群体层面的关联错误推断个体层面的机制。
+Understanding the WP/BP decomposition is central to MLM and longitudinal analysis. Without this decomposition, the estimated "total effect" conflates two fundamentally different processes, potentially resulting in an **Ecological Fallacy**—incorrectly inferring individual-level mechanisms from group-level associations.
 
-- **Between-Person（BP）差异**：不同个体之间的稳定差异（特质性差异）
-- **Within-Person（WP）差异**：同一个体在不同时间点的波动（状态性变化）
+- **Between-Person (BP) differences**: stable differences between individuals (trait-level variation)
+- **Within-Person (WP) differences**: fluctuations within the same individual across time (state-level change)
 
-对于一个时变协变量 $z_{it}$，其系数往往混合了：
+For a time-varying covariate $z_{it}$, its coefficient typically conflates:
 
-- **组内效应（within-person）**：同一个人在”比自己平时更高/更低”的时候会怎样
-- **组间效应（between-person）**：长期平均更高的人总体上是否也更高
+- **Within-person effect**: how does $y$ change when a person's $z$ is higher than their own usual level?
+- **Between-person effect**: do individuals with a consistently higher average $z$ also tend to have higher $y$ on average?
 
-这两个效应可能同方向，也可能反方向。经典例子：压力与负面情绪
+These two effects may operate in the same direction or in opposite directions. A classic example is stress and negative affect:
 
-- **组间**：长期高压力的人，平均负面情绪更高
-- **组内**：某人压力高于自己均值的那天，负面情绪是否也更高？
+- **Between-person**: individuals under chronically high stress have higher average negative affect
+- **Within-person**: on days when a person's stress exceeds their own mean, is their negative affect also elevated?
 
-#### Person-Mean Centering（组内中心化）
+#### Person-Mean Centering (Within-Person Centering)
 
-把时变协变量 $z_{it}$ 分解为两个**正交**部分：
+The time-varying covariate $z_{it}$ is decomposed into two **orthogonal** components:
 
 $$
 z_{it} = \underbrace{\bar z_i}_{\text{BP}} + \underbrace{(z_{it} - \bar z_i)}_{\text{WP}}
 $$
 
-- $\bar z_i$：个体均值，进入 Level 2，捕捉 **Between-Person** 变异（who 效应）
-- $z_{it} - \bar z_i$：人内中心化值，进入 Level 1，捕捉 **Within-Person** 变异（when 效应）
+- $\bar z_i$: individual mean, entered at Level 2 to capture **Between-Person** variation (the "who" effect)
+- $z_{it} - \bar z_i$: person-mean-centered value, entered at Level 1 to capture **Within-Person** variation (the "when" effect)
 
-将两部分同时纳入 MLM，分别估计 WP 和 BP 效应：
+Both components are entered simultaneously into MLM to estimate the WP and BP effects separately:
 
 $$
 y_{ij} = \gamma_{00} + \underbrace{\gamma_{10}(z_{ij} - \bar z_j)}_{\text{WP effect}} + \underbrace{\gamma_{01}\bar z_j}_{\text{BP effect}} + u_{0j} + r_{ij}
 $$
 
-- **$\gamma_{10}$（Within-Person Effect）**：个体当前 $z$ 高于自身均值时，$y$ 如何变化
-- **$\gamma_{01}$（Between-Person Effect）**：平均 $z$ 较高的人，其 $y$ 的平均水平是否更高
-- **$u_{0j}$**：随机截距（个体间基线差异）；**$r_{ij}$**：残差
+- **$\gamma_{10}$ (Within-Person Effect)**: how $y$ changes when an individual's current $z$ is above their own mean
+- **$\gamma_{01}$ (Between-Person Effect)**: whether individuals with a higher average $z$ also have a higher average $y$
+- **$u_{0j}$**: random intercept (between-individual baseline differences); **$r_{ij}$**: residual
 
-**好处：**
+**Benefits:**
 
-- Level 1 的 $\gamma_{10}$ 是纯粹的组内动态效应，不受稳定个体差异污染
-- 若 $\gamma_{10} \neq \gamma_{01}$，说明 WP/BP 过程不同，未拆开则参数严重偏倚
+- The Level-1 $\gamma_{10}$ is a pure within-person dynamic effect, uncontaminated by stable individual differences
+- If $\gamma_{10} \neq \gamma_{01}$, the WP and BP processes differ, and failing to decompose them leads to severely biased parameter estimates
 
-#### 具体应用案例
+#### Specific Application Examples
 
-##### 案例一：体育锻炼与心脏病发作（Simpson's Paradox）
+##### Example 1: Exercise and Heart Attack (Simpson's Paradox)
 
-- **Within-Person**：个体层面，剧烈运动的那一刻，心脏病发作的瞬时风险上升
-- **Between-Person**：群体层面，长期坚持运动者的基线心脏病风险远低于不运动者
-- **结论**：若不分解，可能错误推断”运动与心脏病无关”甚至”运动有害”
+- **Within-Person**: at the individual level, the instantaneous risk of cardiac events is elevated during vigorous exercise
+- **Between-Person**: at the population level, individuals who exercise regularly have a substantially lower baseline cardiac risk than sedentary individuals
+- **Conclusion**: without decomposition, one might incorrectly infer that "exercise is unrelated to heart disease" or even "exercise is harmful"
 
-##### 案例二：自尊与自我增强（Self-Enhancement）
+##### Example 2: Self-Esteem and Self-Enhancement
 
-60 名学生在 14 种人格特质上的研究，将”特质重要性”人内中心化后：
+A study of 60 students on 14 personality traits, with "trait importance" person-mean-centered:
 
-- **Within-Person 效应**：$\gamma_{10} = 0.37$，即同一个学生认为越重要的特质，越倾向于在该特质上自我增强
-- **应用意义**：证明自我增强是随情境波动的心理机制，而非固定特质
+- **Within-Person effect**: $\gamma_{10} = 0.37$, meaning that within the same student, traits perceived as more important are associated with greater self-enhancement on that trait
+- **Substantive implication**: demonstrates that self-enhancement is a context-sensitive psychological mechanism rather than a fixed trait
 
-##### 案例三：GDP 与国民幸福感（Easterlin Paradox）
+##### Example 3: GDP and National Well-Being (Easterlin Paradox)
 
-- **Between-Country（BP）**：富裕国家的平均幸福感通常高于贫穷国家
-- **Within-Country（WP）**：随着一国 GDP 逐年增长，国民幸福感并不一定随之增加（WP 效应可能为零）
-- **应用意义**：即”伊斯特林悖论”——单纯追求经济增长不一定提升国民幸福感
+- **Between-Country (BP)**: wealthier countries typically report higher average well-being than poorer countries
+- **Within-Country (WP)**: as a country's GDP grows from year to year, national well-being does not necessarily increase correspondingly (the WP effect may be near zero)
+- **Substantive implication**: this is the "Easterlin Paradox"—simply pursuing economic growth does not necessarily improve national well-being
 
-> **一句话总结**：Between-Person 关注”**谁**”更突出；Within-Person 关注”**什么时候**”更突出。纵向分析中始终建议使用人内中心化获得纯净的 WP 估计，同时纳入个体均值捕捉 BP 估计。
+> **In summary**: Between-Person addresses "**who**" scores higher; Within-Person addresses "**when**" one scores higher. In longitudinal analysis, person-mean centering is consistently recommended to obtain clean WP estimates while simultaneously including individual means to capture BP estimates.
 
 ---
 
-## 6. 纵向 SEM / LGM：潜在过程、时间编码与测量模型
+## 6. Longitudinal SEM / LGM: Latent Processes, Time Coding, and Measurement Models
 
-### 6.1 LGM 的基本结构：把增长参数变成潜变量
+### 6.1 Basic Structure of LGM: Growth Parameters as Latent Variables
 
-在 LGM 中，重复测量通常放在宽格式数据里，每个时间点都是一个显变量。通过固定因子载荷来识别潜在增长因子。
+In LGM, repeated measurements are typically arranged in wide-format data, with each time point as a manifest variable. Latent growth factors are identified by fixing factor loadings according to the temporal design.
 
-- **潜截距因子**：所有时间点载荷固定为 1
-- **潜斜率因子**：载荷按时间分数固定，例如 $0,1,2,3$
+- **Latent intercept factor**: all time-point loadings fixed to 1
+- **Latent slope factor**: loadings fixed according to the time scores, e.g., $0,1,2,3$
 
-四波线性增长模型的载荷矩阵可写为：
+The factor loading matrix for a four-wave linear growth model is:
 
 $$
 \Lambda =
@@ -913,7 +913,7 @@ $$
 \end{bmatrix}
 $$
 
-对应的潜增长因子可写成：
+The corresponding latent growth factors can be written as:
 
 $$
 \eta_i =
@@ -923,22 +923,22 @@ $$
 \end{bmatrix}
 $$
 
-因此：
+Therefore:
 
 $$
 \mathbf y_i = \Lambda \eta_i + \varepsilon_i
 $$
 
-LGM 关心的核心参数与 MLM 几乎一一对应：
+The core parameters of interest in LGM correspond almost one-to-one with those in MLM:
 
-- 截距均值
-- 斜率均值
-- 截距方差
-- 斜率方差
-- 截距—斜率协方差
-- 各时间点残差方差
+- Intercept mean
+- Slope mean
+- Intercept variance
+- Slope variance
+- Intercept–slope covariance
+- Residual variance at each time point
 
-#### lavaan 代码示例
+#### lavaan Code Example
 
 ```r
 model <- '
@@ -948,137 +948,137 @@ model <- '
 fit <- growth(model, data = widedat)
 ```
 
-### 6.2 LGM 是“均值结构 + 协方差结构”一起估
+### 6.2 LGM Simultaneously Estimates Mean Structure and Covariance Structure
 
-LGM 不只估“平均是不是在变”，还同时估：
+LGM does not merely estimate "whether the average is changing"; it simultaneously estimates:
 
-- **均值结构**：总体平均增长趋势
-- **协方差结构**：个体差异如何分布
+- **Mean structure**: population-level average growth trajectory
+- **Covariance structure**: distribution of individual differences
 
-这也是为什么 LGM 通常不是饱和模型：
-你给了它一个函数形态（例如线性增长），模型就会问：这个形态能否解释数据？
+This is also why LGM is typically not a saturated model:
+you impose a functional form (e.g., linear growth), and the model then asks: can this form account for the data?
 
-若拟合指数（如 CFI、TLI、RMSEA、SRMR）不好，说明你给的增长形态太简单，不能解释真实的均值偏移与协方差结构。
+If fit indices (e.g., CFI, TLI, RMSEA, SRMR) are poor, the imposed growth form is too simple to explain the true pattern of mean shifts and covariance structure.
 
-### 6.3 时间编码、中心化与截距的含义
+### 6.3 Time Coding, Centering, and the Meaning of the Intercept
 
-时间编码不是技术细节，而是决定“截距到底代表哪一刻”。
+Time coding is not a technical detail; it determines "what moment the intercept represents."
 
-#### 在 LGM 中
+#### In LGM
 
-- 若第一个时间点的斜率载荷设为 0 → 截距代表**基线水平**
-- 若中间某个时间点载荷设为 0 → 截距代表**发展中期水平**
+- If the slope loading at the first time point is set to 0 → the intercept represents the **baseline level**
+- If the loading at some intermediate time point is set to 0 → the intercept represents the **mid-development level**
 
-#### 在 MLM 中
+#### In MLM
 
-完全同理：
+The same logic applies:
 
-- 把 $x_{it}$ 的零点放在哪里
-- $\mu_0$ 就代表哪里
+- wherever the zero point of $x_{it}$ is placed
+- that is what $\mu_0$ represents
 
-#### 常见时间度量（Time Metric）
+#### Common Time Metrics
 
-- **wave number**：简单，但截距往往只代表“第一波”
-- **age**：更贴近发展意义，但不同个体年龄区间可能不重叠
-- **days since treatment / time since event**：适合临床干预研究
-- **years to death**：适合终末期疾病研究
+- **Wave number**: simple, but the intercept typically represents only "the first wave"
+- **Age**: more developmentally meaningful, but different individuals may have non-overlapping age ranges
+- **Days since treatment / time since event**: appropriate for clinical intervention studies
+- **Years to death**: appropriate for studies of terminal illness
 
-#### 零点移动会影响什么？
+#### What Changes When the Zero Point Is Shifted?
 
-- 不改变斜率的“方向与单位”
-- 但会改变：
-  - 截距均值
-  - 截距方差
-  - 截距—斜率协方差
+- The direction and unit of the slope are not affected
+- But the following change:
+  - Intercept mean
+  - Intercept variance
+  - Intercept–slope covariance
 
-### 6.4 潜基底模型（Latent Basis Model, LBM）
+### 6.4 Latent Basis Model (LBM)
 
-为了允许增长不是严格线性的，可以固定：
+To allow for growth that is not strictly linear, one may fix:
 
-- 第一个时间点载荷 = 0
-- 最后一个时间点载荷 = 1
-- 中间时间点载荷由数据自由估计
+- The loading at the first time point = 0
+- The loading at the last time point = 1
+- The loadings at intermediate time points to be freely estimated from the data
 
-这样，中间载荷就表示：
+The freely estimated intermediate loadings then represent:
 
-- 到该时间点为止，个体已经完成了总变化量的多少比例
+- The proportion of the total change that has been completed by that time point
 
-它非常适合描述“前快后慢”或“前慢后快”的发展轨迹。
+This approach is well suited for describing developmental trajectories that are "fast early and slow late" or "slow early and fast late."
 
-### 6.5 纵向测量等价性：做增长模型前，先确认“量尺没变”
+### 6.5 Longitudinal Measurement Invariance: Verify the Scale Has Not Shifted Before Fitting a Growth Model
 
-如果你的研究对象是潜在构念（抑郁、动机、自尊等），那在比较时间变化之前，必须先检验跨时间点的测量等价性。
+If the construct of interest is latent (e.g., depression, motivation, self-esteem), measurement invariance across time points must be established before comparing change over time.
 
-#### 弱等价（Metric Invariance）
+#### Metric Invariance (Weak Invariance)
 
-- 因子载荷相等
-- 确保潜变量单位一致
+- Factor loadings are equal across time points
+- Ensures that the unit of the latent variable is consistent
 
-#### 强等价（Scalar Invariance）
+#### Scalar Invariance (Strong Invariance)
 
-- 因子载荷 + 截距相等
-- 是比较潜变量均值变化的必要前提
+- Factor loadings and indicator intercepts are equal across time points
+- A necessary prerequisite for comparing latent variable means over time
 
-如果强等价性不成立，那么你观察到的“增长”可能只是：
+If scalar invariance does not hold, observed "growth" may reflect only:
 
-- 题目本身变了
-- 指标漂移了
-- 被试对量表的反应方式变了
+- Changes in the items themselves
+- Indicator drift
+- Shifts in how respondents interpret the scale
 
-而不一定是潜在构念真的变了。
+rather than genuine change in the latent construct.
 
-## 9. 建模决策：到底该用哪一类纵向模型？
+## 9. Modeling Decisions: Which Type of Longitudinal Model Should Be Used?
 
-### 更适合 MLM 的情况
+### When MLM Is More Appropriate
 
-- 时间点很多（例如 $\ge 10$ 次）
-- 时间间隔不规则
-- 数据非平衡严重
-- 需要多层嵌套（学生在班级、班级在学校）
-- 样本较小（如 $N < 100$），REML 往往更稳
+- Many time points (e.g., $\ge 10$ occasions)
+- Irregular time intervals
+- Severely unbalanced data
+- Need for multiple levels of nesting (students within classrooms, classrooms within schools)
+- Smaller samples (e.g., $N < 100$), where REML tends to be more stable
 
-#### 更适合 LGM / 纵向 SEM 的情况
+#### When LGM / Longitudinal SEM Is More Appropriate
 
-- 时间点较少（例如 3–8 次）且间隔规则
-- 研究对象是潜变量（抑郁、动机、能力等）
-- 每个时间点有多个指标
-- 需要显式校正测量误差
-- 需要检验纵向测量等价性
-- 需要评估整体模型拟合（CFI、RMSEA 等）
-- 时间分数本身不确定，希望让数据估计（如潜基底模型）
+- Fewer time points (e.g., 3–8 occasions) with regular intervals
+- The construct of interest is latent (depression, motivation, ability, etc.)
+- Multiple indicators per time point
+- Need to explicitly correct for measurement error
+- Need to test longitudinal measurement invariance
+- Need to evaluate overall model fit (CFI, RMSEA, etc.)
+- Uncertainty about the time scores, with a desire to let the data estimate them (e.g., latent basis model)
 
-## 10. 一页总结：整份笔记的主线
+## 10. One-Page Summary: The Core Thread of This Document
 
-整份纵向建模笔记其实可以压缩成下面这条主线：
+The entire set of longitudinal modeling notes can be compressed into the following thread:
 
-1. **OLS 不适用**，因为纵向数据违背独立性
-2. **变化最早可用两波方法描述**，但 change score 和 residualized change 回答的不是同一个问题
-3. **现代纵向模型的核心**不是回避相关性，而是把相关性写进协方差结构
-4. **GEE / MLM / 纵向 SEM** 分别对应群体平均、个体轨迹、潜在过程三种视角
-5. **MLM 与 LGM** 在简单线性增长下常常数学等价，但 SEM 能进一步显式处理测量误差
-6. **CLPM / RI-CLPM / LCSM** 则进一步处理“谁驱动谁”和“上一状态如何决定下一步变化”
-7. 真正的模型选择标准永远是：**研究问题 + 数据结构 + 估计目标**
+1. **OLS is inappropriate** because longitudinal data violate the independence assumption
+2. **Change can first be described with two-wave methods**, but change scores and residualized change scores do not answer the same question
+3. **The core of modern longitudinal modeling** is not to avoid dependence but to write it into the covariance structure
+4. **GEE / MLM / Longitudinal SEM** correspond to three perspectives: population-averaged, individual trajectory, and latent process
+5. **MLM and LGM** are often mathematically equivalent under simple linear growth, but SEM can further explicitly address measurement error
+6. **CLPM / RI-CLPM / LCSM** further address "who drives whom" and "how a prior state determines the next change"
+7. The true criterion for model selection is always: **research question + data structure + estimation target**
 
 ---
 
-## 附：本版统一符号速查表
+## Appendix: Unified Symbol Reference Table
 
-- $y_{it}$：个体 $i$ 在时间 $t$ 的观测值
-- $x_{it}$：时间分数 / 时间度量
-- $w_i$：时间不变协变量（TIC）
-- $z_{it}$：时变协变量（TVC）
-- $\Delta y_{it}$：变化量
-- $\mu_0$：总体平均截距
-- $\mu_1$：总体平均斜率
-- $b_{0i}$：随机截距偏差
-- $b_{1i}$：随机斜率偏差
-- $\tau_{00}$：随机截距方差
-- $\tau_{11}$：随机斜率方差
-- $\tau_{01}$：随机截距—随机斜率协方差
-- $\varepsilon_{it}$：残差 / 测量误差
-- $\mathbf D$：随机效应协方差矩阵（SEM 文献中常记作 $\Psi$）
-- $R_i$：残差协方差矩阵（SEM 文献中常记作 $\Theta_i$）
-- $\Lambda$：载荷矩阵 / 时间分数矩阵
-- $\eta_i$：潜增长因子向量
-- $\Psi$：潜增长因子协方差矩阵
-- $\Theta_i$：指标残差协方差矩阵
+- $y_{it}$: observed value for individual $i$ at time $t$
+- $x_{it}$: time score / time metric
+- $w_i$: time-invariant covariate (TIC)
+- $z_{it}$: time-varying covariate (TVC)
+- $\Delta y_{it}$: change score
+- $\mu_0$: population mean intercept
+- $\mu_1$: population mean slope
+- $b_{0i}$: random intercept deviation
+- $b_{1i}$: random slope deviation
+- $\tau_{00}$: random intercept variance
+- $\tau_{11}$: random slope variance
+- $\tau_{01}$: random intercept–random slope covariance
+- $\varepsilon_{it}$: residual / measurement error
+- $\mathbf D$: random effects covariance matrix (denoted $\Psi$ in the SEM literature)
+- $R_i$: residual covariance matrix (denoted $\Theta_i$ in the SEM literature)
+- $\Lambda$: factor loading matrix / time score matrix
+- $\eta_i$: latent growth factor vector
+- $\Psi$: latent growth factor covariance matrix
+- $\Theta_i$: indicator residual covariance matrix

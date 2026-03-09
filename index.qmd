@@ -1,10 +1,10 @@
 ---
-title: "线性纵向建模笔记"
+title: "Linear Longitudinal Modeling Notes"
 subtitle: "HPD 685 — Linear Longitudinal Modeling"
 author: ""
 date: last-modified
-date-format: "YYYY年MM月DD日"
-lang: zh
+date-format: "MMMM DD, YYYY"
+lang: en
 execute:
   echo: true
   warning: false

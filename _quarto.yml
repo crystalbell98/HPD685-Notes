@@ -4,16 +4,19 @@ project:
   render:
     - index.qmd
     - ols.qmd
+    - analysis.qmd
 
 website:
-  title: "HPD 685 线性纵向建模"
+  title: "HPD 685 Linear Longitudinal Modeling"
   site-url: "https://crystalbell98.github.io/HPD685-Notes"
   navbar:
     left:
       - href: index.qmd
-        text: 纵向建模笔记
+        text: Longitudinal Modeling Notes
       - href: ols.qmd
-        text: OLS 回归笔记
+        text: OLS Regression Notes
+      - href: analysis.qmd
+        text: R Code Examples
 
 format:
   html:

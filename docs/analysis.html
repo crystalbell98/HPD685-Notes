@@ -1,0 +1,2400 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="">
+<meta name="dcterms.date" content="2026-03-08">
+
+<title>Applied Longitudinal Data Analysis in R – HPD 685 Linear Longitudinal Modeling</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-234273d1456647dabc34a594ac50e507.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-849be0cea71bacfde26841a6c95a3848.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">HPD 685 Linear Longitudinal Modeling</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Longitudinal Modeling Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./ols.html"> 
+<span class="menu-text">OLS Regression Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./analysis.html" aria-current="page"> 
+<span class="menu-text">R Code Examples</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目录</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">1</span> Overview</a></li>
+  <li><a href="#part-i-mlm-antisocial-behavior-growth-model-with-moderation" id="toc-part-i-mlm-antisocial-behavior-growth-model-with-moderation" class="nav-link" data-scroll-target="#part-i-mlm-antisocial-behavior-growth-model-with-moderation"><span class="header-section-number">2</span> Part I: MLM — Antisocial Behavior Growth Model with Moderation</a>
+  <ul>
+  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background"><span class="header-section-number">2.1</span> Background</a></li>
+  <li><a href="#setup-and-data-preparation" id="toc-setup-and-data-preparation" class="nav-link" data-scroll-target="#setup-and-data-preparation"><span class="header-section-number">2.2</span> Setup and Data Preparation</a>
+  <ul class="collapse">
+  <li><a href="#descriptive-statistics" id="toc-descriptive-statistics" class="nav-link" data-scroll-target="#descriptive-statistics"><span class="header-section-number">2.2.1</span> Descriptive Statistics</a></li>
+  </ul></li>
+  <li><a href="#step-1-null-model-quantifying-clustering-icc" id="toc-step-1-null-model-quantifying-clustering-icc" class="nav-link" data-scroll-target="#step-1-null-model-quantifying-clustering-icc"><span class="header-section-number">2.3</span> Step 1 — Null Model: Quantifying Clustering (ICC)</a></li>
+  <li><a href="#step-2-unconditional-growth-model" id="toc-step-2-unconditional-growth-model" class="nav-link" data-scroll-target="#step-2-unconditional-growth-model"><span class="header-section-number">2.4</span> Step 2 — Unconditional Growth Model</a></li>
+  <li><a href="#step-3-moderation-by-sex" id="toc-step-3-moderation-by-sex" class="nav-link" data-scroll-target="#step-3-moderation-by-sex"><span class="header-section-number">2.5</span> Step 3 — Moderation by Sex</a>
+  <ul class="collapse">
+  <li><a href="#simple-slopes-sex-specific-growth-rates" id="toc-simple-slopes-sex-specific-growth-rates" class="nav-link" data-scroll-target="#simple-slopes-sex-specific-growth-rates"><span class="header-section-number">2.5.1</span> Simple Slopes: Sex-Specific Growth Rates</a></li>
+  <li><a href="#interaction-plot" id="toc-interaction-plot" class="nav-link" data-scroll-target="#interaction-plot"><span class="header-section-number">2.5.2</span> Interaction Plot</a></li>
+  <li><a href="#individual-trajectory-plots-by-sex" id="toc-individual-trajectory-plots-by-sex" class="nav-link" data-scroll-target="#individual-trajectory-plots-by-sex"><span class="header-section-number">2.5.3</span> Individual Trajectory Plots by Sex</a></li>
+  </ul></li>
+  <li><a href="#step-4-moderation-by-home-cognitive-environment" id="toc-step-4-moderation-by-home-cognitive-environment" class="nav-link" data-scroll-target="#step-4-moderation-by-home-cognitive-environment"><span class="header-section-number">2.6</span> Step 4 — Moderation by Home Cognitive Environment</a>
+  <ul class="collapse">
+  <li><a href="#simple-slopes-at-three-levels-of-home-cognitive-support" id="toc-simple-slopes-at-three-levels-of-home-cognitive-support" class="nav-link" data-scroll-target="#simple-slopes-at-three-levels-of-home-cognitive-support"><span class="header-section-number">2.6.1</span> Simple Slopes at Three Levels of Home Cognitive Support</a></li>
+  </ul></li>
+  <li><a href="#step-5-multiple-group-model-sex-as-grouping-factor" id="toc-step-5-multiple-group-model-sex-as-grouping-factor" class="nav-link" data-scroll-target="#step-5-multiple-group-model-sex-as-grouping-factor"><span class="header-section-number">2.7</span> Step 5 — Multiple-Group Model (Sex as Grouping Factor)</a>
+  <ul class="collapse">
+  <li><a href="#likelihood-ratio-test-multiple-group-vs.-constrained" id="toc-likelihood-ratio-test-multiple-group-vs.-constrained" class="nav-link" data-scroll-target="#likelihood-ratio-test-multiple-group-vs.-constrained"><span class="header-section-number">2.7.1</span> Likelihood Ratio Test: Multiple-Group vs.&nbsp;Constrained</a></li>
+  </ul></li>
+  <li><a href="#model-comparison-summary" id="toc-model-comparison-summary" class="nav-link" data-scroll-target="#model-comparison-summary"><span class="header-section-number">2.8</span> Model Comparison Summary</a></li>
+  </ul></li>
+  <li><a href="#part-ii-lsem-longitudinal-measurement-invariance-testing" id="toc-part-ii-lsem-longitudinal-measurement-invariance-testing" class="nav-link" data-scroll-target="#part-ii-lsem-longitudinal-measurement-invariance-testing"><span class="header-section-number">3</span> Part II: LSEM — Longitudinal Measurement Invariance Testing</a>
+  <ul>
+  <li><a href="#background-1" id="toc-background-1" class="nav-link" data-scroll-target="#background-1"><span class="header-section-number">3.1</span> Background</a></li>
+  <li><a href="#setup-and-data-preparation-1" id="toc-setup-and-data-preparation-1" class="nav-link" data-scroll-target="#setup-and-data-preparation-1"><span class="header-section-number">3.2</span> Setup and Data Preparation</a></li>
+  <li><a href="#step-1-configural-invariance-baseline" id="toc-step-1-configural-invariance-baseline" class="nav-link" data-scroll-target="#step-1-configural-invariance-baseline"><span class="header-section-number">3.3</span> Step 1 — Configural Invariance (Baseline)</a></li>
+  <li><a href="#step-2-weak-metric-invariance-equal-factor-loadings" id="toc-step-2-weak-metric-invariance-equal-factor-loadings" class="nav-link" data-scroll-target="#step-2-weak-metric-invariance-equal-factor-loadings"><span class="header-section-number">3.4</span> Step 2 — Weak (Metric) Invariance: Equal Factor Loadings</a>
+  <ul class="collapse">
+  <li><a href="#likelihood-ratio-test-weak-vs.-configural" id="toc-likelihood-ratio-test-weak-vs.-configural" class="nav-link" data-scroll-target="#likelihood-ratio-test-weak-vs.-configural"><span class="header-section-number">3.4.1</span> Likelihood Ratio Test: Weak vs.&nbsp;Configural</a></li>
+  </ul></li>
+  <li><a href="#step-3-strong-scalar-invariance-equal-loadings-intercepts" id="toc-step-3-strong-scalar-invariance-equal-loadings-intercepts" class="nav-link" data-scroll-target="#step-3-strong-scalar-invariance-equal-loadings-intercepts"><span class="header-section-number">3.5</span> Step 3 — Strong (Scalar) Invariance: Equal Loadings + Intercepts</a>
+  <ul class="collapse">
+  <li><a href="#lrt-strong-vs.-weak" id="toc-lrt-strong-vs.-weak" class="nav-link" data-scroll-target="#lrt-strong-vs.-weak"><span class="header-section-number">3.5.1</span> LRT: Strong vs.&nbsp;Weak</a></li>
+  <li><a href="#modification-indices-for-intercept-constraints" id="toc-modification-indices-for-intercept-constraints" class="nav-link" data-scroll-target="#modification-indices-for-intercept-constraints"><span class="header-section-number">3.5.2</span> Modification Indices for Intercept Constraints</a></li>
+  </ul></li>
+  <li><a href="#step-4-partial-scalar-invariance" id="toc-step-4-partial-scalar-invariance" class="nav-link" data-scroll-target="#step-4-partial-scalar-invariance"><span class="header-section-number">3.6</span> Step 4 — Partial Scalar Invariance</a>
+  <ul class="collapse">
+  <li><a href="#lrt-comparisons-for-partial-model" id="toc-lrt-comparisons-for-partial-model" class="nav-link" data-scroll-target="#lrt-comparisons-for-partial-model"><span class="header-section-number">3.6.1</span> LRT Comparisons for Partial Model</a></li>
+  </ul></li>
+  <li><a href="#model-comparison-summary-1" id="toc-model-comparison-summary-1" class="nav-link" data-scroll-target="#model-comparison-summary-1"><span class="header-section-number">3.7</span> Model Comparison Summary</a></li>
+  </ul></li>
+  <li><a href="#session-information" id="toc-session-information" class="nav-link" data-scroll-target="#session-information"><span class="header-section-number">4</span> Session Information</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Applied Longitudinal Data Analysis in R</h1>
+<p class="subtitle lead">HPD 685 — Worked Examples: MLM Growth Models &amp; Measurement Invariance</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 08, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="overview" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Overview</h1>
+<p>This document provides two fully-worked applied examples drawn from course datasets:</p>
+<ol type="1">
+<li><p><strong>Part I — MLM Growth Model with Moderation</strong> (<code>antisocial.csv</code>): A multilevel linear growth model of children’s antisocial behavior across ages 8–14, testing whether sex and home cognitive environment moderate the trajectory of change.</p></li>
+<li><p><strong>Part II — Longitudinal Measurement Invariance</strong> (<code>selfconcept.dat</code>): A step-by-step configural → weak → strong → partial scalar invariance sequence for a four-indicator self-concept scale measured at ages 8, 10, and 12.</p></li>
+</ol>
+<hr>
+</section>
+<section id="part-i-mlm-antisocial-behavior-growth-model-with-moderation" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Part I: MLM — Antisocial Behavior Growth Model with Moderation</h1>
+<section id="background" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="background"><span class="header-section-number">2.1</span> Background</h2>
+<p><strong>Dataset</strong>: <code>antisocial.csv</code> (N = 405 children from the NLSY) <strong>Outcome</strong>: Antisocial behavior (composite score, higher = more antisocial) <strong>Time structure</strong>: Four assessments recorded at ages that vary by individual (ages 6–14), converted to a centered age variable <strong>Level-2 predictors</strong>: <code>male</code> (0 = girl, 1 = boy); <code>homecog</code> (home cognitive support, standardized)</p>
+<p><strong>Research Questions</strong>:</p>
+<ul>
+<li>Q1: Is there a significant mean growth trend in antisocial behavior across childhood?</li>
+<li>Q2: Does the trajectory differ by sex (level and rate of change)?</li>
+<li>Q3: Does the home cognitive environment predict both initial level and rate of change?</li>
+</ul>
+</section>
+<section id="setup-and-data-preparation" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="setup-and-data-preparation"><span class="header-section-number">2.2</span> Setup and Data Preparation</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)          <span class="co"># mixed-effects models</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest)      <span class="co"># Satterthwaite df and p-values for lmer</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)          <span class="co"># heteroscedastic / multi-group lme models</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(interactions)  <span class="co"># sim_slopes(), interact_plot()</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)       <span class="co"># visualization</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)         <span class="co"># descriptive statistics</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)   <span class="co"># icc()</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>antisocial <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/antisocial.csv"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Rename time-stamped columns for reshape()</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(antisocial) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"^age(</span><span class="sc">\\</span><span class="st">d+)$"</span>,  <span class="st">"age_</span><span class="sc">\\</span><span class="st">1"</span>,  <span class="fu">colnames</span>(antisocial))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(antisocial) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"^anti(</span><span class="sc">\\</span><span class="st">d+)$"</span>, <span class="st">"anti_</span><span class="sc">\\</span><span class="st">1"</span>, <span class="fu">colnames</span>(antisocial))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Wide → long format</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>antisocial_long <span class="ot">&lt;-</span> <span class="fu">reshape</span>(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  antisocial,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">varying   =</span> <span class="fu">c</span>(<span class="st">"age_86"</span>,<span class="st">"age_88"</span>,<span class="st">"age_90"</span>,<span class="st">"age_92"</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                <span class="st">"anti_86"</span>,<span class="st">"anti_88"</span>,<span class="st">"anti_90"</span>,<span class="st">"anti_92"</span>),</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">direction =</span> <span class="st">"long"</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">idvar     =</span> <span class="st">"id"</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep       =</span> <span class="st">"_"</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>antisocial_long <span class="ot">&lt;-</span> antisocial_long[<span class="fu">order</span>(antisocial_long<span class="sc">$</span>id), ]</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Center age: subtract 6 so age=0 corresponds to ~age 6 at first wave</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>antisocial_long<span class="sc">$</span>age <span class="ot">&lt;-</span> antisocial_long<span class="sc">$</span>age <span class="sc">-</span> <span class="dv">6</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove rows with missing age or outcome</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>antisocial_long <span class="ot">&lt;-</span> antisocial_long[</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="sc">!</span><span class="fu">is.na</span>(antisocial_long<span class="sc">$</span>age) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(antisocial_long<span class="sc">$</span>anti), ]</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(antisocial_long, <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>     id male   homecog time age anti
+1.86  1    1 -1.893827   86   0    1
+1.88  1    1 -1.893827   88   3    0
+1.90  1    1 -1.893827   90   5    1
+1.92  1    1 -1.893827   92   7    0
+2.86  2    1  1.106173   86   1    1
+2.88  2    1  1.106173   88   4    1
+2.90  2    1  1.106173   90   6    0
+2.92  2    1  1.106173   92   8    1
+3.86  3    0 -1.893827   86   2    5
+3.88  3    0 -1.893827   88   5    0
+3.90  3    0 -1.893827   90   7    5
+3.92  3    0 -1.893827   92   8    3</code></pre>
+</div>
+</div>
+<section id="descriptive-statistics" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="descriptive-statistics"><span class="header-section-number">2.2.1</span> Descriptive Statistics</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample size</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Total persons:"</span>, <span class="fu">length</span>(<span class="fu">unique</span>(antisocial_long<span class="sc">$</span>id)), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total persons: 405 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Total observations:"</span>, <span class="fu">nrow</span>(antisocial_long), <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total observations: 1362 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean antisocial behavior by age</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>means <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(anti <span class="sc">~</span> age, <span class="at">data =</span> antisocial_long, mean)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(means)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  age     anti
+1   0 1.573770
+2   1 1.553571
+3   2 1.965753
+4   3 1.890625
+5   4 2.139073
+6   5 1.793103
+7   6 1.837037
+8   7 2.236994
+9   8 1.960396</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Observed mean trajectory</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(means, <span class="fu">aes</span>(age, anti)) <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x     =</span> <span class="st">"Centered Age (0 = age 6)"</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y     =</span> <span class="st">"Mean Antisocial Behavior"</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Observed Mean Trajectory of Antisocial Behavior"</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/descriptives-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="step-1-null-model-quantifying-clustering-icc" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="step-1-null-model-quantifying-clustering-icc"><span class="header-section-number">2.3</span> Step 1 — Null Model: Quantifying Clustering (ICC)</h2>
+<p>Before fitting growth trajectories, we first determine how much between-person variance exists and whether MLM is warranted. The null model contains no predictors—it simply partitions total variance into between-person (<span class="math inline">\(\tau_{00}\)</span>) and within-person (<span class="math inline">\(\sigma^2\)</span>) components.</p>
+<p><span class="math display">\[y_{it} = \gamma_{00} + u_{0i} + \varepsilon_{it}\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>m0 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(anti <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id), <span class="at">data =</span> antisocial_long)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: anti ~ 1 + (1 | id)
+   Data: antisocial_long
+
+REML criterion at convergence: 5342.3
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.2400 -0.5587 -0.2056  0.4745  4.5142 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ id       (Intercept) 1.797    1.341   
+ Residual             1.957    1.399   
+Number of obs: 1362, groups:  id, 405
+
+Fixed effects:
+             Estimate Std. Error        df t value Pr(&gt;|t|)    
+(Intercept)   1.89751    0.07736 399.11460   24.53   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">icc</span>(m0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># Intraclass Correlation Coefficient
+
+    Adjusted ICC: 0.479
+  Unadjusted ICC: 0.479</code></pre>
+</div>
+</div>
+<p><strong>Interpretation</strong>: The ICC indicates what proportion of total variance in antisocial behavior is attributable to stable between-person differences. An ICC &gt; 0.10 provides strong justification for MLM; ordinary regression would produce biased standard errors by ignoring this clustering.</p>
+<hr>
+</section>
+<section id="step-2-unconditional-growth-model" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="step-2-unconditional-growth-model"><span class="header-section-number">2.4</span> Step 2 — Unconditional Growth Model</h2>
+<p>We add a fixed and random effect of age to model individual linear growth trajectories. Each child now has their own intercept (level at age 6) and slope (rate of annual change).</p>
+<p><span class="math display">\[y_{it} = (\gamma_{00} + u_{0i}) + (\gamma_{10} + u_{1i})\cdot\text{age}_{it} + \varepsilon_{it}\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(anti <span class="sc">~</span> age <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> age <span class="sc">|</span> id), <span class="at">data =</span> antisocial_long)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: anti ~ age + (1 + age | id)
+   Data: antisocial_long
+
+REML criterion at convergence: 5290.5
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.2114 -0.5355 -0.1772  0.4545  3.8867 
+
+Random effects:
+ Groups   Name        Variance Std.Dev. Corr
+ id       (Intercept) 1.01338  1.0067       
+          age         0.02295  0.1515   0.48
+ Residual             1.75176  1.3235       
+Number of obs: 1362, groups:  id, 405
+
+Fixed effects:
+             Estimate Std. Error        df t value Pr(&gt;|t|)    
+(Intercept)   1.62891    0.08573 377.03846  18.999  &lt; 2e-16 ***
+age           0.07425    0.01774 300.94089   4.185 3.75e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+    (Intr)
+age -0.496</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(m1, <span class="at">method =</span> <span class="st">"Wald"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>               2.5 %    97.5 %
+.sig01            NA        NA
+.sig02            NA        NA
+.sig03            NA        NA
+.sigma            NA        NA
+(Intercept) 1.460875 1.7969490
+age         0.039475 0.1090299</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(antisocial_long, <span class="fu">aes</span>(age, <span class="fu">predict</span>(m1))) <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> id), <span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">linewidth =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"line"</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">linewidth =</span> <span class="fl">1.4</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x     =</span> <span class="st">"Centered Age (0 = age 6)"</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y     =</span> <span class="st">"Predicted Antisocial Behavior"</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Individual Growth Trajectories (grey) with Mean Trajectory (blue)"</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/growth-plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretation</strong>:</p>
+<ul>
+<li><strong>Fixed intercept</strong> (<span class="math inline">\(\gamma_{00}\)</span>): Average antisocial behavior score at age 6 (centered age = 0).</li>
+<li><strong>Fixed slope</strong> (<span class="math inline">\(\gamma_{10}\)</span>): Average annual rate of change across childhood. A positive value indicates behavior increases over time on average.</li>
+<li><strong>Random intercept variance</strong> (<span class="math inline">\(\tau_{00}\)</span>): Substantial between-person differences in starting level.</li>
+<li><strong>Random slope variance</strong> (<span class="math inline">\(\tau_{11}\)</span>): Children differ meaningfully in their rate of change — some increase faster, others plateau or decline.</li>
+<li><strong>Intercept–slope covariance</strong> (<span class="math inline">\(\tau_{01}\)</span>): If negative, children who start higher tend to grow more slowly (ceiling effect); if positive, higher starters accelerate further.</li>
+</ul>
+<hr>
+</section>
+<section id="step-3-moderation-by-sex" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="step-3-moderation-by-sex"><span class="header-section-number">2.5</span> Step 3 — Moderation by Sex</h2>
+<p><strong>Research question</strong>: Do boys and girls differ in their baseline level of antisocial behavior <em>and</em> in their rate of change over time?</p>
+<p>We add <code>male</code> as a level-2 predictor of both the random intercept and random slope, yielding a cross-level interaction: <code>age × male</code>.</p>
+<p><span class="math display">\[y_{it} = \gamma_{00} + \gamma_{01}\text{male}_i + (\gamma_{10} + \gamma_{11}\text{male}_i)\cdot\text{age}_{it} + u_{0i} + u_{1i}\text{age}_{it} + \varepsilon_{it}\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  anti <span class="sc">~</span> age <span class="sc">*</span> male <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> age <span class="sc">|</span> id),</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data    =</span> antisocial_long,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">lmerControl</span>(<span class="at">optimizer =</span> <span class="st">"bobyqa"</span>, <span class="at">optCtrl =</span> <span class="fu">list</span>(<span class="at">maxfun =</span> <span class="fl">2e5</span>))</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: anti ~ age * male + (1 + age | id)
+   Data: antisocial_long
+Control: lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 2e+05))
+
+REML criterion at convergence: 5265
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.1188 -0.5469 -0.1599  0.4535  3.9363 
+
+Random effects:
+ Groups   Name        Variance Std.Dev. Corr
+ id       (Intercept) 0.85375  0.9240       
+          age         0.02294  0.1515   0.51
+ Residual             1.75408  1.3244       
+Number of obs: 1362, groups:  id, 405
+
+Fixed effects:
+             Estimate Std. Error        df t value Pr(&gt;|t|)    
+(Intercept)   1.22694    0.11893 381.94945  10.316  &lt; 2e-16 ***
+age           0.06736    0.02559 310.10849   2.632   0.0089 ** 
+male          0.79867    0.16680 372.66476   4.788 2.43e-06 ***
+age:male      0.01291    0.03550 300.81476   0.364   0.7163    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+         (Intr) age    male  
+age      -0.519              
+male     -0.713  0.370       
+age:male  0.374 -0.721 -0.513</code></pre>
+</div>
+</div>
+<section id="simple-slopes-sex-specific-growth-rates" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="simple-slopes-sex-specific-growth-rates"><span class="header-section-number">2.5.1</span> Simple Slopes: Sex-Specific Growth Rates</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sim_slopes</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">model      =</span> m2,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred       =</span> age,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">modx       =</span> male,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">centered   =</span> <span class="st">"none"</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">cond.int   =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">johnson_neyman =</span> <span class="cn">FALSE</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>SIMPLE SLOPES ANALYSIS
+
+When male = 0.00 (0): 
+
+                              Est.   S.E.   t val.      p
+--------------------------- ------ ------ -------- ------
+Slope of age                  0.07   0.03     2.63   0.01
+Conditional intercept         1.23   0.12    10.32   0.00
+
+When male = 1.00 (1): 
+
+                              Est.   S.E.   t val.      p
+--------------------------- ------ ------ -------- ------
+Slope of age                  0.08   0.02     3.26   0.00
+Conditional intercept         2.03   0.12    17.32   0.00</code></pre>
+</div>
+</div>
+</section>
+<section id="interaction-plot" class="level3" data-number="2.5.2">
+<h3 data-number="2.5.2" class="anchored" data-anchor-id="interaction-plot"><span class="header-section-number">2.5.2</span> Interaction Plot</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">interact_plot</span>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">model       =</span> m2,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred        =</span> age,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">modx        =</span> male,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x.label     =</span> <span class="st">"Centered Age (0 = age 6)"</span>,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">y.label     =</span> <span class="st">"Predicted Antisocial Behavior"</span>,</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend.main =</span> <span class="st">"Sex"</span>,</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">modx.labels =</span> <span class="fu">c</span>(<span class="st">"Girls"</span>, <span class="st">"Boys"</span>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/sex-interaction-plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="individual-trajectory-plots-by-sex" class="level3" data-number="2.5.3">
+<h3 data-number="2.5.3" class="anchored" data-anchor-id="individual-trajectory-plots-by-sex"><span class="header-section-number">2.5.3</span> Individual Trajectory Plots by Sex</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>antisocial_long<span class="sc">$</span>pred_m2 <span class="ot">&lt;-</span> <span class="fu">predict</span>(m2)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>p_girls <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(antisocial_long, male <span class="sc">==</span> <span class="dv">0</span>),</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> anti)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> pred_m2, <span class="at">group =</span> id),</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">linewidth =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"tomato"</span>) <span class="sc">+</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">y =</span> pred_m2), <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"line"</span>,</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"darkred"</span>) <span class="sc">+</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Girls"</span>, <span class="at">x =</span> <span class="st">"Centered Age"</span>, <span class="at">y =</span> <span class="st">"Antisocial"</span>) <span class="sc">+</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>p_boys <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(antisocial_long, male <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> anti)</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> pred_m2, <span class="at">group =</span> id),</span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">linewidth =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">y =</span> pred_m2), <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"line"</span>,</span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>               <span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"navy"</span>) <span class="sc">+</span></span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Boys"</span>, <span class="at">x =</span> <span class="st">"Centered Age"</span>, <span class="at">y =</span> <span class="st">"Antisocial"</span>) <span class="sc">+</span></span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(p_girls, p_boys, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/sex-trajectory-plots-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretation</strong>:</p>
+<ul>
+<li><strong><span class="math inline">\(\gamma_{01}\)</span> (male on intercept)</strong>: If positive and significant, boys start with higher antisocial behavior at age 6 than girls.</li>
+<li><strong><span class="math inline">\(\gamma_{11}\)</span> (age × male)</strong>: If positive and significant, boys increase at a faster rate than girls over time. Simple slopes decompose this interaction into sex-specific slopes with standard errors.</li>
+<li><strong>Practical significance</strong>: Even if both trajectories are increasing, the <em>difference in slopes</em> indicates differential developmental risk.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="step-4-moderation-by-home-cognitive-environment" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="step-4-moderation-by-home-cognitive-environment"><span class="header-section-number">2.6</span> Step 4 — Moderation by Home Cognitive Environment</h2>
+<p><strong>Research question</strong>: Does the home cognitive environment (a continuous, standardized score) predict children’s initial level and rate of growth in antisocial behavior?</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  anti <span class="sc">~</span> age <span class="sc">*</span> homecog <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> age <span class="sc">|</span> id),</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data    =</span> antisocial_long,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">lmerControl</span>(<span class="at">optimizer =</span> <span class="st">"bobyqa"</span>, <span class="at">optCtrl =</span> <span class="fu">list</span>(<span class="at">maxfun =</span> <span class="fl">2e5</span>))</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: anti ~ age * homecog + (1 + age | id)
+   Data: antisocial_long
+Control: lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 2e+05))
+
+REML criterion at convergence: 5283.2
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.2788 -0.5381 -0.1634  0.4601  3.7899 
+
+Random effects:
+ Groups   Name        Variance Std.Dev. Corr
+ id       (Intercept) 0.96467  0.9822       
+          age         0.02059  0.1435   0.49
+ Residual             1.75776  1.3258       
+Number of obs: 1362, groups:  id, 405
+
+Fixed effects:
+              Estimate Std. Error         df t value Pr(&gt;|t|)    
+(Intercept)   1.629256   0.085082 375.673613  19.149  &lt; 2e-16 ***
+age           0.074201   0.017555 298.445297   4.227 3.15e-05 ***
+homecog      -0.076292   0.032956 371.022417  -2.315   0.0212 *  
+age:homecog  -0.015518   0.006872 307.131593  -2.258   0.0246 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+            (Intr) age    homecg
+age         -0.511              
+homecog      0.006 -0.004       
+age:homecog -0.004 -0.001 -0.506</code></pre>
+</div>
+</div>
+<section id="simple-slopes-at-three-levels-of-home-cognitive-support" class="level3" data-number="2.6.1">
+<h3 data-number="2.6.1" class="anchored" data-anchor-id="simple-slopes-at-three-levels-of-home-cognitive-support"><span class="header-section-number">2.6.1</span> Simple Slopes at Three Levels of Home Cognitive Support</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># −1 SD, Mean, +1 SD of homecog</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sim_slopes</span>(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">model        =</span> m3,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred         =</span> age,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">modx         =</span> homecog,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">modx.values  =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">cond.int     =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">johnson_neyman =</span> <span class="cn">FALSE</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>SIMPLE SLOPES ANALYSIS
+
+When homecog = -1.00: 
+
+                              Est.   S.E.   t val.      p
+--------------------------- ------ ------ -------- ------
+Slope of age                  0.09   0.02     4.76   0.00
+Conditional intercept         1.71   0.09    18.73   0.00
+
+When homecog =  0.00: 
+
+                              Est.   S.E.   t val.      p
+--------------------------- ------ ------ -------- ------
+Slope of age                  0.07   0.02     4.23   0.00
+Conditional intercept         1.63   0.09    19.15   0.00
+
+When homecog =  1.00: 
+
+                              Est.   S.E.   t val.      p
+--------------------------- ------ ------ -------- ------
+Slope of age                  0.06   0.02     3.11   0.00
+Conditional intercept         1.55   0.09    16.99   0.00</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">interact_plot</span>(</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">model        =</span> m3,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred         =</span> age,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">modx         =</span> homecog,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">modx.values  =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">modx.labels  =</span> <span class="fu">c</span>(<span class="st">"−1 SD"</span>, <span class="st">"Mean"</span>, <span class="st">"+1 SD"</span>),</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">x.label      =</span> <span class="st">"Centered Age (0 = age 6)"</span>,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">y.label      =</span> <span class="st">"Predicted Antisocial Behavior"</span>,</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend.main  =</span> <span class="st">"Home Cognitive</span><span class="sc">\n</span><span class="st">Environment"</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/homecog-interaction-plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretation</strong>:</p>
+<ul>
+<li><strong><span class="math inline">\(\gamma_{01}\)</span> (homecog on intercept)</strong>: If negative and significant, children from more cognitively stimulating homes start lower on antisocial behavior.</li>
+<li><strong><span class="math inline">\(\gamma_{11}\)</span> (age × homecog)</strong>: If negative and significant, a richer home cognitive environment buffers against the age-related <em>increase</em> in antisocial behavior — children from enriched environments show attenuated growth.</li>
+<li><strong>Simple slopes</strong> at −1 SD, mean, +1 SD allow readers to see the growth trajectory separately for low, average, and high home cognitive support.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="step-5-multiple-group-model-sex-as-grouping-factor" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="step-5-multiple-group-model-sex-as-grouping-factor"><span class="header-section-number">2.7</span> Step 5 — Multiple-Group Model (Sex as Grouping Factor)</h2>
+<p>The cross-level interaction approach in Model 2 assumes homogeneous within-group residual variance and random-effect variances across boys and girls. The multiple-group model relaxes this, allowing separate <span class="math inline">\(\tau_{00}\)</span>, <span class="math inline">\(\tau_{11}\)</span>, <span class="math inline">\(\tau_{01}\)</span>, and <span class="math inline">\(\sigma^2\)</span> for each sex.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>antisocial_long<span class="sc">$</span>female    <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(antisocial_long<span class="sc">$</span>male <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>antisocial_long<span class="sc">$</span>femaleXage <span class="ot">&lt;-</span> antisocial_long<span class="sc">$</span>female <span class="sc">*</span> antisocial_long<span class="sc">$</span>age</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>antisocial_long<span class="sc">$</span>maleXage   <span class="ot">&lt;-</span> antisocial_long<span class="sc">$</span>male   <span class="sc">*</span> antisocial_long<span class="sc">$</span>age</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Constrained model (equal residual variance across sex) — baseline for LRT</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>m2b <span class="ot">&lt;-</span> <span class="fu">lme</span>(anti <span class="sc">~</span> age <span class="sc">*</span> male,</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> age <span class="sc">|</span> id,</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">data   =</span> antisocial_long)</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Multiple-group model: separate RE covariance matrices + residual variance</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">lme</span>(</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>  anti <span class="sc">~</span> age <span class="sc">*</span> male,</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">random  =</span> <span class="fu">list</span>(<span class="at">id =</span> <span class="fu">pdBlocked</span>(<span class="fu">list</span>(</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> male    <span class="sc">+</span> maleXage,</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> female  <span class="sc">+</span> femaleXage</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>  ))),</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> male),</span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data    =</span> antisocial_long</span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: antisocial_long 
+       AIC      BIC    logLik
+  5272.172 5334.737 -2624.086
+
+Random effects:
+ Composite Structure: Blocked
+
+ Block 1: male, maleXage
+ Formula: ~-1 + male + maleXage | id
+ Structure: General positive-definite
+         StdDev    Corr 
+male     1.0407306 male 
+maleXage 0.1830523 0.471
+
+ Block 2: female, femaleXage
+ Formula: ~-1 + female + femaleXage | id
+ Structure: General positive-definite
+           StdDev     Corr  
+female     0.76343021 female
+femaleXage 0.09128618 0.89  
+Residual   1.36713675       
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | male 
+ Parameter estimates:
+        1         0 
+1.0000000 0.9413255 
+Fixed effects:  anti ~ age * male 
+                Value  Std.Error  DF   t-value p-value
+(Intercept) 1.2308856 0.11019022 955 11.170553  0.0000
+age         0.0647672 0.02302645 955  2.812731  0.0050
+male        0.7913276 0.16619154 403  4.761540  0.0000
+age:male    0.0176190 0.03507064 955  0.502385  0.6155
+ Correlation: 
+         (Intr) age    male  
+age      -0.581              
+male     -0.663  0.385       
+age:male  0.381 -0.657 -0.511
+
+Standardized Within-Group Residuals:
+       Min         Q1        Med         Q3        Max 
+-2.9987968 -0.5478772 -0.1712655  0.4656696  4.4005806 
+
+Number of Observations: 1362
+Number of Groups: 405 </code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Residual variance (boys):  "</span>, <span class="fu">round</span>(m4<span class="sc">$</span>sigma<span class="sc">^</span><span class="dv">2</span>, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Residual variance (boys):   1.8691 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>sigma_female <span class="ot">&lt;-</span> m4<span class="sc">$</span>sigma <span class="sc">*</span> <span class="fu">exp</span>(<span class="fu">as.numeric</span>(m4<span class="sc">$</span>modelStruct<span class="sc">$</span>varStruct))</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Residual variance (girls): "</span>, <span class="fu">round</span>(sigma_female<span class="sc">^</span><span class="dv">2</span>, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Residual variance (girls):  1.6562 </code></pre>
+</div>
+</div>
+<section id="likelihood-ratio-test-multiple-group-vs.-constrained" class="level3" data-number="2.7.1">
+<h3 data-number="2.7.1" class="anchored" data-anchor-id="likelihood-ratio-test-multiple-group-vs.-constrained"><span class="header-section-number">2.7.1</span> Likelihood Ratio Test: Multiple-Group vs.&nbsp;Constrained</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m2b, m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+m2b     1  8 5280.987 5322.698 -2632.494                        
+m4      2 12 5272.172 5334.737 -2624.086 1 vs 2 16.81537  0.0021</code></pre>
+</div>
+</div>
+<p><strong>Interpretation</strong>: If the LRT is significant (<span class="math inline">\(p &lt; .05\)</span>), the data provide evidence that boys and girls differ not only in their mean trajectories (captured by the interaction terms) but also in the <em>variability</em> of their trajectories — i.e., the between-person spread around the sex-specific mean growth curve differs by sex.</p>
+<hr>
+</section>
+</section>
+<section id="model-comparison-summary" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="model-comparison-summary"><span class="header-section-number">2.8</span> Model Comparison Summary</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 29%">
+<col style="width: 33%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Fixed Effects</th>
+<th>Random Effects</th>
+<th><span class="math inline">\(\sigma^2\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>M0: Null</td>
+<td>Intercept only</td>
+<td>Random intercept</td>
+<td>Homogeneous</td>
+</tr>
+<tr class="even">
+<td>M1: Unconditional growth</td>
+<td>Intercept + Age</td>
+<td>Intercept + Slope</td>
+<td>Homogeneous</td>
+</tr>
+<tr class="odd">
+<td>M2: Sex moderation</td>
+<td>+ Male + Age×Male</td>
+<td>Intercept + Slope</td>
+<td>Homogeneous</td>
+</tr>
+<tr class="even">
+<td>M3: HomeCog moderation</td>
+<td>+ HomeCog + Age×HomeCog</td>
+<td>Intercept + Slope</td>
+<td>Homogeneous</td>
+</tr>
+<tr class="odd">
+<td>M4: Multiple-group</td>
+<td>Intercept + Age×Male</td>
+<td>Sex-specific</td>
+<td>By sex</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<hr>
+</section>
+</section>
+<section id="part-ii-lsem-longitudinal-measurement-invariance-testing" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Part II: LSEM — Longitudinal Measurement Invariance Testing</h1>
+<section id="background-1" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="background-1"><span class="header-section-number">3.1</span> Background</h2>
+<p>Before interpreting whether a psychological construct <em>changes</em> over time, we must first verify that the construct is measured equivalently at each time point. This is the question of <strong>longitudinal measurement invariance</strong>: does the scale measure the same thing, in the same units, with the same origin, at each wave?</p>
+<p><strong>Dataset</strong>: <code>selfconcept.dat</code> — 228 children, self-concept measured at ages 8, 10, and 12 <strong>Indicators</strong> (4 per wave):</p>
+<ul>
+<li><code>flgd</code> — feeling good about oneself</li>
+<li><code>worth</code> — sense of personal worth</li>
+<li><code>satis</code> — satisfaction with oneself</li>
+<li><code>nogd</code> — not feeling no good (reversed)</li>
+</ul>
+<p><strong>Model sequence</strong> (nested, increasingly constrained):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Model</th>
+<th>Added Constraint</th>
+<th>Comparison</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Configural</td>
+<td>Loadings free across time</td>
+<td>— (baseline)</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Weak (Metric)</td>
+<td>Equal loadings across time</td>
+<td>vs.&nbsp;Configural</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Strong (Scalar)</td>
+<td>Equal loadings + intercepts</td>
+<td>vs.&nbsp;Weak</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Partial Scalar</td>
+<td>Free misfit intercepts</td>
+<td>vs.&nbsp;Strong &amp; Weak</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="setup-and-data-preparation-1" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="setup-and-data-preparation-1"><span class="header-section-number">3.2</span> Setup and Data Preparation</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Variable names (4 indicators × 3 time points)</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>sc_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"flgd08"</span>,<span class="st">"worth08"</span>,<span class="st">"satis08"</span>,<span class="st">"nogd08"</span>,</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>              <span class="st">"flgd10"</span>,<span class="st">"worth10"</span>,<span class="st">"satis10"</span>,<span class="st">"nogd10"</span>,</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>              <span class="st">"flgd12"</span>,<span class="st">"worth12"</span>,<span class="st">"satis12"</span>,<span class="st">"nogd12"</span>)</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Published means and SDs</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>sc_mns <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">3.20</span>, <span class="fl">3.30</span>, <span class="fl">3.21</span>, <span class="fl">2.67</span>,</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>            <span class="fl">3.21</span>, <span class="fl">3.28</span>, <span class="fl">3.12</span>, <span class="fl">2.71</span>,</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>            <span class="fl">3.24</span>, <span class="fl">3.32</span>, <span class="fl">3.16</span>, <span class="fl">2.88</span>)</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>sc_sds <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.57</span>, <span class="fl">0.63</span>, <span class="fl">0.64</span>, <span class="fl">0.88</span>,</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>            <span class="fl">0.59</span>, <span class="fl">0.60</span>, <span class="fl">0.66</span>, <span class="fl">0.87</span>,</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>            <span class="fl">0.61</span>, <span class="fl">0.70</span>, <span class="fl">0.68</span>, <span class="fl">0.76</span>)</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Read correlation matrix and convert to covariance matrix</span></span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>sc_cor <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"data/selfconcept.dat"</span>,</span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>                     <span class="at">header    =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>                     <span class="at">row.names =</span> sc_names,</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>                     <span class="at">col.names =</span> sc_names)</span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>sc_cor <span class="ot">&lt;-</span> <span class="fu">data.matrix</span>(sc_cor)</span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>sc_cov <span class="ot">&lt;-</span> <span class="fu">cor2cov</span>(sc_cor, <span class="at">sds =</span> sc_sds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="step-1-configural-invariance-baseline" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="step-1-configural-invariance-baseline"><span class="header-section-number">3.3</span> Step 1 — Configural Invariance (Baseline)</h2>
+<p>The configural model establishes that the same factor structure holds at each time point: each wave has one latent self-concept factor indicated by the same four items. No cross-time equality constraints are imposed on loadings or intercepts — only the pattern of which items load on which factor is constrained.</p>
+<p>Unique features of longitudinal CFA:</p>
+<ul>
+<li><strong>Correlated residuals</strong> across time for the same item (e.g., <code>flgd08 ~~ flgd10</code>) to account for item-specific stability beyond the latent factor.</li>
+<li><strong>Latent factor means</strong> at Time 1 fixed to 0 (identification); Times 2 and 3 estimated.</li>
+<li><strong>Latent factor variances</strong> at Time 1 fixed to 1 (scale-setting); Times 2 and 3 estimated.</li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>config_mod <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # --- Factor structure ---</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="st">  sc08 =~ NA*flgd08 + L.f*flgd08 + worth08 + satis08 + nogd08</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="st">  sc10 =~ NA*flgd10 + L.f*flgd10 + worth10 + satis10 + nogd10</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="st">  sc12 =~ NA*flgd12 + L.f*flgd12 + worth12 + satis12 + nogd12</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="st">  # --- Latent means (Time 1 = 0 for identification) ---</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="st">  sc08 ~ 0*1</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a><span class="st">  sc10 ~ start(0)*1</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="st">  sc12 ~ start(0)*1</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a><span class="st">  flgd08 ~ I.f*1;  flgd10 ~ I.f*1;  flgd12 ~ I.f*1</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a><span class="st">  # --- Latent variances (Time 1 = 1 for scale-setting) ---</span></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a><span class="st">  sc08 ~~ 1*sc08</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a><span class="st">  sc10 ~~ start(1)*sc10</span></span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a><span class="st">  sc12 ~~ start(1)*sc12</span></span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a><span class="st">  # --- Correlated residuals (same item across time) ---</span></span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a><span class="st">  flgd08 ~~ flgd10 + flgd12;  flgd10 ~~ flgd12</span></span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a><span class="st">  worth08 ~~ worth10 + worth12; worth10 ~~ worth12</span></span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a><span class="st">  satis08 ~~ satis10 + satis12; satis10 ~~ satis12</span></span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a><span class="st">  nogd08  ~~ nogd10  + nogd12;  nogd10  ~~ nogd12</span></span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a>fit_config <span class="ot">&lt;-</span> <span class="fu">sem</span>(config_mod,</span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sample.cov  =</span> sc_cov,</span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sample.mean =</span> sc_mns,</span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sample.nobs =</span> <span class="dv">228</span>,</span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a>                  <span class="at">meanstructure =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-31"><a href="#cb40-31" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_config, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>, <span class="at">estimates =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>lavaan 0.6-19 ended normally after 77 iterations
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                        55
+  Number of equality constraints                     4
+
+  Number of observations                           228
+
+Model Test User Model:
+                                                      
+  Test statistic                                40.656
+  Degrees of freedom                                39
+  P-value (Chi-square)                           0.397
+
+Model Test Baseline Model:
+
+  Test statistic                               752.247
+  Degrees of freedom                                66
+  P-value                                        0.000
+
+User Model versus Baseline Model:
+
+  Comparative Fit Index (CFI)                    0.998
+  Tucker-Lewis Index (TLI)                       0.996
+
+Loglikelihood and Information Criteria:
+
+  Loglikelihood user model (H0)              -2448.218
+  Loglikelihood unrestricted model (H1)      -2427.891
+                                                      
+  Akaike (AIC)                                4998.437
+  Bayesian (BIC)                              5173.334
+  Sample-size adjusted Bayesian (SABIC)       5011.698
+
+Root Mean Square Error of Approximation:
+
+  RMSEA                                          0.014
+  90 Percent confidence interval - lower         0.000
+  90 Percent confidence interval - upper         0.049
+  P-value H_0: RMSEA &lt;= 0.050                    0.958
+  P-value H_0: RMSEA &gt;= 0.080                    0.000
+
+Standardized Root Mean Square Residual:
+
+  SRMR                                           0.033
+
+Parameter Estimates:
+
+  Standard errors                             Standard
+  Information                                 Expected
+  Information saturated (h1) model          Structured
+
+Latent Variables:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+  sc08 =~                                             
+    flgd08   (L.f)    0.442    0.042   10.560    0.000
+    worth08           0.291    0.045    6.437    0.000
+    satis08           0.450    0.047    9.489    0.000
+    nogd08            0.270    0.063    4.308    0.000
+  sc10 =~                                             
+    flgd10   (L.f)    0.442    0.042   10.560    0.000
+    worth10           0.327    0.050    6.540    0.000
+    satis10           0.441    0.061    7.241    0.000
+    nogd10            0.401    0.066    6.061    0.000
+  sc12 =~                                             
+    flgd12   (L.f)    0.442    0.042   10.560    0.000
+    worth12           0.362    0.059    6.109    0.000
+    satis12           0.509    0.072    7.079    0.000
+    nogd12            0.334    0.061    5.507    0.000
+
+Covariances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+ .flgd08 ~~                                           
+   .flgd10            0.037    0.015    2.459    0.014
+   .flgd12            0.023    0.015    1.525    0.127
+ .flgd10 ~~                                           
+   .flgd12            0.021    0.015    1.410    0.159
+ .worth08 ~~                                          
+   .worth10           0.039    0.020    1.936    0.053
+   .worth12           0.065    0.024    2.721    0.007
+ .worth10 ~~                                          
+   .worth12           0.035    0.021    1.668    0.095
+ .satis08 ~~                                          
+   .satis10           0.020    0.019    1.052    0.293
+   .satis12           0.027    0.019    1.409    0.159
+ .satis10 ~~                                          
+   .satis12           0.044    0.019    2.271    0.023
+ .nogd08 ~~                                           
+   .nogd10            0.208    0.046    4.549    0.000
+   .nogd12            0.064    0.039    1.650    0.099
+ .nogd10 ~~                                           
+   .nogd12            0.153    0.037    4.119    0.000
+  sc08 ~~                                             
+    sc10              0.440    0.096    4.602    0.000
+    sc12              0.361    0.095    3.786    0.000
+  sc10 ~~                                             
+    sc12              0.503    0.135    3.725    0.000
+
+Intercepts:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+    sc08              0.000                           
+    sc10              0.023    0.097    0.233    0.816
+    sc12              0.091    0.107    0.847    0.397
+   .flgd08   (I.f)    3.200    0.037   85.376    0.000
+   .flgd10   (I.f)    3.200    0.037   85.376    0.000
+   .flgd12   (I.f)    3.200    0.037   85.376    0.000
+   .worth08           3.300    0.042   79.082    0.000
+   .satis08           3.210    0.042   75.673    0.000
+   .nogd08            2.670    0.058   46.116    0.000
+   .worth10           3.273    0.044   74.863    0.000
+   .satis10           3.110    0.051   61.419    0.000
+   .nogd10            2.701    0.062   43.787    0.000
+   .worth12           3.287    0.053   62.180    0.000
+   .satis12           3.114    0.057   54.223    0.000
+   .nogd12            2.850    0.055   51.449    0.000
+
+Variances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+    sc08              1.000                           
+    sc10              1.143    0.259    4.407    0.000
+    sc12              1.101    0.270    4.083    0.000
+   .flgd08            0.125    0.028    4.445    0.000
+   .worth08           0.313    0.032    9.669    0.000
+   .satis08           0.208    0.034    6.172    0.000
+   .nogd08            0.691    0.067   10.300    0.000
+   .flgd10            0.123    0.023    5.271    0.000
+   .worth10           0.233    0.026    9.126    0.000
+   .satis10           0.215    0.029    7.316    0.000
+   .nogd10            0.563    0.058    9.755    0.000
+   .flgd12            0.157    0.025    6.174    0.000
+   .worth12           0.343    0.036    9.451    0.000
+   .satis12           0.174    0.032    5.503    0.000
+   .nogd12            0.447    0.045    9.896    0.000</code></pre>
+</div>
+</div>
+<p><strong>Interpretation</strong>: The configural model serves as the <em>unconstrained baseline</em>. If fit is acceptable (CFI &gt; .95, RMSEA &lt; .06, SRMR &lt; .08), we proceed to add constraints. Note the pattern of loadings: all four items should load substantially (&gt; .40) on their respective time-point factors.</p>
+<hr>
+</section>
+<section id="step-2-weak-metric-invariance-equal-factor-loadings" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="step-2-weak-metric-invariance-equal-factor-loadings"><span class="header-section-number">3.4</span> Step 2 — Weak (Metric) Invariance: Equal Factor Loadings</h2>
+<p>Weak invariance constrains all four factor loadings to be equal across the three time points (e.g., the loading of <code>worth</code> on self-concept is the same at ages 8, 10, and 12). This ensures that the <em>unit of measurement</em> for the latent factor is consistent over time — a prerequisite for comparing relationships (e.g., correlations, regressions) involving the construct across waves.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>weak_mod <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # Loadings constrained equal across time via shared labels</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="st">  sc08 =~ NA*flgd08 + L.f*flgd08 + L.w*worth08 + L.s*satis08 + L.n*nogd08</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="st">  sc10 =~ NA*flgd10 + L.f*flgd10 + L.w*worth10 + L.s*satis10 + L.n*nogd10</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="st">  sc12 =~ NA*flgd12 + L.f*flgd12 + L.w*worth12 + L.s*satis12 + L.n*nogd12</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="st">  sc08 ~ 0*1;  sc10 ~ start(0)*1;  sc12 ~ start(0)*1</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="st">  flgd08 ~ I.f*1;  flgd10 ~ I.f*1;  flgd12 ~ I.f*1</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a><span class="st">  sc08 ~~ 1*sc08;  sc10 ~~ start(1)*sc10;  sc12 ~~ start(1)*sc12</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a><span class="st">  flgd08 ~~ flgd10 + flgd12;  flgd10 ~~ flgd12</span></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="st">  worth08 ~~ worth10 + worth12; worth10 ~~ worth12</span></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a><span class="st">  satis08 ~~ satis10 + satis12; satis10 ~~ satis12</span></span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a><span class="st">  nogd08  ~~ nogd10  + nogd12;  nogd10  ~~ nogd12</span></span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>fit_weak <span class="ot">&lt;-</span> <span class="fu">sem</span>(weak_mod,</span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a>                <span class="at">sample.cov  =</span> sc_cov,</span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a>                <span class="at">sample.mean =</span> sc_mns,</span>
+<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a>                <span class="at">sample.nobs =</span> <span class="dv">228</span>,</span>
+<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a>                <span class="at">meanstructure =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_weak, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>lavaan 0.6-19 ended normally after 77 iterations
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                        55
+  Number of equality constraints                    10
+
+  Number of observations                           228
+
+Model Test User Model:
+                                                      
+  Test statistic                                45.022
+  Degrees of freedom                                45
+  P-value (Chi-square)                           0.471
+
+Model Test Baseline Model:
+
+  Test statistic                               752.247
+  Degrees of freedom                                66
+  P-value                                        0.000
+
+User Model versus Baseline Model:
+
+  Comparative Fit Index (CFI)                    1.000
+  Tucker-Lewis Index (TLI)                       1.000
+
+Loglikelihood and Information Criteria:
+
+  Loglikelihood user model (H0)              -2450.401
+  Loglikelihood unrestricted model (H1)      -2427.891
+                                                      
+  Akaike (AIC)                                4990.803
+  Bayesian (BIC)                              5145.124
+  Sample-size adjusted Bayesian (SABIC)       5002.504
+
+Root Mean Square Error of Approximation:
+
+  RMSEA                                          0.001
+  90 Percent confidence interval - lower         0.000
+  90 Percent confidence interval - upper         0.044
+  P-value H_0: RMSEA &lt;= 0.050                    0.980
+  P-value H_0: RMSEA &gt;= 0.080                    0.000
+
+Standardized Root Mean Square Residual:
+
+  SRMR                                           0.036
+
+Parameter Estimates:
+
+  Standard errors                             Standard
+  Information                                 Expected
+  Information saturated (h1) model          Structured
+
+Latent Variables:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+  sc08 =~                                             
+    flgd08   (L.f)    0.419    0.032   13.044    0.000
+    worth08  (L.w)    0.313    0.030   10.499    0.000
+    satis08  (L.s)    0.445    0.035   12.796    0.000
+    nogd08   (L.n)    0.326    0.037    8.791    0.000
+  sc10 =~                                             
+    flgd10   (L.f)    0.419    0.032   13.044    0.000
+    worth10  (L.w)    0.313    0.030   10.499    0.000
+    satis10  (L.s)    0.445    0.035   12.796    0.000
+    nogd10   (L.n)    0.326    0.037    8.791    0.000
+  sc12 =~                                             
+    flgd12   (L.f)    0.419    0.032   13.044    0.000
+    worth12  (L.w)    0.313    0.030   10.499    0.000
+    satis12  (L.s)    0.445    0.035   12.796    0.000
+    nogd12   (L.n)    0.326    0.037    8.791    0.000
+
+Covariances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+ .flgd08 ~~                                           
+   .flgd10            0.041    0.015    2.771    0.006
+   .flgd12            0.023    0.015    1.549    0.121
+ .flgd10 ~~                                           
+   .flgd12            0.020    0.015    1.356    0.175
+ .worth08 ~~                                          
+   .worth10           0.037    0.020    1.875    0.061
+   .worth12           0.066    0.024    2.717    0.007
+ .worth10 ~~                                          
+   .worth12           0.037    0.021    1.727    0.084
+ .satis08 ~~                                          
+   .satis10           0.017    0.019    0.907    0.365
+   .satis12           0.028    0.019    1.501    0.133
+ .satis10 ~~                                          
+   .satis12           0.044    0.019    2.278    0.023
+ .nogd08 ~~                                           
+   .nogd10            0.209    0.046    4.555    0.000
+   .nogd12            0.059    0.039    1.535    0.125
+ .nogd10 ~~                                           
+   .nogd12            0.149    0.037    4.030    0.000
+  sc08 ~~                                             
+    sc10              0.458    0.093    4.906    0.000
+    sc12              0.398    0.098    4.057    0.000
+  sc10 ~~                                             
+    sc12              0.576    0.130    4.421    0.000
+
+Intercepts:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+    sc08              0.000                           
+    sc10              0.024    0.102    0.234    0.815
+    sc12              0.095    0.112    0.849    0.396
+   .flgd08   (I.f)    3.200    0.037   86.172    0.000
+   .flgd10   (I.f)    3.200    0.037   86.172    0.000
+   .flgd12   (I.f)    3.200    0.037   86.172    0.000
+   .worth08           3.300    0.042   78.402    0.000
+   .satis08           3.210    0.042   76.088    0.000
+   .nogd08            2.670    0.059   45.479    0.000
+   .worth10           3.273    0.044   75.038    0.000
+   .satis10           3.109    0.052   60.160    0.000
+   .nogd10            2.702    0.059   45.626    0.000
+   .worth12           3.290    0.051   65.080    0.000
+   .satis12           3.118    0.054   58.115    0.000
+   .nogd12            2.849    0.055   51.739    0.000
+
+Variances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+    sc08              1.000                           
+    sc10              1.244    0.207    6.016    0.000
+    sc12              1.320    0.225    5.876    0.000
+   .flgd08            0.138    0.022    6.251    0.000
+   .worth08           0.306    0.032    9.651    0.000
+   .satis08           0.208    0.029    7.280    0.000
+   .nogd08            0.679    0.067   10.192    0.000
+   .flgd10            0.128    0.022    5.906    0.000
+   .worth10           0.232    0.025    9.296    0.000
+   .satis10           0.203    0.028    7.176    0.000
+   .nogd10            0.581    0.057   10.110    0.000
+   .flgd12            0.145    0.024    6.099    0.000
+   .worth12           0.351    0.036    9.742    0.000
+   .satis12           0.190    0.028    6.692    0.000
+   .nogd12            0.439    0.045    9.843    0.000</code></pre>
+</div>
+</div>
+<section id="likelihood-ratio-test-weak-vs.-configural" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="likelihood-ratio-test-weak-vs.-configural"><span class="header-section-number">3.4.1</span> Likelihood Ratio Test: Weak vs.&nbsp;Configural</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lavTestLRT</span>(fit_weak, fit_config)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Chi-Squared Difference Test
+
+           Df    AIC    BIC  Chisq Chisq diff RMSEA Df diff Pr(&gt;Chisq)
+fit_config 39 4998.4 5173.3 40.656                                    
+fit_weak   45 4990.8 5145.1 45.022      4.366     0       6     0.6273</code></pre>
+</div>
+</div>
+<p><strong>Interpretation</strong>: A non-significant <span class="math inline">\(\chi^2\)</span> difference (<span class="math inline">\(p &gt; .05\)</span>) and negligible <span class="math inline">\(\Delta\)</span>CFI (&lt; .01) indicate that constraining loadings to equality does not significantly worsen model fit — <strong>weak invariance holds</strong>. This means the scale’s metric (unit of measurement) is stable over time.</p>
+<hr>
+</section>
+</section>
+<section id="step-3-strong-scalar-invariance-equal-loadings-intercepts" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="step-3-strong-scalar-invariance-equal-loadings-intercepts"><span class="header-section-number">3.5</span> Step 3 — Strong (Scalar) Invariance: Equal Loadings + Intercepts</h2>
+<p>Strong invariance adds the constraint that <em>item intercepts</em> are also equal across time points. This ensures that individuals with the same latent self-concept score will, on average, endorse each item to the same degree regardless of measurement occasion — a necessary condition for meaningfully comparing <strong>latent means</strong> across waves.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>strong_mod <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="st">  sc08 =~ NA*flgd08 + L.f*flgd08 + L.w*worth08 + L.s*satis08 + L.n*nogd08</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="st">  sc10 =~ NA*flgd10 + L.f*flgd10 + L.w*worth10 + L.s*satis10 + L.n*nogd10</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="st">  sc12 =~ NA*flgd12 + L.f*flgd12 + L.w*worth12 + L.s*satis12 + L.n*nogd12</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="st">  sc08 ~ 0*1;  sc10 ~ start(0)*1;  sc12 ~ start(0)*1</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="st">  flgd08 ~ I.f*1;  flgd10 ~ I.f*1;  flgd12 ~ I.f*1</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="st">  worth08 ~ I.w*1; worth10 ~ I.w*1; worth12 ~ I.w*1</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="st">  satis08 ~ I.s*1; satis10 ~ I.s*1; satis12 ~ I.s*1</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a><span class="st">  nogd08  ~ I.n*1; nogd10  ~ I.n*1; nogd12  ~ I.n*1</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a><span class="st">  sc08 ~~ 1*sc08;  sc10 ~~ start(1)*sc10;  sc12 ~~ start(1)*sc12</span></span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a><span class="st">  flgd08 ~~ flgd10 + flgd12;  flgd10 ~~ flgd12</span></span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a><span class="st">  worth08 ~~ worth10 + worth12; worth10 ~~ worth12</span></span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a><span class="st">  satis08 ~~ satis10 + satis12; satis10 ~~ satis12</span></span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a><span class="st">  nogd08  ~~ nogd10  + nogd12;  nogd10  ~~ nogd12</span></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a>fit_strong <span class="ot">&lt;-</span> <span class="fu">sem</span>(strong_mod,</span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sample.cov  =</span> sc_cov,</span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sample.mean =</span> sc_mns,</span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sample.nobs =</span> <span class="dv">228</span>,</span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a>                  <span class="at">meanstructure =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_strong, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>lavaan 0.6-19 ended normally after 62 iterations
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                        55
+  Number of equality constraints                    16
+
+  Number of observations                           228
+
+Model Test User Model:
+                                                      
+  Test statistic                                59.639
+  Degrees of freedom                                51
+  P-value (Chi-square)                           0.190
+
+Model Test Baseline Model:
+
+  Test statistic                               752.247
+  Degrees of freedom                                66
+  P-value                                        0.000
+
+User Model versus Baseline Model:
+
+  Comparative Fit Index (CFI)                    0.987
+  Tucker-Lewis Index (TLI)                       0.984
+
+Loglikelihood and Information Criteria:
+
+  Loglikelihood user model (H0)              -2457.710
+  Loglikelihood unrestricted model (H1)      -2427.891
+                                                      
+  Akaike (AIC)                                4993.421
+  Bayesian (BIC)                              5127.165
+  Sample-size adjusted Bayesian (SABIC)       5003.562
+
+Root Mean Square Error of Approximation:
+
+  RMSEA                                          0.027
+  90 Percent confidence interval - lower         0.000
+  90 Percent confidence interval - upper         0.053
+  P-value H_0: RMSEA &lt;= 0.050                    0.927
+  P-value H_0: RMSEA &gt;= 0.080                    0.000
+
+Standardized Root Mean Square Residual:
+
+  SRMR                                           0.042
+
+Parameter Estimates:
+
+  Standard errors                             Standard
+  Information                                 Expected
+  Information saturated (h1) model          Structured
+
+Latent Variables:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+  sc08 =~                                             
+    flgd08   (L.f)    0.419    0.032   13.003    0.000
+    worth08  (L.w)    0.314    0.030   10.495    0.000
+    satis08  (L.s)    0.442    0.035   12.733    0.000
+    nogd08   (L.n)    0.330    0.037    8.823    0.000
+  sc10 =~                                             
+    flgd10   (L.f)    0.419    0.032   13.003    0.000
+    worth10  (L.w)    0.314    0.030   10.495    0.000
+    satis10  (L.s)    0.442    0.035   12.733    0.000
+    nogd10   (L.n)    0.330    0.037    8.823    0.000
+  sc12 =~                                             
+    flgd12   (L.f)    0.419    0.032   13.003    0.000
+    worth12  (L.w)    0.314    0.030   10.495    0.000
+    satis12  (L.s)    0.442    0.035   12.733    0.000
+    nogd12   (L.n)    0.330    0.037    8.823    0.000
+
+Covariances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+ .flgd08 ~~                                           
+   .flgd10            0.041    0.015    2.722    0.006
+   .flgd12            0.023    0.015    1.554    0.120
+ .flgd10 ~~                                           
+   .flgd12            0.020    0.015    1.327    0.184
+ .worth08 ~~                                          
+   .worth10           0.037    0.020    1.875    0.061
+   .worth12           0.065    0.024    2.713    0.007
+ .worth10 ~~                                          
+   .worth12           0.037    0.021    1.726    0.084
+ .satis08 ~~                                          
+   .satis10           0.016    0.019    0.831    0.406
+   .satis12           0.026    0.019    1.379    0.168
+ .satis10 ~~                                          
+   .satis12           0.045    0.019    2.344    0.019
+ .nogd08 ~~                                           
+   .nogd10            0.214    0.046    4.613    0.000
+   .nogd12            0.049    0.039    1.256    0.209
+ .nogd10 ~~                                           
+   .nogd12            0.144    0.037    3.866    0.000
+  sc08 ~~                                             
+    sc10              0.462    0.094    4.925    0.000
+    sc12              0.401    0.099    4.073    0.000
+  sc10 ~~                                             
+    sc12              0.579    0.131    4.420    0.000
+
+Intercepts:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+    sc08              0.000                           
+    sc10             -0.049    0.091   -0.542    0.588
+    sc12              0.062    0.097    0.642    0.521
+   .flgd08   (I.f)    3.216    0.035   92.138    0.000
+   .flgd10   (I.f)    3.216    0.035   92.138    0.000
+   .flgd12   (I.f)    3.216    0.035   92.138    0.000
+   .worth08  (I.w)    3.298    0.033  100.704    0.000
+   .worth10  (I.w)    3.298    0.033  100.704    0.000
+   .worth12  (I.w)    3.298    0.033  100.704    0.000
+   .satis08  (I.s)    3.162    0.037   84.371    0.000
+   .satis10  (I.s)    3.162    0.037   84.371    0.000
+   .satis12  (I.s)    3.162    0.037   84.371    0.000
+   .nogd08   (I.n)    2.776    0.042   66.159    0.000
+   .nogd10   (I.n)    2.776    0.042   66.159    0.000
+   .nogd12   (I.n)    2.776    0.042   66.159    0.000
+
+Variances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+    sc08              1.000                           
+    sc10              1.248    0.208    6.001    0.000
+    sc12              1.323    0.226    5.858    0.000
+   .flgd08            0.139    0.022    6.261    0.000
+   .worth08           0.305    0.032    9.637    0.000
+   .satis08           0.212    0.029    7.368    0.000
+   .nogd08            0.690    0.068   10.185    0.000
+   .flgd10            0.129    0.022    5.920    0.000
+   .worth10           0.232    0.025    9.283    0.000
+   .satis10           0.204    0.028    7.221    0.000
+   .nogd10            0.582    0.058   10.095    0.000
+   .flgd12            0.144    0.024    6.079    0.000
+   .worth12           0.351    0.036    9.733    0.000
+   .satis12           0.192    0.028    6.770    0.000
+   .nogd12            0.446    0.045    9.834    0.000</code></pre>
+</div>
+</div>
+<section id="lrt-strong-vs.-weak" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="lrt-strong-vs.-weak"><span class="header-section-number">3.5.1</span> LRT: Strong vs.&nbsp;Weak</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lavTestLRT</span>(fit_strong, fit_weak)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Chi-Squared Difference Test
+
+           Df    AIC    BIC  Chisq Chisq diff    RMSEA Df diff Pr(&gt;Chisq)  
+fit_weak   45 4990.8 5145.1 45.022                                         
+fit_strong 51 4993.4 5127.2 59.639     14.618 0.079369       6    0.02345 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="modification-indices-for-intercept-constraints" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="modification-indices-for-intercept-constraints"><span class="header-section-number">3.5.2</span> Modification Indices for Intercept Constraints</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>mi <span class="ot">&lt;-</span> <span class="fu">lavTestScore</span>(fit_strong)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>mi<span class="sc">$</span>uni[<span class="fu">order</span>(<span class="sc">-</span>mi<span class="sc">$</span>uni<span class="sc">$</span>X2), ][<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+univariate score tests:
+
+     lhs op   rhs    X2 df p.value
+16 .p25. == .p27. 8.730  1   0.003
+14 .p22. == .p24. 2.497  1   0.114
+7   .p4. ==  .p8. 2.449  1   0.118
+9  .p16. == .p17. 1.887  1   0.170
+15 .p25. == .p26. 1.087  1   0.297
+5   .p3. ==  .p7. 0.716  1   0.397
+13 .p22. == .p23. 0.579  1   0.447
+8   .p4. == .p12. 0.429  1   0.513
+6   .p3. == .p11. 0.381  1   0.537
+2   .p1. ==  .p9. 0.225  1   0.635</code></pre>
+</div>
+</div>
+<p><strong>Interpretation</strong>: If the LRT is significant, scalar invariance does not fully hold. Modification indices highlight which specific intercept constraints are most problematic. Large M.I.s for a particular item’s intercept at one time point suggest that item has a different response tendency at that occasion, independent of the latent construct level.</p>
+<hr>
+</section>
+</section>
+<section id="step-4-partial-scalar-invariance" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="step-4-partial-scalar-invariance"><span class="header-section-number">3.6</span> Step 4 — Partial Scalar Invariance</h2>
+<p>When full scalar invariance fails, we can achieve <strong>partial scalar invariance</strong> by freeing only the intercept constraints flagged by modification indices, while retaining equality constraints on the remaining items. Partial invariance is acceptable for latent mean comparisons <em>as long as at least two items per factor retain equal intercepts</em>.</p>
+<p>Based on modification indices, the intercepts for <code>satis08</code> (age 8) and <code>nogd12</code> (age 12) are freed.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>partial_mod <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="st">  sc08 =~ NA*flgd08 + L.f*flgd08 + L.w*worth08 + L.s*satis08 + L.n*nogd08</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="st">  sc10 =~ NA*flgd10 + L.f*flgd10 + L.w*worth10 + L.s*satis10 + L.n*nogd10</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="st">  sc12 =~ NA*flgd12 + L.f*flgd12 + L.w*worth12 + L.s*satis12 + L.n*nogd12</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a><span class="st">  sc08 ~ 0*1;  sc10 ~ start(0)*1;  sc12 ~ start(0)*1</span></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="st">  flgd08 ~ I.f*1;  flgd10 ~ I.f*1;  flgd12 ~ I.f*1</span></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a><span class="st">  worth08 ~ I.w*1; worth10 ~ I.w*1; worth12 ~ I.w*1</span></span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a><span class="st">  satis08 ~ 1        # freed: satis08 intercept allowed to differ</span></span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a><span class="st">  satis10 ~ I.s*1;  satis12 ~ I.s*1</span></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a><span class="st">  nogd08  ~ I.n*1;  nogd10  ~ I.n*1</span></span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a><span class="st">  nogd12  ~ 1        # freed: nogd12 intercept allowed to differ</span></span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a><span class="st">  sc08 ~~ 1*sc08;  sc10 ~~ start(1)*sc10;  sc12 ~~ start(1)*sc12</span></span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a><span class="st">  flgd08 ~~ flgd10 + flgd12;  flgd10 ~~ flgd12</span></span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a><span class="st">  worth08 ~~ worth10 + worth12; worth10 ~~ worth12</span></span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a><span class="st">  satis08 ~~ satis10 + satis12; satis10 ~~ satis12</span></span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a><span class="st">  nogd08  ~~ nogd10  + nogd12;  nogd10  ~~ nogd12</span></span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>fit_partial <span class="ot">&lt;-</span> <span class="fu">sem</span>(partial_mod,</span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>                   <span class="at">sample.cov  =</span> sc_cov,</span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a>                   <span class="at">sample.mean =</span> sc_mns,</span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a>                   <span class="at">sample.nobs =</span> <span class="dv">228</span>,</span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a>                   <span class="at">meanstructure =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_partial, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>, <span class="at">estimates =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a>        <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">rsquare =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>lavaan 0.6-19 ended normally after 67 iterations
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                        55
+  Number of equality constraints                    14
+
+  Number of observations                           228
+
+Model Test User Model:
+                                                      
+  Test statistic                                45.690
+  Degrees of freedom                                49
+  P-value (Chi-square)                           0.608
+
+Model Test Baseline Model:
+
+  Test statistic                               752.247
+  Degrees of freedom                                66
+  P-value                                        0.000
+
+User Model versus Baseline Model:
+
+  Comparative Fit Index (CFI)                    1.000
+  Tucker-Lewis Index (TLI)                       1.006
+
+Loglikelihood and Information Criteria:
+
+  Loglikelihood user model (H0)              -2450.736
+  Loglikelihood unrestricted model (H1)      -2427.891
+                                                      
+  Akaike (AIC)                                4983.472
+  Bayesian (BIC)                              5124.075
+  Sample-size adjusted Bayesian (SABIC)       4994.133
+
+Root Mean Square Error of Approximation:
+
+  RMSEA                                          0.000
+  90 Percent confidence interval - lower         0.000
+  90 Percent confidence interval - upper         0.038
+  P-value H_0: RMSEA &lt;= 0.050                    0.993
+  P-value H_0: RMSEA &gt;= 0.080                    0.000
+
+Standardized Root Mean Square Residual:
+
+  SRMR                                           0.036
+
+Parameter Estimates:
+
+  Standard errors                             Standard
+  Information                                 Expected
+  Information saturated (h1) model          Structured
+
+Latent Variables:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+  sc08 =~                                                               
+    flgd08   (L.f)    0.419    0.032   13.049    0.000    0.419    0.748
+    worth08  (L.w)    0.313    0.030   10.503    0.000    0.313    0.493
+    satis08  (L.s)    0.445    0.035   12.803    0.000    0.445    0.699
+    nogd08   (L.n)    0.327    0.037    8.792    0.000    0.327    0.368
+  sc10 =~                                                               
+    flgd10   (L.f)    0.419    0.032   13.049    0.000    0.468    0.794
+    worth10  (L.w)    0.313    0.030   10.503    0.000    0.349    0.587
+    satis10  (L.s)    0.445    0.035   12.803    0.000    0.496    0.740
+    nogd10   (L.n)    0.327    0.037    8.792    0.000    0.364    0.431
+  sc12 =~                                                               
+    flgd12   (L.f)    0.419    0.032   13.049    0.000    0.482    0.785
+    worth12  (L.w)    0.313    0.030   10.503    0.000    0.360    0.519
+    satis12  (L.s)    0.445    0.035   12.803    0.000    0.511    0.761
+    nogd12   (L.n)    0.327    0.037    8.792    0.000    0.375    0.493
+
+Covariances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+ .flgd08 ~~                                                             
+   .flgd10            0.041    0.015    2.774    0.006    0.041    0.309
+   .flgd12            0.023    0.015    1.550    0.121    0.023    0.165
+ .flgd10 ~~                                                             
+   .flgd12            0.020    0.015    1.356    0.175    0.020    0.150
+ .worth08 ~~                                                            
+   .worth10           0.037    0.020    1.864    0.062    0.037    0.139
+   .worth12           0.066    0.024    2.718    0.007    0.066    0.200
+ .worth10 ~~                                                            
+   .worth12           0.037    0.021    1.725    0.085    0.037    0.128
+ .satis08 ~~                                                            
+   .satis10           0.017    0.019    0.906    0.365    0.017    0.085
+   .satis12           0.028    0.019    1.500    0.134    0.028    0.144
+ .satis10 ~~                                                            
+   .satis12           0.044    0.019    2.276    0.023    0.044    0.224
+ .nogd08 ~~                                                             
+   .nogd10            0.209    0.046    4.547    0.000    0.209    0.332
+   .nogd12            0.059    0.039    1.532    0.125    0.059    0.108
+ .nogd10 ~~                                                             
+   .nogd12            0.149    0.037    4.030    0.000    0.149    0.296
+  sc08 ~~                                                               
+    sc10              0.458    0.093    4.905    0.000    0.411    0.411
+    sc12              0.398    0.098    4.057    0.000    0.346    0.346
+  sc10 ~~                                                               
+    sc12              0.576    0.130    4.421    0.000    0.449    0.449
+
+Intercepts:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+    sc08              0.000                               0.000    0.000
+    sc10              0.017    0.095    0.181    0.856    0.015    0.015
+    sc12              0.099    0.103    0.963    0.336    0.086    0.086
+   .flgd08   (I.f)    3.200    0.036   88.871    0.000    3.200    5.708
+   .flgd10   (I.f)    3.200    0.036   88.871    0.000    3.200    5.432
+   .flgd12   (I.f)    3.200    0.036   88.871    0.000    3.200    5.214
+   .worth08  (I.w)    3.286    0.033   98.511    0.000    3.286    5.169
+   .worth10  (I.w)    3.286    0.033   98.511    0.000    3.286    5.518
+   .worth12  (I.w)    3.286    0.033   98.511    0.000    3.286    4.741
+   .satis08           3.210    0.042   76.104    0.000    3.210    5.039
+   .satis10  (I.s)    3.114    0.044   70.265    0.000    3.114    4.644
+   .satis12  (I.s)    3.114    0.044   70.265    0.000    3.114    4.637
+   .nogd08   (I.n)    2.689    0.049   54.884    0.000    2.689    3.033
+   .nogd10   (I.n)    2.689    0.049   54.884    0.000    2.689    3.182
+   .nogd12            2.844    0.052   54.442    0.000    2.844    3.736
+
+Variances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+    sc08              1.000                               1.000    1.000
+    sc10              1.244    0.207    6.016    0.000    1.000    1.000
+    sc12              1.320    0.225    5.876    0.000    1.000    1.000
+   .flgd08            0.139    0.022    6.255    0.000    0.139    0.441
+   .worth08           0.306    0.032    9.653    0.000    0.306    0.757
+   .satis08           0.208    0.029    7.278    0.000    0.208    0.512
+   .nogd08            0.680    0.067   10.192    0.000    0.680    0.864
+   .flgd10            0.128    0.022    5.911    0.000    0.128    0.370
+   .worth10           0.232    0.025    9.298    0.000    0.232    0.656
+   .satis10           0.203    0.028    7.174    0.000    0.203    0.452
+   .nogd10            0.581    0.058   10.110    0.000    0.581    0.814
+   .flgd12            0.145    0.024    6.105    0.000    0.145    0.384
+   .worth12           0.351    0.036    9.743    0.000    0.351    0.730
+   .satis12           0.190    0.028    6.691    0.000    0.190    0.420
+   .nogd12            0.439    0.045    9.843    0.000    0.439    0.757
+
+R-Square:
+                   Estimate
+    flgd08            0.559
+    worth08           0.243
+    satis08           0.488
+    nogd08            0.136
+    flgd10            0.630
+    worth10           0.344
+    satis10           0.548
+    nogd10            0.186
+    flgd12            0.616
+    worth12           0.270
+    satis12           0.580
+    nogd12            0.243</code></pre>
+</div>
+</div>
+<section id="lrt-comparisons-for-partial-model" class="level3" data-number="3.6.1">
+<h3 data-number="3.6.1" class="anchored" data-anchor-id="lrt-comparisons-for-partial-model"><span class="header-section-number">3.6.1</span> LRT Comparisons for Partial Model</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Partial vs. Strong: did freeing two intercepts significantly improve fit?</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lavTestLRT</span>(fit_strong, fit_partial)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Chi-Squared Difference Test
+
+            Df    AIC    BIC  Chisq Chisq diff   RMSEA Df diff Pr(&gt;Chisq)    
+fit_partial 49 4983.5 5124.1 45.691                                          
+fit_strong  51 4993.4 5127.2 59.639     13.949 0.16187       2  0.0009356 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Partial vs. Weak: is partial scalar still more constrained than weak?</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lavTestLRT</span>(fit_partial, fit_weak)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Chi-Squared Difference Test
+
+            Df    AIC    BIC  Chisq Chisq diff RMSEA Df diff Pr(&gt;Chisq)
+fit_weak    45 4990.8 5145.1 45.022                                    
+fit_partial 49 4983.5 5124.1 45.691     0.6689     0       4     0.9551</code></pre>
+</div>
+</div>
+<p><strong>Interpretation of the two tests</strong>:</p>
+<ul>
+<li><strong>Partial vs.&nbsp;Strong</strong>: Should be significant — freeing the two intercepts meaningfully improves fit.</li>
+<li><strong>Partial vs.&nbsp;Weak</strong>: Should be non-significant — the partial model fits equivalently to weak invariance, confirming that the freed intercepts account for the misfit in the strong model.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="model-comparison-summary-1" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="model-comparison-summary-1"><span class="header-section-number">3.7</span> Model Comparison Summary</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>fit_stats <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, label) {</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  fi <span class="ot">&lt;-</span> <span class="fu">fitMeasures</span>(fit, <span class="fu">c</span>(<span class="st">"chisq"</span>,<span class="st">"df"</span>,<span class="st">"pvalue"</span>,<span class="st">"cfi"</span>,<span class="st">"rmsea"</span>,<span class="st">"srmr"</span>))</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">Model =</span> label,</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>             χ2    <span class="ot">=</span> <span class="fu">round</span>(fi[<span class="st">"chisq"</span>], <span class="dv">2</span>),</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">df    =</span> fi[<span class="st">"df"</span>],</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">p     =</span> <span class="fu">round</span>(fi[<span class="st">"pvalue"</span>], <span class="dv">3</span>),</span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">CFI   =</span> <span class="fu">round</span>(fi[<span class="st">"cfi"</span>],   <span class="dv">3</span>),</span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">RMSEA =</span> <span class="fu">round</span>(fi[<span class="st">"rmsea"</span>], <span class="dv">3</span>),</span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">SRMR  =</span> <span class="fu">round</span>(fi[<span class="st">"srmr"</span>],  <span class="dv">3</span>))</span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a><span class="fu">do.call</span>(rbind, <span class="fu">list</span>(</span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_stats</span>(fit_config,  <span class="st">"1. Configural"</span>),</span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_stats</span>(fit_weak,    <span class="st">"2. Weak (Metric)"</span>),</span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_stats</span>(fit_strong,  <span class="st">"3. Strong (Scalar)"</span>),</span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_stats</span>(fit_partial, <span class="st">"4. Partial Scalar"</span>)</span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    Model    χ2 df     p   CFI RMSEA  SRMR
+chisq       1. Configural 40.66 39 0.397 0.998 0.014 0.033
+chisq1   2. Weak (Metric) 45.02 45 0.471 1.000 0.001 0.036
+chisq2 3. Strong (Scalar) 59.64 51 0.190 0.987 0.027 0.042
+chisq3  4. Partial Scalar 45.69 49 0.608 1.000 0.000 0.036</code></pre>
+</div>
+</div>
+<p><strong>Reading the table</strong>:</p>
+<ul>
+<li><strong>CFI &gt; .95</strong> and <strong>RMSEA &lt; .06</strong> indicate acceptable absolute fit at each step.</li>
+<li>Moving from Configural → Weak: <span class="math inline">\(\Delta\)</span>CFI &lt; .01 and non-significant <span class="math inline">\(\Delta\chi^2\)</span> → <strong>weak invariance supported</strong>.</li>
+<li>Moving from Weak → Strong: significant <span class="math inline">\(\Delta\chi^2\)</span> → <strong>full scalar invariance rejected</strong>.</li>
+<li>Moving from Strong → Partial: significant <span class="math inline">\(\Delta\chi^2\)</span> improvement → <strong>partial scalar invariance accepted</strong>.</li>
+<li><strong>Partial scalar</strong> fit comparable to <strong>Weak</strong>: confirms two freed intercepts were the only source of non-invariance.</li>
+</ul>
+<p><strong>Substantive conclusion</strong>: Self-concept as measured by this four-item scale is <strong>partially scalar invariant</strong> across ages 8–12. Three of four item intercepts are stable over time, satisfying the minimum requirement for latent mean comparisons. The freed items (<code>satis08</code> and <code>nogd12</code>) may reflect genuine age-related shifts in how children interpret these specific items — a substantively interesting finding in its own right.</p>
+<hr>
+</section>
+</section>
+<section id="session-information" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Session Information</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.5.1 (2025-06-13)
+Platform: aarch64-apple-darwin20
+Running under: macOS Sonoma 14.4
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/New_York
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] lavaan_0.6-19      dplyr_1.1.4        performance_0.15.2 psych_2.5.3       
+ [5] ggplot2_4.0.0      interactions_1.2.0 nlme_3.1-168       lmerTest_3.1-3    
+ [9] lme4_1.1-37        Matrix_1.7-3      
+
+loaded via a namespace (and not attached):
+ [1] gtable_0.3.6        xfun_0.53           htmlwidgets_1.6.4  
+ [4] insight_1.4.2       lattice_0.22-7      numDeriv_2016.8-1.1
+ [7] quadprog_1.5-8      vctrs_0.6.5         tools_4.5.1        
+[10] Rdpack_2.6.4        generics_0.1.4      stats4_4.5.1       
+[13] parallel_4.5.1      tibble_3.3.0        pkgconfig_2.0.3    
+[16] RColorBrewer_1.1-3  S7_0.2.0            lifecycle_1.0.4    
+[19] compiler_4.5.1      farver_2.1.2        mnormt_2.1.1       
+[22] codetools_0.2-20    htmltools_0.5.8.1   yaml_2.3.10        
+[25] pillar_1.11.0       furrr_0.3.1         nloptr_2.2.1       
+[28] tidyr_1.3.1         MASS_7.3-65         broom.mixed_0.2.9.6
+[31] reformulas_0.4.1    boot_1.3-31         parallelly_1.44.0  
+[34] tidyselect_1.2.1    digest_0.6.37       future_1.49.0      
+[37] purrr_1.1.0         pander_0.6.6        listenv_0.9.1      
+[40] labeling_0.4.3      forcats_1.0.0       splines_4.5.1      
+[43] fastmap_1.2.0       grid_4.5.1          cli_3.6.5          
+[46] magrittr_2.0.4      pbivnorm_0.6.0      broom_1.0.9        
+[49] withr_3.0.2         scales_1.4.0        jtools_2.3.1       
+[52] backports_1.5.0     rmarkdown_2.29      globals_0.18.0     
+[55] gridExtra_2.3       evaluate_1.0.5      knitr_1.50         
+[58] rbibutils_2.3       mgcv_1.9-3          rlang_1.1.6        
+[61] Rcpp_1.1.0          glue_1.8.0          minqa_1.2.8        
+[64] jsonlite_2.0.0      R6_2.6.1           </code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/crystalbell98\.github\.io\/HPD685-Notes");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

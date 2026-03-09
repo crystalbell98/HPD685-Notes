@@ -1,337 +1,337 @@
-# 统计模型笔记
+# Statistical Modeling Notes
 
 ---
 
-## 一、普通最小二乘回归 (OLS Regression)
+## 1. Ordinary Least Squares Regression (OLS Regression)
 
-### 1.1 原理
+### 1.1 Principles
 
-OLS 回归研究连续型因变量 $y$ 与自变量 $x$ 之间的线性关系，核心是**最小二乘法**：寻找一组参数使所有观测点到拟合直线的残差平方和最小。
+OLS regression examines the linear relationship between a continuous dependent variable $y$ and independent variables $x$. The core method is the **method of least squares**: finding a set of parameters that minimizes the sum of squared residuals from all observations to the fitted line.
 
-### 1.2 公式
+### 1.2 Formula
 
 $$y_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip} + \epsilon_i \qquad \Leftrightarrow \qquad Y = X\beta + \epsilon$$
 
-- **$y_i$**：第 $i$ 个观测的因变量值
-- **$\beta_0$**：截距项
-- **$\beta_1, \ldots, \beta_p$**：自变量的偏回归系数
-- **$x_{i1}, \ldots, x_{ip}$**：第 $i$ 个观测的各自变量值
-- **$\epsilon_i$**：误差项（残差）
+- **$y_i$**: the value of the dependent variable for the $i$-th observation
+- **$\beta_0$**: the intercept term
+- **$\beta_1, \ldots, \beta_p$**: partial regression coefficients for the independent variables
+- **$x_{i1}, \ldots, x_{ip}$**: values of each independent variable for the $i$-th observation
+- **$\epsilon_i$**: the error term (residual)
 
-### 1.3 核心假设 (LINE)
+### 1.3 Core Assumptions (LINE)
 
-OLS 有效性依赖 **Gauss-Markov 假设**，用 **LINE** 助记：
+The validity of OLS depends on the **Gauss-Markov assumptions**, remembered by the mnemonic **LINE**:
 
-- **L — 线性 (Linearity)**：$E[y|x]$ 与 $x$ 之间为严格线性关系
-- **I — 独立性 (Independence)**：$\epsilon_i$ 之间无自相关（Autocorrelation）
-- **N — 正态性 (Normality)**：$\epsilon \sim N(0, \sigma^2)$，假设检验（t/F）时尤为关键
-- **E — 同方差性 (Homoscedasticity)**：$\text{Var}(\epsilon_i) = \sigma^2$，与 $x$ 取值无关
-- **(附加) 无多重共线性**：自变量间不存在高度相关，否则参数方差急剧增大
+- **L — Linearity**: $E[y|x]$ is strictly linear in $x$
+- **I — Independence**: the $\epsilon_i$ are free of autocorrelation
+- **N — Normality**: $\epsilon \sim N(0, \sigma^2)$; particularly critical for hypothesis testing (t/F tests)
+- **E — Equal variance (Homoscedasticity)**: $\text{Var}(\epsilon_i) = \sigma^2$, constant across all values of $x$
+- **(Additional) No multicollinearity**: the independent variables are not highly correlated with one another; severe collinearity inflates parameter variances dramatically
 
-### 1.4 异方差性 (Heteroscedasticity)
+### 1.4 Heteroscedasticity
 
-> 违背同方差假设时，误差的波动范围随自变量变化而变大或变小（最常见的是呈"喇叭状"扩散）。
+> When the homoscedasticity assumption is violated, the spread of the errors grows or shrinks as the independent variable changes (the most common pattern is a "fan-shaped" or "funnel-shaped" dispersion).
 
-**成因：**
+**Sources:**
 
-- **数据量级跨度大**：收入↑ → 消费支出方差↑（低收入群体支出相对固定）
-- **遗漏重要变量**：被遗漏变量的影响被挤入残差，若其与某自变量相关则残差方差随之变化
-- **函数形式错误**：真实关系为指数/幂律却强行线性拟合，偏差随 $x$ 呈几何级数增大
-- **异常值**：极端样本点拉扯回归线，破坏局部方差齐性
-- **测量误差变化**：测量对象越大，绝对误差越大（相对误差稳定但残差不稳定）
+- **Large scale differences in the data**: as income rises, the variance of consumption expenditure also rises (lower-income groups have relatively fixed expenditure)
+- **Omitted important variables**: the influence of omitted variables is absorbed into the residuals; if those omitted variables are correlated with a predictor, the residual variance changes systematically
+- **Misspecified functional form**: when the true relationship is exponential or follows a power law but is forced into a linear fit, the bias increases geometrically with $x$
+- **Outliers**: extreme observations pull the regression line and disrupt local variance homogeneity
+- **Changing measurement error**: larger objects of measurement produce larger absolute errors (relative error may be stable, but residuals are not)
 
-**后果：**
+**Consequences:**
 
-- ✅ **系数估计依然无偏**：$\hat{\beta}$ 方向仍对，趋势线大体正确
-- ❌ **OLS 不再是 BLUE**：失去最小方差性，不再是最佳线性无偏估计量
-- ❌ **标准误计算错误**：传统 OLS 公式严重低估系数的 SE
-- ❌ **假设检验完全失效**：$t = \hat{\beta}/SE$ 被虚假放大，$p$ 值偏小，**第一类错误（Type I Error / 假阳性）**风险激增，置信区间虚假收窄
+- ✅ **Coefficient estimates remain unbiased**: $\hat{\beta}$ still points in the correct direction; the general trend is preserved
+- ❌ **OLS is no longer BLUE**: it loses the minimum-variance property and is no longer the Best Linear Unbiased Estimator
+- ❌ **Standard errors are incorrectly estimated**: the conventional OLS formula severely underestimates the SE of the coefficients
+- ❌ **Hypothesis tests are completely invalidated**: $t = \hat{\beta}/SE$ is artificially inflated, $p$-values are too small, the risk of **Type I Error (false positives)** increases sharply, and confidence intervals are spuriously narrow
 
 ---
 
-## 二、标准方差分析 (Standard ANOVA)
+## 2. Standard ANOVA
 
-### 2.1 原理
+### 2.1 Principles
 
-ANOVA 用于比较三个或以上总体均值是否完全相等。**本质上，ANOVA 是自变量全为分类变量的特殊 OLS 回归。**
+ANOVA is used to test whether three or more population means are all equal. **In essence, ANOVA is a special case of OLS regression in which all independent variables are categorical.**
 
-核心思想：将总变异拆分为两部分，通过 **F 统计量**（二者之比）判断组间差异是否显著大于随机误差：
+The central idea is to partition the total variation into two components and use the **F-statistic** (the ratio of the two) to determine whether the between-group differences are significantly larger than random error:
 
-- **组间方差 (Between-group variance)**：由不同处理或分类引起的变异
-- **组内方差 (Within-group variance / Error)**：由随机误差引起的变异
+- **Between-group variance**: variation attributable to different treatments or categories
+- **Within-group variance (Error)**: variation attributable to random error
 
-### 2.2 公式
+### 2.2 Formula
 
-单因素方差分析（One-way ANOVA）：
+One-way ANOVA:
 
 $$y_{ij} = \mu + \alpha_i + \epsilon_{ij}$$
 
-- **$y_{ij}$**：第 $i$ 组（处理）中第 $j$ 个观测值
-- **$\mu$**：所有组的总体总均值
-- **$\alpha_i$**：第 $i$ 组的处理效应（$= \mu_i - \mu$）
-- **$\epsilon_{ij}$**：随机误差项
+- **$y_{ij}$**: the $j$-th observation in group (treatment) $i$
+- **$\mu$**: the overall grand mean across all groups
+- **$\alpha_i$**: the treatment effect for group $i$ ($= \mu_i - \mu$)
+- **$\epsilon_{ij}$**: the random error term
 
-### 2.3 核心假设
+### 2.3 Core Assumptions
 
-- **独立性**：样本随机抽取，各组内及组间观测值相互独立
-- **正态性**：每组内总体数据服从正态分布（或残差服从正态分布）
-- **方差齐性 (Homogeneity of Variance)**：所有比较组的总体方差必须相等（即 OLS 同方差性在分类变量下的体现）；若方差不齐，改用 **Welch's ANOVA**
+- **Independence**: samples are drawn randomly; observations within and across groups are mutually independent
+- **Normality**: data within each group follow a normal distribution (equivalently, residuals are normally distributed)
+- **Homogeneity of Variance**: the population variances of all comparison groups must be equal (the homoscedasticity assumption of OLS expressed in the context of categorical predictors); if variances are unequal, use **Welch's ANOVA** instead
 
 ---
 
-## 三、Gamma 分布与 Gamma GLM
+## 3. Gamma Distribution and Gamma GLM
 
-### 3.1 Gamma vs. Poisson：硬币的两面
+### 3.1 Gamma vs. Poisson: Two Sides of the Same Coin
 
-> **核心区别**：Poisson 描述**离散整数**（数个数），Gamma 描述**连续正实数**（量时间或金额）。两者都源于同一随机过程——**泊松过程 (Poisson Process)**。
+> **Key distinction**: Poisson describes **discrete integers** (counting events), while Gamma describes **continuous positive real numbers** (measuring time or monetary amounts). Both arise from the same underlying stochastic process — the **Poisson process**.
 
-以公交车站为例：
+Using a bus stop as an illustration:
 
-- **Poisson 分布（问"多少次"）**：固定 1 小时，数这段时间内来了多少辆公交车 → 结果只能是 0, 1, 2, 3 等整数
-- **Gamma 分布（问"等多久"）**：按下秒表，等到第 $k$ 辆公交车进站总共需要多少时间 → 结果是 15.2 分钟、43.78 分钟等大于 0 的连续实数
+- **Poisson distribution (asking "how many?")**: fix a 1-hour window and count how many buses arrive during that period → the result can only be an integer: 0, 1, 2, 3, …
+- **Gamma distribution (asking "how long?")**: start a stopwatch and measure the total time until the $k$-th bus arrives → the result is a continuous positive real number such as 15.2 minutes or 43.78 minutes
 
-**数学联系**：如果事件发生服从 Poisson 分布，那么等待多个事件发生所需的时间就服从 Gamma 分布。（特例：只等一个事件的等待时间 = **指数分布 Exponential distribution**，是 Gamma 的特殊情形）
+**Mathematical relationship**: if events occur according to a Poisson process, the time required to wait for multiple events follows a Gamma distribution. (Special case: the waiting time for a single event follows an **Exponential distribution**, which is a special case of the Gamma.)
 
-### 3.2 Gamma GLM 的适用场景
+### 3.2 When to Use Gamma GLM
 
-Gamma GLM 专门用于处理同时满足以下三个条件的因变量 $y$：
+Gamma GLM is designed for dependent variables $y$ that simultaneously satisfy all three of the following conditions:
 
-- **连续型数值**：不是整数计数，而是带有小数的连续量
-- **严格为正 (Strictly Positive)**：$y > 0$，不能为负，通常也不能为 0
-- **长尾/右偏 (Right-skewed) 且方差不齐**：大部分数值集中在较小区域，少数极大值拖出长尾；且**随着均值的增大，数据的方差呈平方级增大**（均值越大的群体，内部差异越悬殊）
+- **Continuous numeric values**: not integer counts, but continuous quantities that can take decimal values
+- **Strictly positive**: $y > 0$; values cannot be negative, and typically cannot be zero
+- **Long-tailed/right-skewed and heteroscedastic**: the majority of values are concentrated in a small range while a small number of extreme large values produce a long right tail; moreover, **as the mean increases, the variance grows quadratically** (groups with larger means exhibit far greater internal variability)
 
-**经典业务场景：**
+**Classic application domains:**
 
-- **保险理赔金额**：大多数理赔是小额刮蹭，但偶有巨额理赔（极端长尾）；且赔付均值越高的险种，波动往往越大
-- **医疗花费或住院时间**：大部分人看病花钱少、住院短，少数重症患者花费极高、时间极长
+- **Insurance claim amounts**: most claims are small (minor scrapes and dents), but occasional catastrophic claims generate an extreme right tail; furthermore, insurance lines with higher average payouts tend to have greater volatility
+- **Medical expenditure or length of hospital stay**: most patients incur modest costs and have short stays, while a small number of severely ill patients incur extremely high costs over extended periods
 
-### 3.3 公式与连接函数 (Link Function)
+### 3.3 Formula and Link Function
 
-Gamma 分布的期望（均值）记为 $\mu$。在 Gamma GLM 中：
+The expected value (mean) of the Gamma distribution is denoted $\mu$. In Gamma GLM:
 
-- **典型连接函数（Canonical Link）— 倒数函数 (Inverse Link)**：
+- **Canonical Link — Inverse (Reciprocal) Link**:
 
 $$\frac{1}{\mu} = \beta_0 + \beta_1 x_1 + \cdots + \beta_p x_p$$
 
-- **实践中更常用 — 对数函数 (Log Link)**（保证预测均值 $\mu$ 永远为正数，与 Poisson 回归借用相同连接函数，这也是两者容易混淆的原因之一）：
+- **The overwhelmingly preferred choice in practice — Log Link** (ensures the predicted mean $\mu$ is always positive; shares the same link function as Poisson regression, which is one reason the two are sometimes confused):
 
 $$\ln(\mu) = \beta_0 + \beta_1 x_1 + \cdots + \beta_p x_p$$
 
 ---
 
-## 四、GLM 连接函数深度解析
+## 4. Deep Dive: Link Functions in GLM
 
-### 4.1 为什么 Gamma 和 Poisson 都用 Log Link？
+### 4.1 Why Do Both Gamma and Poisson Use the Log Link?
 
-Gamma 和 Poisson 预测的目标值（均值 $\mu$）都有一个共同的严格限制：**必须大于 0**。Log Link 是保证这一点的最自然方式：
+The target quantity being predicted (the mean $\mu$) in both Gamma and Poisson models shares a common strict constraint: **it must be greater than zero**. The Log Link is the most natural way to enforce this:
 
 $$\ln(\mu) = X\beta \quad \Rightarrow \quad \mu = e^{X\beta}$$
 
-无论 $X\beta$ 算出什么正负值，取指数后预测值 $\mu = e^{X\beta}$ **永远大于 0**。
+No matter what positive or negative value $X\beta$ takes, the predicted value $\mu = e^{X\beta}$ **is always greater than zero**.
 
-**Poisson 的 Link：**
+**Poisson link:**
 
-- **标准 Link — Log**：$\ln(\mu) = X\beta$
-- **为什么？** $X\beta$ 可以是任意实数，两边取指数后，预测值 $\mu = e^{X\beta}$ 永远大于 0，完美符合计数数据非负的特性
+- **Standard link — Log**: $\ln(\mu) = X\beta$
+- **Why?** $X\beta$ can take any real value; exponentiating both sides guarantees $\mu = e^{X\beta} > 0$, perfectly consistent with the non-negativity requirement of count data
 
-**Gamma 的 Link：**
+**Gamma link:**
 
-- **理论标准（Canonical Link）— Inverse（倒数）**：$1/\mu = X\beta$；但实战中极少用，因为如果 $X\beta$ 为负数，预测出的均值就成负数了，违背了 Gamma 分布必须大于 0 的前提
-- **实战中的绝对主流 — Log**：$\ln(\mu) = X\beta$，同样是为了保预测值永为正数；同时，Log Link 会把加法效应转化为**乘数效应（百分比变化）**，这在解释上非常有意义（见血液标志物解释）
+- **Theoretical canonical link — Inverse (Reciprocal)**: $1/\mu = X\beta$; rarely used in practice because if $X\beta$ is negative the implied mean becomes negative, violating the Gamma distribution's requirement that values be strictly positive
+- **Dominant choice in practice — Log**: $\ln(\mu) = X\beta$; ensures predicted values are always positive; additionally, the Log Link converts additive effects into **multiplicative effects (percentage changes)**, which is substantively meaningful for interpretation (see the blood biomarker discussion below)
 
-### 4.2 为什么用 Poisson 替换 Logistic 能生成更有意义的 Risk Ratio？
+### 4.2 Why Does Substituting Poisson for Logistic Regression Yield More Meaningful Risk Ratios?
 
-> 这是流行病学和医学统计中极经典的技巧，通常称为 **Modified Poisson Regression / 修正泊松回归**。
+> This is a classic technique in epidemiology and medical statistics, commonly known as **Modified Poisson Regression**.
 
-#### Logistic 回归的"痛点"：OR 在高发病率时严重夸大 RR
+#### The "Pain Point" of Logistic Regression: OR Severely Overestimates RR at High Prevalence
 
-Logistic 回归天然只能输出 OR（Odds Ratio，优势比/几率比），而医生和大众更想听到的词是 **RR（Relative Risk，相对风险）**：
+Logistic regression inherently produces only OR (Odds Ratio), whereas clinicians and the general public think in terms of **RR (Relative Risk)**:
 
-- 当疾病**极罕见（发生率 < 10%）**时，OR 和 RR 数值差异不大
-- 当疾病**常见（发生率 > 10%）**时，OR 会**严重夸大**实际的 RR。例：
-  - 真实 RR（相对风险）= 80% / 40% = **2.0**（治愈率翻了一倍，很好理解）
-  - Logistic 算出 OR = (0.8/0.2) / (0.4/0.6) = 4 / 0.67 = **6.0**
-  - 发表论文说"吃药让治愈几率提高 6 倍"就是在误导读者
+- When a disease is **very rare (incidence < 10%)**, the numerical difference between OR and RR is negligible
+- When a disease is **common (incidence > 10%)**, OR **severely overestimates** the true RR. For example:
+  - True RR (Relative Risk) = 80% / 40% = **2.0** (cure rate doubled — easy to understand)
+  - Logistic regression gives OR = (0.8/0.2) / (0.4/0.6) = 4 / 0.67 = **6.0**
+  - Reporting that "the medication increased the odds of cure by 6-fold" is misleading to readers
 
-#### Poisson 如何解决这个问题？
+#### How Does Poisson Solve This Problem?
 
-把二分类数据（0 和 1）强行塞进带有 Log Link 的广义线性模型中：
+By fitting binary outcome data (0 and 1) through a generalized linear model with a Log Link:
 
 $$\ln(p) = \beta_0 + \beta_1 x$$
 
-两边取指数：$p = e^{\beta_0} \cdot e^{\beta_1 x}$。此时自变量 $x$ 对应的系数 $e^{\beta_1}$ 在统计学意义上**直接就是 RR（Risk Ratio）**！
+Exponentiating both sides: $p = e^{\beta_0} \cdot e^{\beta_1 x}$. The exponentiated coefficient $e^{\beta_1}$ for predictor $x$ is **directly interpretable as the RR (Risk Ratio)** in a statistical sense.
 
-> **注意**：因为二分类数据不符合泊松分布的方差假设，直接跑 Poisson 回归算出来的 P 值和置信区间会变窄。所以必须在软件里勾选（或写了代码）**"Robust Standard Errors（稳健标准误/三明治方差估计）"**。这就是著名的 Zou (2004) 提出的经典解法。
+> **Note**: Because binary data do not satisfy the variance assumptions of the Poisson distribution, running a straight Poisson regression on 0/1 outcomes will produce p-values and confidence intervals that are too narrow. Therefore, **Robust Standard Errors (sandwich variance estimator)** must be specified in the software. This is the classic solution proposed by Zou (2004).
 
-### 4.3 为什么研究血液标志物时要用 Log-Gamma？
+### 4.3 Why Use Log-Gamma When Studying Blood Biomarkers?
 
-**血液标志物完美契合 Gamma 分布的三个特征：**
+**Blood biomarkers fit the three defining characteristics of a Gamma distribution perfectly:**
 
-- **严格非负且高度右偏**：健康人血液标志物浓度通常维持在极低水平（如 CRP 在 1–3 mg/L），但一旦发炎或生病，浓度不是增加几点，而是几十倍、上百倍地暴增（比如飙升到 100–300 mg/L）。数据在左侧高度右倾，在右侧拖出一条极长的尾巴，普通 OLS 遭遇灭灭性打击
-- **方差随着均值的增大而急剧增大（$\text{Var} \propto \mu^2$）**：健康人群 CRP 都在 1–3 mg/L，个体差异极小（方差小）；但重度感染病房里的患者 CRP 可能是 50，也可能是 250，患者之间个体差异极其巨大（方差大）。均值越大，方差平方级放大，这正是 Gamma 分布的绝对强项
-- **为什么是 "Log"-Gamma（乘法效应符合生物学直觉）**：在使用了 Log Link 的 Gamma 回归中（$\ln(\mu) = X\beta$），系数代表的是**乘数效应（百分比变化）**：
-  - 如果是普通加法模型：会解释为"每增加一岁，标志物浓度增加 2 mg/L"。这在生物上不合理，因为基数为 1 的人增加 2 是翻倍，基数为 100 的人增加 2 毫无波澜
-  - 如果是 Log-Gamma 模型：系数会被解释为"每增加一岁，标志物浓度增加 5%"。在人体的生化代谢、酶促反应和药物动力学中，浓度变化绝大多数都是以比例/指数（乘法）形式呈现的
+- **Strictly non-negative and highly right-skewed**: blood biomarker concentrations in healthy individuals are typically maintained at very low levels (e.g., CRP at 1–3 mg/L), but when inflammation or illness occurs, concentrations do not increase by a few points — they surge tens or hundreds of times over (e.g., spiking to 100–300 mg/L). The data are highly concentrated on the left with an extremely long right tail, which is catastrophic for ordinary OLS
+- **Variance increases sharply as the mean increases ($\text{Var} \propto \mu^2$)**: CRP concentrations in healthy individuals cluster around 1–3 mg/L with very little individual variation (small variance); but in a severe infection ward, one patient's CRP may be 50 while another's is 250, with enormous inter-individual variability (large variance). As the mean grows, variance scales quadratically — this is precisely where the Gamma distribution excels
+- **Why "Log"-Gamma (multiplicative effects align with biological intuition)**: in a Gamma regression with a Log Link ($\ln(\mu) = X\beta$), the coefficients represent **multiplicative effects (percentage changes)**:
+  - Under an ordinary additive model: the interpretation would be "each additional year of age increases biomarker concentration by 2 mg/L." This is biologically implausible — an increase of 2 from a baseline of 1 is a doubling, whereas an increase of 2 from a baseline of 100 is negligible
+  - Under a Log-Gamma model: the coefficient is interpreted as "each additional year of age increases biomarker concentration by 5%." In human biochemical metabolism, enzyme kinetics, and pharmacokinetics, concentration changes almost universally follow proportional (multiplicative) patterns
 
-> **总结**：研究血液标志物时，Gamma 分布精准拿捏了数据的长尾和异方差特性，而 Log 连接函数保证了浓度不为负，并且提供了符合人体生理学规律的"百分比/倍数"解释。这就是为什么 Log-Gamma 是处理这类数据的黄金标准。
-
----
-
-## 五、GLM 的"线性"究竟是什么意思？
-
-**答案**：在原始数据的视觉表现上，GLM 是非线性的（弯曲的）；但在数学方程的核心引擎上，它们是纯粹的线性模型。
-
-- **视觉上的非线性（现实空间）**：把逻辑回归（S 型曲线）、泊松回归（指数增长曲线）画在坐标轴上，因变量 $Y$ 和自变量 $X$ 之间的关系绝对是一条弯曲的线。从最终预测结果来看，它们处理的是非线性关系
-
-- **数学上的线性（参数空间）**：为什么还要叫它"线性"模型呢？因为在等号的右边，**参数（$\beta$）和自变量（$X$）的组合方式是严格的线性相加**：
-
-$$\text{线性预测器} = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots$$
-
-所谓"广义线性"，就是指模型虽然通过**连接函数（Link Function）**把弯曲的现实数据给"掰直"了（比如取 Log 或者 Logit），但在被掰直后的那个维度里，我们实际拟合的核心方程依然是最熟悉的直线方程。
-
-> **总结**：GLM 是披着"非线性"外衣的"线性"模型。它极其聪明地用一个数学转换（Link Function），保住了线性方程计算简单、容易解释的巨大优势，同时又解决了非线性数据的拟合问题。
+> **Summary**: When studying blood biomarkers, the Gamma distribution precisely captures the long-tailed and heteroscedastic nature of the data, the Log link function guarantees that predicted concentrations are always positive, and the resulting coefficients provide "percentage/fold-change" interpretations that align with human physiology. This is why Log-Gamma is the gold standard for this type of data.
 
 ---
 
-## 六、二分类结局稀少时，还需要 Modified Poisson 吗？
+## 5. What Does "Linear" Mean in GLM?
 
-**结论**：在软件里确实可以跑得通，但从统计学和实战角度来说——**完全没必要，甚至不推荐**。
+**Answer**: In terms of visual appearance in the original data space, GLMs are nonlinear (curved); but at the core of the mathematical equations, they are purely linear models.
 
-### 6.1 罕见病假设 (Rare Disease Assumption)
+- **Visually nonlinear (in the natural data space)**: plotting logistic regression (an S-shaped curve) or Poisson regression (an exponential growth curve) on coordinate axes reveals that the relationship between the dependent variable $Y$ and the independent variable $X$ is unambiguously curved. In terms of the final predictions, these models accommodate nonlinear relationships
 
-在流行病学中有一个铁律：**当结局事件发生率很低时，OR 值在数学上会无限逼近 RR 值（$OR \approx RR$）**。
+- **Mathematically linear (in the parameter space)**: why, then, are they still called "linear" models? Because on the right-hand side of the equation, **the parameters ($\beta$) and the independent variables ($X$) are combined in a strictly additive linear fashion**:
 
-- **推导逻辑**：几率 $\text{Odds} = \frac{p}{1-p}$。如果发病率 $p$ 极小（比如 0.01），那么分母 $1-p$ 就极其接近 1，此时 $\text{Odds} \approx p$。因此，两个 Odds 的比值（OR）也就等于两个概率的比值（RR）
-- **实战意义**：既然结局稀少时 OR 就等于 RR，你直接用最经典、最原汁原味的 Logistic 回归算出 OR，然后直接把它当成 RR 来向临床医生解释就可以了，完全不需要绕弯子去用 Modified Poisson
+$$\text{Linear predictor} = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots$$
 
-### 6.2 Modified Poisson 的潜在隐患
+The term "generalized linear" means that although the model uses a **link function** to "straighten out" the curved real-world data (e.g., by taking the Log or Logit), in the transformed space — after the data have been linearized — the core equation being fitted is still the familiar straight-line equation.
 
-如果强行对稀少结局使用 Modified Poisson，反而可能引入一些麻烦：
-
-- **收敛问题 (Convergence Issues)**：Logistic 回归是专门为二分类数据"量身定制"的，它的最大似然估计（MLE）算法在处理稀少 0/1 数据时非常稳定。而 Poisson 回归本质上是为"计数（0, 1, 2, 3…）"设计的，你强行塞给它一堆全都是 0（极少数是 1）的数据，某些统计软件在迭代计算时可能会报错或无法收敛
-- **边界溢出风险**：Logistic 的 Logit 连接函数自带"安全锁"，能保证预测出的概率永远在 0 到 1 之间。而 Poisson 的 Log 连接函数是没有上限的，虽然对于稀少事件预测值很难超过 1，但在极端情况下（或者自变量有很多极端值时），数学上存在预测出"发病概率 > 1（即 100%）"这种荒谬结果的风险
-
-### 6.3 实战建议
-
-下次做数据分析时，先看一下你的二分类结局（Y=1）的发生比例：
-
-- **发生率 > 10%**：使用 **Modified Poisson**（记得加 Robust 稳健标准误）来计算 RR
-- **发生率 < 10%**：直接踏踏实实用 **Logistic 回归**，算出 OR，放心地把它当 RR 来解读
+> **Summary**: A GLM is a "linear" model in "nonlinear" clothing. It cleverly uses a mathematical transformation (the link function) to retain the computational simplicity and interpretive clarity of linear equations, while simultaneously solving the problem of fitting nonlinear data.
 
 ---
 
-## 七、OLS 的解析解 vs. GLM 的迭代数值解
+## 6. Is Modified Poisson Regression Necessary for Rare Binary Outcomes?
 
-### 7.1 OLS：一步到位的解析解 (Closed-form Solution)
+**Conclusion**: it is technically feasible in software, but from both a statistical and practical standpoint — **it is entirely unnecessary and is in fact not recommended**.
 
-OLS 的唯一目标是让所有观测点到回归直线的垂直距离（残差）的平方和最小。
+### 6.1 The Rare Disease Assumption
 
-因为 OLS 假设因变量是连续的、且恒定方差（同方差性），其数学公式极其优美。在矩阵代数中，求最小残差平方和相当于求一个抛物线的最低点，直接对参数求导并令其为 0 即可。它可以**直接用一个固定的公式算出精确答案**，无需任何试错：
+A fundamental principle in epidemiology states: **when the event rate is low, the OR converges mathematically to the RR ($OR \approx RR$)**.
+
+- **Derivation**: $\text{Odds} = \frac{p}{1-p}$. If the incidence $p$ is very small (e.g., 0.01), then the denominator $1-p$ is extremely close to 1, so $\text{Odds} \approx p$. Consequently, the ratio of two odds (OR) approximates the ratio of two probabilities (RR)
+- **Practical implication**: since OR equals RR when outcomes are rare, one can simply apply the classic, well-established Logistic regression to obtain an OR and interpret it directly as an RR when communicating with clinicians — no need to take the roundabout route of Modified Poisson
+
+### 6.2 Potential Pitfalls of Modified Poisson
+
+Forcing Modified Poisson on rare outcomes may introduce problems:
+
+- **Convergence issues**: Logistic regression is purpose-built for binary data; its maximum likelihood estimation (MLE) algorithm is highly stable when processing sparse 0/1 data. Poisson regression is fundamentally designed for count data (0, 1, 2, 3, …); forcing it to handle data consisting almost entirely of zeros (with very few ones) may cause certain statistical software packages to produce errors or fail to converge
+- **Boundary overflow risk**: the Logit link in Logistic regression acts as a built-in "safety lock," guaranteeing that all predicted probabilities remain within [0, 1]. The Log link in Poisson regression has no upper bound; although predicted values are unlikely to exceed 1 for rare events, in extreme scenarios (or when some predictors take extreme values), it is mathematically possible for the model to predict an "event probability > 1 (i.e., > 100%)," which is an absurd result
+
+### 6.3 Practical Recommendations
+
+Before analyzing binary outcome data, first examine the proportion of events (Y = 1):
+
+- **Event rate > 10%**: use **Modified Poisson** (with Robust standard errors) to estimate RR
+- **Event rate < 10%**: use the straightforward **Logistic regression**, compute the OR, and interpret it confidently as an approximation of RR
+
+---
+
+## 7. OLS Closed-Form Solution vs. GLM Iterative Numerical Solution
+
+### 7.1 OLS: A One-Step Closed-Form Solution
+
+The sole objective of OLS is to minimize the sum of squared vertical distances (residuals) from all observations to the regression line.
+
+Because OLS assumes a continuous dependent variable with constant variance (homoscedasticity), its mathematical formulation is elegant. In matrix algebra, minimizing the sum of squared residuals is equivalent to finding the minimum of a paraboloid — one simply differentiates with respect to the parameters, sets the derivative to zero, and solves. The exact answer can be **computed directly from a single fixed formula, with no iteration required**:
 
 $$\hat{\beta} = (X^T X)^{-1} X^T Y$$
 
-> **注**：只要自变量之间没有完全的多重共线性（即矩阵 $X^TX$ 可逆），计算机只需要做一次矩阵乘法和求逆运算，就能瞬间给出 $\beta$ 的精确值。
+> **Note**: as long as there is no perfect multicollinearity among the predictors (i.e., the matrix $X^TX$ is invertible), the computer performs a single matrix multiplication and inversion to obtain the exact value of $\beta$ instantaneously.
 
-### 7.2 GLM：最大似然估计与迭代法 (MLE + IRLS)
+### 7.2 GLM: Maximum Likelihood Estimation and Iterative Methods (MLE + IRLS)
 
-广义线性模型（如 Logistic、Poisson、Gamma）面对的是非正态分布、非线性连接函数、且方差会随着均值变化的数据。这时候，最小二乘法的那个完美公式就失效了。
+Generalized linear models (such as Logistic, Poisson, and Gamma) deal with data that are non-normally distributed, involve nonlinear link functions, and have variances that change with the mean. In this setting, the elegant closed-form formula of least squares breaks down.
 
-#### 核心思想 — 最大似然估计 (Maximum Likelihood Estimation, MLE)
+#### Core Idea — Maximum Likelihood Estimation (MLE)
 
-GLM 不再追求"误差平方和最小"，而是追求**"让当前这组数据发生的概率（似然度）达到最大"**。它会问：参数 $\beta$ 取何值时，我们手头观察到的这批数据最有可能出现？
+Rather than minimizing the sum of squared errors, GLM seeks to **maximize the probability (likelihood) of observing the data at hand**. It asks: for what value of the parameter $\beta$ would the observed data be most likely to occur?
 
-#### 求解过程 — 迭代重加权最小二乘法 (IRLS)
+#### Solution Method — Iteratively Reweighted Least Squares (IRLS)
 
-因为引入了复杂的连接函数（如 Logit 或 Log），似然函数变得极其复杂，**没有像 OLS 那样一步到位的公式（没有解析解）**。计算机必须使用数值优化算法（通常是 Iteratively Reweighted Least Squares，IRLS，或牛顿-拉夫逊法 Newton-Raphson）来进行"盲人摸象"式的迭代寻优：
+Because complex link functions (such as Logit or Log) are involved, the likelihood function becomes highly complex, and **there is no closed-form formula analogous to OLS**. The computer must employ a numerical optimization algorithm — typically Iteratively Reweighted Least Squares (IRLS), or equivalently the Newton-Raphson method — to search iteratively for the optimum:
 
-- **第 1 步（瞎猜一个起点）**：计算机先给参数 $\beta$ 随便猜一组初始值（比如全设为 0）
-- **第 2 步（计算权重与误差）**：根据当前的 $\beta$ 值和选定的连接函数，计算出每个样本的预测值。由于 GLM 中数据的方差随均值变化，计算机会给方差小（更确定）的样本赋予**更大的权重（Weight）**
-- **第 3 步（修正方向）**：利用加权后的误差，算出似然函数在当前位置的"坡度（梯度）"，朝着能让似然度变大的方向迈出一步，更新 $\beta$ 的值
-- **第 4 步（循环往复）**：用新的 $\beta$ 重新计算权重（所以叫"迭代重加权"），再次修正方向
-- **第 5 步（收敛 Convergence）**：当连续两次计算出的 $\beta$ 值几乎不再变化（比如相差小于 0.0001），计算机就认为自己找到了山顶（最大似然点），宣布**模型收敛**，停止计算并输出结果
+- **Step 1 (initial guess)**: the computer assigns an arbitrary starting value to $\beta$ (e.g., all zeros)
+- **Step 2 (compute weights and residuals)**: based on the current $\beta$ and the chosen link function, the predicted value for each observation is computed. Because the variance in a GLM changes with the mean, observations with smaller variance (greater certainty) are assigned **larger weights**
+- **Step 3 (update direction)**: using the weighted residuals, the gradient of the likelihood function at the current point is computed, and $\beta$ is updated by stepping in the direction that increases the likelihood
+- **Step 4 (repeat)**: the new $\beta$ is used to recompute the weights (hence "iteratively reweighted"), and the direction is updated again
+- **Step 5 (convergence)**: when successive estimates of $\beta$ differ by a negligible amount (e.g., less than 0.0001), the computer concludes that it has reached the maximum of the likelihood function, declares **model convergence**, halts the computation, and reports the results
 
 ---
 
-## 八、设计矩阵（Design Matrix）
+## 8. Design Matrix
 
-### 8.1 核心概念
+### 8.1 Core Concept
 
-多元回归用矩阵形式统一表达：$Y' = X\hat{\beta}$
+Multiple regression is expressed compactly in matrix form as: $Y' = X\hat{\beta}$
 
-- **$Y'$**：预测值构成的列向量
-- **$X$（设计矩阵，Design Matrix）**：包含截距列（全为 1）和所有自变量观测值的矩阵
-- **$\hat{\beta}$**：回归系数估计向量
+- **$Y'$**: a column vector of predicted values
+- **$X$ (Design Matrix)**: a matrix containing a column of ones (for the intercept) and columns of observed values for all predictors
+- **$\hat{\beta}$**: a vector of estimated regression coefficients
 
-**单预测变量（5 个观测）展开形式：**
+**Expanded form with a single predictor (5 observations):**
 
 $$Y'_i = \hat{\beta}_0 + \hat{\beta}_1 X_{1i} \;\equiv\; \hat{\beta}_0(1) + \hat{\beta}_1 X_{1i}$$
 
 $$\begin{bmatrix} Y'_1 \\ Y'_2 \\ Y'_3 \\ Y'_4 \\ Y'_5 \end{bmatrix} = \begin{bmatrix} 1 & X_{11} \\ 1 & X_{12} \\ 1 & X_{13} \\ 1 & X_{14} \\ 1 & X_{15} \end{bmatrix} \begin{bmatrix} \hat{\beta}_0 \\ \hat{\beta}_1 \end{bmatrix} = \begin{bmatrix} \hat{\beta}_0 + \hat{\beta}_1 X_{11} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{12} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{13} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{14} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{15} \end{bmatrix}$$
 
-**两个预测变量展开形式：**
+**Expanded form with two predictors:**
 
 $$Y'_i = \hat{\beta}_0 + \hat{\beta}_1 X_{1i} + \hat{\beta}_2 X_{2i}$$
 
 $$\begin{bmatrix} Y'_1 \\ Y'_2 \\ Y'_3 \\ Y'_4 \\ Y'_5 \end{bmatrix} = \begin{bmatrix} 1 & X_{11} & X_{21} \\ 1 & X_{12} & X_{22} \\ 1 & X_{13} & X_{23} \\ 1 & X_{14} & X_{24} \\ 1 & X_{15} & X_{25} \end{bmatrix} \begin{bmatrix} \hat{\beta}_0 \\ \hat{\beta}_1 \\ \hat{\beta}_2 \end{bmatrix} = \begin{bmatrix} \hat{\beta}_0 + \hat{\beta}_1 X_{11} + \hat{\beta}_2 X_{21} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{12} + \hat{\beta}_2 X_{22} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{13} + \hat{\beta}_2 X_{23} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{14} + \hat{\beta}_2 X_{24} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{15} + \hat{\beta}_2 X_{25} \end{bmatrix}$$
 
-### 8.2 OLS 矩阵解
+### 8.2 OLS Matrix Solution
 
-通过矩阵运算一步求出系数向量：构造设计矩阵 $X$，计算转置 $X'$，相乘得 $X'X$，取逆后乘以 $X'Y$：
+The coefficient vector is obtained in one step via matrix algebra: construct the design matrix $X$, compute its transpose $X'$, form the product $X'X$, invert it, and multiply by $X'Y$:
 
 $$\hat{\beta} = (X'X)^{-1}X'Y$$
 
-> 只要 $X'X$ 可逆（无完全多重共线性），此公式直接给出精确解，无需迭代。
+> As long as $X'X$ is invertible (no perfect multicollinearity), this formula yields the exact solution directly, with no iteration.
 
-### 8.3 系数估计的协方差矩阵
+### 8.3 Covariance Matrix of the Coefficient Estimates
 
-$\hat{\beta}$ 向量的协方差矩阵：
+The covariance matrix of the vector $\hat{\beta}$:
 
 $$\text{cov}(\hat{\beta}) = \sigma^2 (X'X)^{-1}$$
 
-其中残差方差 $\sigma^2$ 由残差向量 $\epsilon$ 估计：
+where the residual variance $\sigma^2$ is estimated from the residual vector $\epsilon$:
 
 $$\sigma^2 = \frac{\epsilon'\epsilon}{n - s}$$
 
-- **$\epsilon$**：残差向量（$= Y - X\hat{\beta}$）
-- **$s$**：模型中估计的回归系数个数（含截距）
-- **$n - s$**：残差自由度
+- **$\epsilon$**: the residual vector ($= Y - X\hat{\beta}$)
+- **$s$**: the number of regression coefficients estimated in the model (including the intercept)
+- **$n - s$**: the residual degrees of freedom
 
-协方差矩阵的对角线元素即各系数估计量的方差，开根号后为各系数的**标准误（SE）**。可通过软件中的 `vcov()` 函数提取，验证输出结果中的 SE 值。
+The diagonal elements of the covariance matrix are the variances of the individual coefficient estimates; their square roots are the **standard errors (SE)** of the respective coefficients. This matrix can be extracted in software via the `vcov()` function to verify the SE values reported in the output.
 
-### 8.4 OLS 中 $\text{Var}(\mathbf{y})$ 的矩阵表示
+### 8.4 Matrix Representation of $\text{Var}(\mathbf{y})$ in OLS
 
-OLS 的生成模型为 $\mathbf{y} = X\beta + \boldsymbol{\epsilon}$，其中 $X\beta$ 是固定的（非随机），因此：
+The OLS data-generating model is $\mathbf{y} = X\beta + \boldsymbol{\epsilon}$, where $X\beta$ is fixed (non-random), so:
 
 $$\text{Var}(\mathbf{y}) = \text{Var}(\boldsymbol{\epsilon}) = \sigma^2 \mathbf{I}_n$$
 
-展开为 $n \times n$ 矩阵：
+Expanded as an $n \times n$ matrix:
 
 $$\text{Var}(\mathbf{y}) = \begin{bmatrix} \sigma^2 & 0 & \cdots & 0 \\ 0 & \sigma^2 & \cdots & 0 \\ \vdots & & \ddots & \vdots \\ 0 & 0 & \cdots & \sigma^2 \end{bmatrix}$$
 
-**对角线 = 每个观测的方差（相同）；非对角线全为 0 = 观测之间相互独立。**
+**The diagonal elements are the variance of each observation (all equal); the off-diagonal elements are all zero, indicating mutual independence across observations.**
 
-这正是 OLS 在协方差矩阵语言下的两大核心假设：**同方差性（Homoscedasticity）+ 独立性（Independence）**。
+This is precisely the two core assumptions of OLS expressed in the language of covariance matrices: **Homoscedasticity + Independence**.
 
-#### 与 MLM / LSEM 的对应关系
+#### Correspondence to MLM / LSEM
 
-- **OLS**：$\text{Var}(\mathbf{y}) = \sigma^2 \mathbf{I}_n$ — 无随机效应，残差独立同方差
-- **MLM**：$V_i = Z_i G Z_i' + R_i$ — 随机效应 $+$ 个体内残差
-- **LSEM**：$\Sigma(\theta) = \Lambda\Psi\Lambda' + \Theta$ — 潜在因子 $+$ 指标残差
+- **OLS**: $\text{Var}(\mathbf{y}) = \sigma^2 \mathbf{I}_n$ — no random effects; residuals are independent and identically distributed
+- **MLM**: $V_i = Z_i G Z_i' + R_i$ — random effects plus within-individual residual structure
+- **LSEM**: $\Sigma(\theta) = \Lambda\Psi\Lambda' + \Theta$ — latent factors plus indicator residuals
 
-OLS 是三者中的**最受限特例**：令 $Z_i = \mathbf{0}$（无随机效应）且 $R_i = \sigma^2 \mathbf{I}$（同质独立残差），MLM 公式立即退化为 OLS 的 $\sigma^2\mathbf{I}$；同理令 $\Lambda = \mathbf{0}$ 且 $\Theta = \sigma^2\mathbf{I}$，LSEM 亦退化为 OLS。
+OLS is the **most constrained special case** of the three: setting $Z_i = \mathbf{0}$ (no random effects) and $R_i = \sigma^2 \mathbf{I}$ (homogeneous independent residuals) reduces the MLM formula immediately to the OLS form $\sigma^2\mathbf{I}$; likewise, setting $\Lambda = \mathbf{0}$ and $\Theta = \sigma^2\mathbf{I}$ reduces the LSEM to OLS.
 
-#### 假设违背时的扩展
+#### Extensions When Assumptions Are Violated
 
-- **异方差（Heteroscedasticity）**：非对角线仍为 0（独立），但对角线各不相同：
+- **Heteroscedasticity**: off-diagonal elements remain zero (independence holds), but diagonal elements differ:
 
 $$\text{Var}(\mathbf{y}) = \begin{bmatrix} \sigma_1^2 & & \\ & \ddots & \\ & & \sigma_n^2 \end{bmatrix} = \Omega$$
 
-- **自相关（Autocorrelation，如 AR(1)）**：对角线相同，但非对角线不为 0：
+- **Autocorrelation (e.g., AR(1))**: diagonal elements are equal, but off-diagonal elements are non-zero:
 
 $$\text{Var}(\mathbf{y}) = \sigma^2 \begin{bmatrix} 1 & \rho & \rho^2 & \cdots \\ \rho & 1 & \rho & \cdots \\ \rho^2 & \rho & 1 & \cdots \\ \vdots & & & \ddots \end{bmatrix}$$
 
-- **一般情形（GLS）**：$\text{Var}(\mathbf{y}) = \sigma^2\Omega$，OLS 公式变为广义最小二乘（GLS）解：
+- **General case (GLS)**: $\text{Var}(\mathbf{y}) = \sigma^2\Omega$; the OLS formula becomes the Generalized Least Squares (GLS) estimator:
 
 $$\hat{\beta}_{\text{GLS}} = (X'\Omega^{-1}X)^{-1}X'\Omega^{-1}Y$$
 
-当 $\Omega = \mathbf{I}$ 时即退化回 OLS 的 $\hat{\beta} = (X'X)^{-1}X'Y$。
+When $\Omega = \mathbf{I}$, this reduces back to the OLS estimator $\hat{\beta} = (X'X)^{-1}X'Y$.

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.7.32">
@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="">
+<meta name="dcterms.date" content="2026-03-08">
 
-<title>统计模型笔记（OLS / GLM） – HPD 685 线性纵向建模</title>
+<title>Statistical Modeling Notes (OLS / GLM) – HPD 685 Linear Longitudinal Modeling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -55,17 +56,17 @@ ul.task-list li input[type="checkbox"] {
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "没有结果",
-    "search-matching-documents-text": "匹配的文档",
-    "search-copy-link-title": "复制搜索链接",
-    "search-hide-matches-text": "隐藏其它匹配结果",
-    "search-more-match-text": "更多匹配结果",
-    "search-more-matches-text": "更多匹配结果",
-    "search-clear-button-title": "清除",
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
     "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "取消",
-    "search-submit-button-title": "提交",
-    "search-label": "搜索"
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
@@ -111,22 +112,26 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">HPD 685 线性纵向建模</span>
+    <span class="navbar-title">HPD 685 Linear Longitudinal Modeling</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="搜索"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="展开或折叠导航栏" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link" href="./index.html"> 
-<span class="menu-text">纵向建模笔记</span></a>
+<span class="menu-text">Longitudinal Modeling Notes</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./ols.html" aria-current="page"> 
-<span class="menu-text">OLS 回归笔记</span></a>
+<span class="menu-text">OLS Regression Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./analysis.html"> 
+<span class="menu-text">R Code Examples</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -143,62 +148,62 @@ window.Quarto = {
     <h2 id="toc-title">目录</h2>
    
   <ul>
-  <li><a href="#统计模型笔记" id="toc-统计模型笔记" class="nav-link active" data-scroll-target="#统计模型笔记"><span class="header-section-number">1</span> 统计模型笔记</a>
+  <li><a href="#statistical-modeling-notes" id="toc-statistical-modeling-notes" class="nav-link active" data-scroll-target="#statistical-modeling-notes"><span class="header-section-number">1</span> Statistical Modeling Notes</a>
   <ul>
-  <li><a href="#一普通最小二乘回归-ols-regression" id="toc-一普通最小二乘回归-ols-regression" class="nav-link" data-scroll-target="#一普通最小二乘回归-ols-regression"><span class="header-section-number">1.1</span> 一、普通最小二乘回归 (OLS Regression)</a>
+  <li><a href="#ordinary-least-squares-regression-ols-regression" id="toc-ordinary-least-squares-regression-ols-regression" class="nav-link" data-scroll-target="#ordinary-least-squares-regression-ols-regression"><span class="header-section-number">1.1</span> 1. Ordinary Least Squares Regression (OLS Regression)</a>
   <ul class="collapse">
-  <li><a href="#原理" id="toc-原理" class="nav-link" data-scroll-target="#原理"><span class="header-section-number">1.1.1</span> 1.1 原理</a></li>
-  <li><a href="#公式" id="toc-公式" class="nav-link" data-scroll-target="#公式"><span class="header-section-number">1.1.2</span> 1.2 公式</a></li>
-  <li><a href="#核心假设-line" id="toc-核心假设-line" class="nav-link" data-scroll-target="#核心假设-line"><span class="header-section-number">1.1.3</span> 1.3 核心假设 (LINE)</a></li>
-  <li><a href="#异方差性-heteroscedasticity" id="toc-异方差性-heteroscedasticity" class="nav-link" data-scroll-target="#异方差性-heteroscedasticity"><span class="header-section-number">1.1.4</span> 1.4 异方差性 (Heteroscedasticity)</a></li>
+  <li><a href="#principles" id="toc-principles" class="nav-link" data-scroll-target="#principles"><span class="header-section-number">1.1.1</span> 1.1 Principles</a></li>
+  <li><a href="#formula" id="toc-formula" class="nav-link" data-scroll-target="#formula"><span class="header-section-number">1.1.2</span> 1.2 Formula</a></li>
+  <li><a href="#core-assumptions-line" id="toc-core-assumptions-line" class="nav-link" data-scroll-target="#core-assumptions-line"><span class="header-section-number">1.1.3</span> 1.3 Core Assumptions (LINE)</a></li>
+  <li><a href="#heteroscedasticity" id="toc-heteroscedasticity" class="nav-link" data-scroll-target="#heteroscedasticity"><span class="header-section-number">1.1.4</span> 1.4 Heteroscedasticity</a></li>
   </ul></li>
-  <li><a href="#二标准方差分析-standard-anova" id="toc-二标准方差分析-standard-anova" class="nav-link" data-scroll-target="#二标准方差分析-standard-anova"><span class="header-section-number">1.2</span> 二、标准方差分析 (Standard ANOVA)</a>
+  <li><a href="#standard-anova" id="toc-standard-anova" class="nav-link" data-scroll-target="#standard-anova"><span class="header-section-number">1.2</span> 2. Standard ANOVA</a>
   <ul class="collapse">
-  <li><a href="#原理-1" id="toc-原理-1" class="nav-link" data-scroll-target="#原理-1"><span class="header-section-number">1.2.1</span> 2.1 原理</a></li>
-  <li><a href="#公式-1" id="toc-公式-1" class="nav-link" data-scroll-target="#公式-1"><span class="header-section-number">1.2.2</span> 2.2 公式</a></li>
-  <li><a href="#核心假设" id="toc-核心假设" class="nav-link" data-scroll-target="#核心假设"><span class="header-section-number">1.2.3</span> 2.3 核心假设</a></li>
+  <li><a href="#principles-1" id="toc-principles-1" class="nav-link" data-scroll-target="#principles-1"><span class="header-section-number">1.2.1</span> 2.1 Principles</a></li>
+  <li><a href="#formula-1" id="toc-formula-1" class="nav-link" data-scroll-target="#formula-1"><span class="header-section-number">1.2.2</span> 2.2 Formula</a></li>
+  <li><a href="#core-assumptions" id="toc-core-assumptions" class="nav-link" data-scroll-target="#core-assumptions"><span class="header-section-number">1.2.3</span> 2.3 Core Assumptions</a></li>
   </ul></li>
-  <li><a href="#三gamma-分布与-gamma-glm" id="toc-三gamma-分布与-gamma-glm" class="nav-link" data-scroll-target="#三gamma-分布与-gamma-glm"><span class="header-section-number">1.3</span> 三、Gamma 分布与 Gamma GLM</a>
+  <li><a href="#gamma-distribution-and-gamma-glm" id="toc-gamma-distribution-and-gamma-glm" class="nav-link" data-scroll-target="#gamma-distribution-and-gamma-glm"><span class="header-section-number">1.3</span> 3. Gamma Distribution and Gamma GLM</a>
   <ul class="collapse">
-  <li><a href="#gamma-vs.-poisson硬币的两面" id="toc-gamma-vs.-poisson硬币的两面" class="nav-link" data-scroll-target="#gamma-vs.-poisson硬币的两面"><span class="header-section-number">1.3.1</span> 3.1 Gamma vs.&nbsp;Poisson：硬币的两面</a></li>
-  <li><a href="#gamma-glm-的适用场景" id="toc-gamma-glm-的适用场景" class="nav-link" data-scroll-target="#gamma-glm-的适用场景"><span class="header-section-number">1.3.2</span> 3.2 Gamma GLM 的适用场景</a></li>
-  <li><a href="#公式与连接函数-link-function" id="toc-公式与连接函数-link-function" class="nav-link" data-scroll-target="#公式与连接函数-link-function"><span class="header-section-number">1.3.3</span> 3.3 公式与连接函数 (Link Function)</a></li>
+  <li><a href="#gamma-vs.-poisson-two-sides-of-the-same-coin" id="toc-gamma-vs.-poisson-two-sides-of-the-same-coin" class="nav-link" data-scroll-target="#gamma-vs.-poisson-two-sides-of-the-same-coin"><span class="header-section-number">1.3.1</span> 3.1 Gamma vs.&nbsp;Poisson: Two Sides of the Same Coin</a></li>
+  <li><a href="#when-to-use-gamma-glm" id="toc-when-to-use-gamma-glm" class="nav-link" data-scroll-target="#when-to-use-gamma-glm"><span class="header-section-number">1.3.2</span> 3.2 When to Use Gamma GLM</a></li>
+  <li><a href="#formula-and-link-function" id="toc-formula-and-link-function" class="nav-link" data-scroll-target="#formula-and-link-function"><span class="header-section-number">1.3.3</span> 3.3 Formula and Link Function</a></li>
   </ul></li>
-  <li><a href="#四glm-连接函数深度解析" id="toc-四glm-连接函数深度解析" class="nav-link" data-scroll-target="#四glm-连接函数深度解析"><span class="header-section-number">1.4</span> 四、GLM 连接函数深度解析</a>
+  <li><a href="#deep-dive-link-functions-in-glm" id="toc-deep-dive-link-functions-in-glm" class="nav-link" data-scroll-target="#deep-dive-link-functions-in-glm"><span class="header-section-number">1.4</span> 4. Deep Dive: Link Functions in GLM</a>
   <ul class="collapse">
-  <li><a href="#为什么-gamma-和-poisson-都用-log-link" id="toc-为什么-gamma-和-poisson-都用-log-link" class="nav-link" data-scroll-target="#为什么-gamma-和-poisson-都用-log-link"><span class="header-section-number">1.4.1</span> 4.1 为什么 Gamma 和 Poisson 都用 Log Link？</a></li>
-  <li><a href="#为什么用-poisson-替换-logistic-能生成更有意义的-risk-ratio" id="toc-为什么用-poisson-替换-logistic-能生成更有意义的-risk-ratio" class="nav-link" data-scroll-target="#为什么用-poisson-替换-logistic-能生成更有意义的-risk-ratio"><span class="header-section-number">1.4.2</span> 4.2 为什么用 Poisson 替换 Logistic 能生成更有意义的 Risk Ratio？</a>
+  <li><a href="#why-do-both-gamma-and-poisson-use-the-log-link" id="toc-why-do-both-gamma-and-poisson-use-the-log-link" class="nav-link" data-scroll-target="#why-do-both-gamma-and-poisson-use-the-log-link"><span class="header-section-number">1.4.1</span> 4.1 Why Do Both Gamma and Poisson Use the Log Link?</a></li>
+  <li><a href="#why-does-substituting-poisson-for-logistic-regression-yield-more-meaningful-risk-ratios" id="toc-why-does-substituting-poisson-for-logistic-regression-yield-more-meaningful-risk-ratios" class="nav-link" data-scroll-target="#why-does-substituting-poisson-for-logistic-regression-yield-more-meaningful-risk-ratios"><span class="header-section-number">1.4.2</span> 4.2 Why Does Substituting Poisson for Logistic Regression Yield More Meaningful Risk Ratios?</a>
   <ul class="collapse">
-  <li><a href="#logistic-回归的痛点or-在高发病率时严重夸大-rr" id="toc-logistic-回归的痛点or-在高发病率时严重夸大-rr" class="nav-link" data-scroll-target="#logistic-回归的痛点or-在高发病率时严重夸大-rr"><span class="header-section-number">1.4.2.1</span> Logistic 回归的”痛点”：OR 在高发病率时严重夸大 RR</a></li>
-  <li><a href="#poisson-如何解决这个问题" id="toc-poisson-如何解决这个问题" class="nav-link" data-scroll-target="#poisson-如何解决这个问题"><span class="header-section-number">1.4.2.2</span> Poisson 如何解决这个问题？</a></li>
+  <li><a href="#the-pain-point-of-logistic-regression-or-severely-overestimates-rr-at-high-prevalence" id="toc-the-pain-point-of-logistic-regression-or-severely-overestimates-rr-at-high-prevalence" class="nav-link" data-scroll-target="#the-pain-point-of-logistic-regression-or-severely-overestimates-rr-at-high-prevalence"><span class="header-section-number">1.4.2.1</span> The “Pain Point” of Logistic Regression: OR Severely Overestimates RR at High Prevalence</a></li>
+  <li><a href="#how-does-poisson-solve-this-problem" id="toc-how-does-poisson-solve-this-problem" class="nav-link" data-scroll-target="#how-does-poisson-solve-this-problem"><span class="header-section-number">1.4.2.2</span> How Does Poisson Solve This Problem?</a></li>
   </ul></li>
-  <li><a href="#为什么研究血液标志物时要用-log-gamma" id="toc-为什么研究血液标志物时要用-log-gamma" class="nav-link" data-scroll-target="#为什么研究血液标志物时要用-log-gamma"><span class="header-section-number">1.4.3</span> 4.3 为什么研究血液标志物时要用 Log-Gamma？</a></li>
+  <li><a href="#why-use-log-gamma-when-studying-blood-biomarkers" id="toc-why-use-log-gamma-when-studying-blood-biomarkers" class="nav-link" data-scroll-target="#why-use-log-gamma-when-studying-blood-biomarkers"><span class="header-section-number">1.4.3</span> 4.3 Why Use Log-Gamma When Studying Blood Biomarkers?</a></li>
   </ul></li>
-  <li><a href="#五glm-的线性究竟是什么意思" id="toc-五glm-的线性究竟是什么意思" class="nav-link" data-scroll-target="#五glm-的线性究竟是什么意思"><span class="header-section-number">1.5</span> 五、GLM 的”线性”究竟是什么意思？</a></li>
-  <li><a href="#六二分类结局稀少时还需要-modified-poisson-吗" id="toc-六二分类结局稀少时还需要-modified-poisson-吗" class="nav-link" data-scroll-target="#六二分类结局稀少时还需要-modified-poisson-吗"><span class="header-section-number">1.6</span> 六、二分类结局稀少时，还需要 Modified Poisson 吗？</a>
+  <li><a href="#what-does-linear-mean-in-glm" id="toc-what-does-linear-mean-in-glm" class="nav-link" data-scroll-target="#what-does-linear-mean-in-glm"><span class="header-section-number">1.5</span> 5. What Does “Linear” Mean in GLM?</a></li>
+  <li><a href="#is-modified-poisson-regression-necessary-for-rare-binary-outcomes" id="toc-is-modified-poisson-regression-necessary-for-rare-binary-outcomes" class="nav-link" data-scroll-target="#is-modified-poisson-regression-necessary-for-rare-binary-outcomes"><span class="header-section-number">1.6</span> 6. Is Modified Poisson Regression Necessary for Rare Binary Outcomes?</a>
   <ul class="collapse">
-  <li><a href="#罕见病假设-rare-disease-assumption" id="toc-罕见病假设-rare-disease-assumption" class="nav-link" data-scroll-target="#罕见病假设-rare-disease-assumption"><span class="header-section-number">1.6.1</span> 6.1 罕见病假设 (Rare Disease Assumption)</a></li>
-  <li><a href="#modified-poisson-的潜在隐患" id="toc-modified-poisson-的潜在隐患" class="nav-link" data-scroll-target="#modified-poisson-的潜在隐患"><span class="header-section-number">1.6.2</span> 6.2 Modified Poisson 的潜在隐患</a></li>
-  <li><a href="#实战建议" id="toc-实战建议" class="nav-link" data-scroll-target="#实战建议"><span class="header-section-number">1.6.3</span> 6.3 实战建议</a></li>
+  <li><a href="#the-rare-disease-assumption" id="toc-the-rare-disease-assumption" class="nav-link" data-scroll-target="#the-rare-disease-assumption"><span class="header-section-number">1.6.1</span> 6.1 The Rare Disease Assumption</a></li>
+  <li><a href="#potential-pitfalls-of-modified-poisson" id="toc-potential-pitfalls-of-modified-poisson" class="nav-link" data-scroll-target="#potential-pitfalls-of-modified-poisson"><span class="header-section-number">1.6.2</span> 6.2 Potential Pitfalls of Modified Poisson</a></li>
+  <li><a href="#practical-recommendations" id="toc-practical-recommendations" class="nav-link" data-scroll-target="#practical-recommendations"><span class="header-section-number">1.6.3</span> 6.3 Practical Recommendations</a></li>
   </ul></li>
-  <li><a href="#七ols-的解析解-vs.-glm-的迭代数值解" id="toc-七ols-的解析解-vs.-glm-的迭代数值解" class="nav-link" data-scroll-target="#七ols-的解析解-vs.-glm-的迭代数值解"><span class="header-section-number">1.7</span> 七、OLS 的解析解 vs.&nbsp;GLM 的迭代数值解</a>
+  <li><a href="#ols-closed-form-solution-vs.-glm-iterative-numerical-solution" id="toc-ols-closed-form-solution-vs.-glm-iterative-numerical-solution" class="nav-link" data-scroll-target="#ols-closed-form-solution-vs.-glm-iterative-numerical-solution"><span class="header-section-number">1.7</span> 7. OLS Closed-Form Solution vs.&nbsp;GLM Iterative Numerical Solution</a>
   <ul class="collapse">
-  <li><a href="#ols一步到位的解析解-closed-form-solution" id="toc-ols一步到位的解析解-closed-form-solution" class="nav-link" data-scroll-target="#ols一步到位的解析解-closed-form-solution"><span class="header-section-number">1.7.1</span> 7.1 OLS：一步到位的解析解 (Closed-form Solution)</a></li>
-  <li><a href="#glm最大似然估计与迭代法-mle-irls" id="toc-glm最大似然估计与迭代法-mle-irls" class="nav-link" data-scroll-target="#glm最大似然估计与迭代法-mle-irls"><span class="header-section-number">1.7.2</span> 7.2 GLM：最大似然估计与迭代法 (MLE + IRLS)</a>
+  <li><a href="#ols-a-one-step-closed-form-solution" id="toc-ols-a-one-step-closed-form-solution" class="nav-link" data-scroll-target="#ols-a-one-step-closed-form-solution"><span class="header-section-number">1.7.1</span> 7.1 OLS: A One-Step Closed-Form Solution</a></li>
+  <li><a href="#glm-maximum-likelihood-estimation-and-iterative-methods-mle-irls" id="toc-glm-maximum-likelihood-estimation-and-iterative-methods-mle-irls" class="nav-link" data-scroll-target="#glm-maximum-likelihood-estimation-and-iterative-methods-mle-irls"><span class="header-section-number">1.7.2</span> 7.2 GLM: Maximum Likelihood Estimation and Iterative Methods (MLE + IRLS)</a>
   <ul class="collapse">
-  <li><a href="#核心思想-最大似然估计-maximum-likelihood-estimation-mle" id="toc-核心思想-最大似然估计-maximum-likelihood-estimation-mle" class="nav-link" data-scroll-target="#核心思想-最大似然估计-maximum-likelihood-estimation-mle"><span class="header-section-number">1.7.2.1</span> 核心思想 — 最大似然估计 (Maximum Likelihood Estimation, MLE)</a></li>
-  <li><a href="#求解过程-迭代重加权最小二乘法-irls" id="toc-求解过程-迭代重加权最小二乘法-irls" class="nav-link" data-scroll-target="#求解过程-迭代重加权最小二乘法-irls"><span class="header-section-number">1.7.2.2</span> 求解过程 — 迭代重加权最小二乘法 (IRLS)</a></li>
+  <li><a href="#core-idea-maximum-likelihood-estimation-mle" id="toc-core-idea-maximum-likelihood-estimation-mle" class="nav-link" data-scroll-target="#core-idea-maximum-likelihood-estimation-mle"><span class="header-section-number">1.7.2.1</span> Core Idea — Maximum Likelihood Estimation (MLE)</a></li>
+  <li><a href="#solution-method-iteratively-reweighted-least-squares-irls" id="toc-solution-method-iteratively-reweighted-least-squares-irls" class="nav-link" data-scroll-target="#solution-method-iteratively-reweighted-least-squares-irls"><span class="header-section-number">1.7.2.2</span> Solution Method — Iteratively Reweighted Least Squares (IRLS)</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#八设计矩阵design-matrix" id="toc-八设计矩阵design-matrix" class="nav-link" data-scroll-target="#八设计矩阵design-matrix"><span class="header-section-number">1.8</span> 八、设计矩阵（Design Matrix）</a>
+  <li><a href="#design-matrix" id="toc-design-matrix" class="nav-link" data-scroll-target="#design-matrix"><span class="header-section-number">1.8</span> 8. Design Matrix</a>
   <ul class="collapse">
-  <li><a href="#核心概念" id="toc-核心概念" class="nav-link" data-scroll-target="#核心概念"><span class="header-section-number">1.8.1</span> 8.1 核心概念</a></li>
-  <li><a href="#ols-矩阵解" id="toc-ols-矩阵解" class="nav-link" data-scroll-target="#ols-矩阵解"><span class="header-section-number">1.8.2</span> 8.2 OLS 矩阵解</a></li>
-  <li><a href="#系数估计的协方差矩阵" id="toc-系数估计的协方差矩阵" class="nav-link" data-scroll-target="#系数估计的协方差矩阵"><span class="header-section-number">1.8.3</span> 8.3 系数估计的协方差矩阵</a></li>
-  <li><a href="#ols-中-textvarmathbfy-的矩阵表示" id="toc-ols-中-textvarmathbfy-的矩阵表示" class="nav-link" data-scroll-target="#ols-中-textvarmathbfy-的矩阵表示"><span class="header-section-number">1.8.4</span> 8.4 OLS 中 <span class="math inline">\(\text{Var}(\mathbf{y})\)</span> 的矩阵表示</a>
+  <li><a href="#core-concept" id="toc-core-concept" class="nav-link" data-scroll-target="#core-concept"><span class="header-section-number">1.8.1</span> 8.1 Core Concept</a></li>
+  <li><a href="#ols-matrix-solution" id="toc-ols-matrix-solution" class="nav-link" data-scroll-target="#ols-matrix-solution"><span class="header-section-number">1.8.2</span> 8.2 OLS Matrix Solution</a></li>
+  <li><a href="#covariance-matrix-of-the-coefficient-estimates" id="toc-covariance-matrix-of-the-coefficient-estimates" class="nav-link" data-scroll-target="#covariance-matrix-of-the-coefficient-estimates"><span class="header-section-number">1.8.3</span> 8.3 Covariance Matrix of the Coefficient Estimates</a></li>
+  <li><a href="#matrix-representation-of-textvarmathbfy-in-ols" id="toc-matrix-representation-of-textvarmathbfy-in-ols" class="nav-link" data-scroll-target="#matrix-representation-of-textvarmathbfy-in-ols"><span class="header-section-number">1.8.4</span> 8.4 Matrix Representation of <span class="math inline">\(\text{Var}(\mathbf{y})\)</span> in OLS</a>
   <ul class="collapse">
-  <li><a href="#与-mlm-lsem-的对应关系" id="toc-与-mlm-lsem-的对应关系" class="nav-link" data-scroll-target="#与-mlm-lsem-的对应关系"><span class="header-section-number">1.8.4.1</span> 与 MLM / LSEM 的对应关系</a></li>
-  <li><a href="#假设违背时的扩展" id="toc-假设违背时的扩展" class="nav-link" data-scroll-target="#假设违背时的扩展"><span class="header-section-number">1.8.4.2</span> 假设违背时的扩展</a></li>
+  <li><a href="#correspondence-to-mlm-lsem" id="toc-correspondence-to-mlm-lsem" class="nav-link" data-scroll-target="#correspondence-to-mlm-lsem"><span class="header-section-number">1.8.4.1</span> Correspondence to MLM / LSEM</a></li>
+  <li><a href="#extensions-when-assumptions-are-violated" id="toc-extensions-when-assumptions-are-violated" class="nav-link" data-scroll-target="#extensions-when-assumptions-are-violated"><span class="header-section-number">1.8.4.2</span> Extensions When Assumptions Are Violated</a></li>
   </ul></li>
   </ul></li>
   </ul></li>
@@ -214,8 +219,8 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">统计模型笔记（OLS / GLM）</h1>
-<p class="subtitle lead">HPD 685 — 回归基础</p>
+<h1 class="title">Statistical Modeling Notes (OLS / GLM)</h1>
+<p class="subtitle lead">HPD 685 — Regression Foundations</p>
 </div>
 
 
@@ -224,9 +229,9 @@ window.Quarto = {
 
     
     <div>
-    <div class="quarto-title-meta-heading">发布于</div>
+    <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2026年03月08日</p>
+      <p class="date">March 08, 2026</p>
     </div>
   </div>
   
@@ -238,343 +243,343 @@ window.Quarto = {
 </header>
 
 
-<section id="统计模型笔记" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> 统计模型笔记</h1>
+<section id="statistical-modeling-notes" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Statistical Modeling Notes</h1>
 <hr>
-<section id="一普通最小二乘回归-ols-regression" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="一普通最小二乘回归-ols-regression"><span class="header-section-number">1.1</span> 一、普通最小二乘回归 (OLS Regression)</h2>
-<section id="原理" class="level3" data-number="1.1.1">
-<h3 data-number="1.1.1" class="anchored" data-anchor-id="原理"><span class="header-section-number">1.1.1</span> 1.1 原理</h3>
-<p>OLS 回归研究连续型因变量 <span class="math inline">\(y\)</span> 与自变量 <span class="math inline">\(x\)</span> 之间的线性关系，核心是<strong>最小二乘法</strong>：寻找一组参数使所有观测点到拟合直线的残差平方和最小。</p>
+<section id="ordinary-least-squares-regression-ols-regression" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="ordinary-least-squares-regression-ols-regression"><span class="header-section-number">1.1</span> 1. Ordinary Least Squares Regression (OLS Regression)</h2>
+<section id="principles" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="principles"><span class="header-section-number">1.1.1</span> 1.1 Principles</h3>
+<p>OLS regression examines the linear relationship between a continuous dependent variable <span class="math inline">\(y\)</span> and independent variables <span class="math inline">\(x\)</span>. The core method is the <strong>method of least squares</strong>: finding a set of parameters that minimizes the sum of squared residuals from all observations to the fitted line.</p>
 </section>
-<section id="公式" class="level3" data-number="1.1.2">
-<h3 data-number="1.1.2" class="anchored" data-anchor-id="公式"><span class="header-section-number">1.1.2</span> 1.2 公式</h3>
+<section id="formula" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="formula"><span class="header-section-number">1.1.2</span> 1.2 Formula</h3>
 <p><span class="math display">\[y_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip} + \epsilon_i \qquad \Leftrightarrow \qquad Y = X\beta + \epsilon\]</span></p>
 <ul>
-<li><strong><span class="math inline">\(y_i\)</span></strong>：第 <span class="math inline">\(i\)</span> 个观测的因变量值</li>
-<li><strong><span class="math inline">\(\beta_0\)</span></strong>：截距项</li>
-<li><strong><span class="math inline">\(\beta_1, \ldots, \beta_p\)</span></strong>：自变量的偏回归系数</li>
-<li><strong><span class="math inline">\(x_{i1}, \ldots, x_{ip}\)</span></strong>：第 <span class="math inline">\(i\)</span> 个观测的各自变量值</li>
-<li><strong><span class="math inline">\(\epsilon_i\)</span></strong>：误差项（残差）</li>
+<li><strong><span class="math inline">\(y_i\)</span></strong>: the value of the dependent variable for the <span class="math inline">\(i\)</span>-th observation</li>
+<li><strong><span class="math inline">\(\beta_0\)</span></strong>: the intercept term</li>
+<li><strong><span class="math inline">\(\beta_1, \ldots, \beta_p\)</span></strong>: partial regression coefficients for the independent variables</li>
+<li><strong><span class="math inline">\(x_{i1}, \ldots, x_{ip}\)</span></strong>: values of each independent variable for the <span class="math inline">\(i\)</span>-th observation</li>
+<li><strong><span class="math inline">\(\epsilon_i\)</span></strong>: the error term (residual)</li>
 </ul>
 </section>
-<section id="核心假设-line" class="level3" data-number="1.1.3">
-<h3 data-number="1.1.3" class="anchored" data-anchor-id="核心假设-line"><span class="header-section-number">1.1.3</span> 1.3 核心假设 (LINE)</h3>
-<p>OLS 有效性依赖 <strong>Gauss-Markov 假设</strong>，用 <strong>LINE</strong> 助记：</p>
+<section id="core-assumptions-line" class="level3" data-number="1.1.3">
+<h3 data-number="1.1.3" class="anchored" data-anchor-id="core-assumptions-line"><span class="header-section-number">1.1.3</span> 1.3 Core Assumptions (LINE)</h3>
+<p>The validity of OLS depends on the <strong>Gauss-Markov assumptions</strong>, remembered by the mnemonic <strong>LINE</strong>:</p>
 <ul>
-<li><strong>L — 线性 (Linearity)</strong>：<span class="math inline">\(E[y|x]\)</span> 与 <span class="math inline">\(x\)</span> 之间为严格线性关系</li>
-<li><strong>I — 独立性 (Independence)</strong>：<span class="math inline">\(\epsilon_i\)</span> 之间无自相关（Autocorrelation）</li>
-<li><strong>N — 正态性 (Normality)</strong>：<span class="math inline">\(\epsilon \sim N(0, \sigma^2)\)</span>，假设检验（t/F）时尤为关键</li>
-<li><strong>E — 同方差性 (Homoscedasticity)</strong>：<span class="math inline">\(\text{Var}(\epsilon_i) = \sigma^2\)</span>，与 <span class="math inline">\(x\)</span> 取值无关</li>
-<li><strong>(附加) 无多重共线性</strong>：自变量间不存在高度相关，否则参数方差急剧增大</li>
+<li><strong>L — Linearity</strong>: <span class="math inline">\(E[y|x]\)</span> is strictly linear in <span class="math inline">\(x\)</span></li>
+<li><strong>I — Independence</strong>: the <span class="math inline">\(\epsilon_i\)</span> are free of autocorrelation</li>
+<li><strong>N — Normality</strong>: <span class="math inline">\(\epsilon \sim N(0, \sigma^2)\)</span>; particularly critical for hypothesis testing (t/F tests)</li>
+<li><strong>E — Equal variance (Homoscedasticity)</strong>: <span class="math inline">\(\text{Var}(\epsilon_i) = \sigma^2\)</span>, constant across all values of <span class="math inline">\(x\)</span></li>
+<li><strong>(Additional) No multicollinearity</strong>: the independent variables are not highly correlated with one another; severe collinearity inflates parameter variances dramatically</li>
 </ul>
 </section>
-<section id="异方差性-heteroscedasticity" class="level3" data-number="1.1.4">
-<h3 data-number="1.1.4" class="anchored" data-anchor-id="异方差性-heteroscedasticity"><span class="header-section-number">1.1.4</span> 1.4 异方差性 (Heteroscedasticity)</h3>
+<section id="heteroscedasticity" class="level3" data-number="1.1.4">
+<h3 data-number="1.1.4" class="anchored" data-anchor-id="heteroscedasticity"><span class="header-section-number">1.1.4</span> 1.4 Heteroscedasticity</h3>
 <blockquote class="blockquote">
-<p>违背同方差假设时，误差的波动范围随自变量变化而变大或变小（最常见的是呈”喇叭状”扩散）。</p>
+<p>When the homoscedasticity assumption is violated, the spread of the errors grows or shrinks as the independent variable changes (the most common pattern is a “fan-shaped” or “funnel-shaped” dispersion).</p>
 </blockquote>
-<p><strong>成因：</strong></p>
+<p><strong>Sources:</strong></p>
 <ul>
-<li><strong>数据量级跨度大</strong>：收入↑ → 消费支出方差↑（低收入群体支出相对固定）</li>
-<li><strong>遗漏重要变量</strong>：被遗漏变量的影响被挤入残差，若其与某自变量相关则残差方差随之变化</li>
-<li><strong>函数形式错误</strong>：真实关系为指数/幂律却强行线性拟合，偏差随 <span class="math inline">\(x\)</span> 呈几何级数增大</li>
-<li><strong>异常值</strong>：极端样本点拉扯回归线，破坏局部方差齐性</li>
-<li><strong>测量误差变化</strong>：测量对象越大，绝对误差越大（相对误差稳定但残差不稳定）</li>
+<li><strong>Large scale differences in the data</strong>: as income rises, the variance of consumption expenditure also rises (lower-income groups have relatively fixed expenditure)</li>
+<li><strong>Omitted important variables</strong>: the influence of omitted variables is absorbed into the residuals; if those omitted variables are correlated with a predictor, the residual variance changes systematically</li>
+<li><strong>Misspecified functional form</strong>: when the true relationship is exponential or follows a power law but is forced into a linear fit, the bias increases geometrically with <span class="math inline">\(x\)</span></li>
+<li><strong>Outliers</strong>: extreme observations pull the regression line and disrupt local variance homogeneity</li>
+<li><strong>Changing measurement error</strong>: larger objects of measurement produce larger absolute errors (relative error may be stable, but residuals are not)</li>
 </ul>
-<p><strong>后果：</strong></p>
+<p><strong>Consequences:</strong></p>
 <ul>
-<li>✅ <strong>系数估计依然无偏</strong>：<span class="math inline">\(\hat{\beta}\)</span> 方向仍对，趋势线大体正确</li>
-<li>❌ <strong>OLS 不再是 BLUE</strong>：失去最小方差性，不再是最佳线性无偏估计量</li>
-<li>❌ <strong>标准误计算错误</strong>：传统 OLS 公式严重低估系数的 SE</li>
-<li>❌ <strong>假设检验完全失效</strong>：<span class="math inline">\(t = \hat{\beta}/SE\)</span> 被虚假放大，<span class="math inline">\(p\)</span> 值偏小，<strong>第一类错误（Type I Error / 假阳性）</strong>风险激增，置信区间虚假收窄</li>
+<li>✅ <strong>Coefficient estimates remain unbiased</strong>: <span class="math inline">\(\hat{\beta}\)</span> still points in the correct direction; the general trend is preserved</li>
+<li>❌ <strong>OLS is no longer BLUE</strong>: it loses the minimum-variance property and is no longer the Best Linear Unbiased Estimator</li>
+<li>❌ <strong>Standard errors are incorrectly estimated</strong>: the conventional OLS formula severely underestimates the SE of the coefficients</li>
+<li>❌ <strong>Hypothesis tests are completely invalidated</strong>: <span class="math inline">\(t = \hat{\beta}/SE\)</span> is artificially inflated, <span class="math inline">\(p\)</span>-values are too small, the risk of <strong>Type I Error (false positives)</strong> increases sharply, and confidence intervals are spuriously narrow</li>
 </ul>
 <hr>
 </section>
 </section>
-<section id="二标准方差分析-standard-anova" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="二标准方差分析-standard-anova"><span class="header-section-number">1.2</span> 二、标准方差分析 (Standard ANOVA)</h2>
-<section id="原理-1" class="level3" data-number="1.2.1">
-<h3 data-number="1.2.1" class="anchored" data-anchor-id="原理-1"><span class="header-section-number">1.2.1</span> 2.1 原理</h3>
-<p>ANOVA 用于比较三个或以上总体均值是否完全相等。<strong>本质上，ANOVA 是自变量全为分类变量的特殊 OLS 回归。</strong></p>
-<p>核心思想：将总变异拆分为两部分，通过 <strong>F 统计量</strong>（二者之比）判断组间差异是否显著大于随机误差：</p>
+<section id="standard-anova" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="standard-anova"><span class="header-section-number">1.2</span> 2. Standard ANOVA</h2>
+<section id="principles-1" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="principles-1"><span class="header-section-number">1.2.1</span> 2.1 Principles</h3>
+<p>ANOVA is used to test whether three or more population means are all equal. <strong>In essence, ANOVA is a special case of OLS regression in which all independent variables are categorical.</strong></p>
+<p>The central idea is to partition the total variation into two components and use the <strong>F-statistic</strong> (the ratio of the two) to determine whether the between-group differences are significantly larger than random error:</p>
 <ul>
-<li><strong>组间方差 (Between-group variance)</strong>：由不同处理或分类引起的变异</li>
-<li><strong>组内方差 (Within-group variance / Error)</strong>：由随机误差引起的变异</li>
+<li><strong>Between-group variance</strong>: variation attributable to different treatments or categories</li>
+<li><strong>Within-group variance (Error)</strong>: variation attributable to random error</li>
 </ul>
 </section>
-<section id="公式-1" class="level3" data-number="1.2.2">
-<h3 data-number="1.2.2" class="anchored" data-anchor-id="公式-1"><span class="header-section-number">1.2.2</span> 2.2 公式</h3>
-<p>单因素方差分析（One-way ANOVA）：</p>
+<section id="formula-1" class="level3" data-number="1.2.2">
+<h3 data-number="1.2.2" class="anchored" data-anchor-id="formula-1"><span class="header-section-number">1.2.2</span> 2.2 Formula</h3>
+<p>One-way ANOVA:</p>
 <p><span class="math display">\[y_{ij} = \mu + \alpha_i + \epsilon_{ij}\]</span></p>
 <ul>
-<li><strong><span class="math inline">\(y_{ij}\)</span></strong>：第 <span class="math inline">\(i\)</span> 组（处理）中第 <span class="math inline">\(j\)</span> 个观测值</li>
-<li><strong><span class="math inline">\(\mu\)</span></strong>：所有组的总体总均值</li>
-<li><strong><span class="math inline">\(\alpha_i\)</span></strong>：第 <span class="math inline">\(i\)</span> 组的处理效应（<span class="math inline">\(= \mu_i - \mu\)</span>）</li>
-<li><strong><span class="math inline">\(\epsilon_{ij}\)</span></strong>：随机误差项</li>
+<li><strong><span class="math inline">\(y_{ij}\)</span></strong>: the <span class="math inline">\(j\)</span>-th observation in group (treatment) <span class="math inline">\(i\)</span></li>
+<li><strong><span class="math inline">\(\mu\)</span></strong>: the overall grand mean across all groups</li>
+<li><strong><span class="math inline">\(\alpha_i\)</span></strong>: the treatment effect for group <span class="math inline">\(i\)</span> (<span class="math inline">\(= \mu_i - \mu\)</span>)</li>
+<li><strong><span class="math inline">\(\epsilon_{ij}\)</span></strong>: the random error term</li>
 </ul>
 </section>
-<section id="核心假设" class="level3" data-number="1.2.3">
-<h3 data-number="1.2.3" class="anchored" data-anchor-id="核心假设"><span class="header-section-number">1.2.3</span> 2.3 核心假设</h3>
+<section id="core-assumptions" class="level3" data-number="1.2.3">
+<h3 data-number="1.2.3" class="anchored" data-anchor-id="core-assumptions"><span class="header-section-number">1.2.3</span> 2.3 Core Assumptions</h3>
 <ul>
-<li><strong>独立性</strong>：样本随机抽取，各组内及组间观测值相互独立</li>
-<li><strong>正态性</strong>：每组内总体数据服从正态分布（或残差服从正态分布）</li>
-<li><strong>方差齐性 (Homogeneity of Variance)</strong>：所有比较组的总体方差必须相等（即 OLS 同方差性在分类变量下的体现）；若方差不齐，改用 <strong>Welch’s ANOVA</strong></li>
+<li><strong>Independence</strong>: samples are drawn randomly; observations within and across groups are mutually independent</li>
+<li><strong>Normality</strong>: data within each group follow a normal distribution (equivalently, residuals are normally distributed)</li>
+<li><strong>Homogeneity of Variance</strong>: the population variances of all comparison groups must be equal (the homoscedasticity assumption of OLS expressed in the context of categorical predictors); if variances are unequal, use <strong>Welch’s ANOVA</strong> instead</li>
 </ul>
 <hr>
 </section>
 </section>
-<section id="三gamma-分布与-gamma-glm" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="三gamma-分布与-gamma-glm"><span class="header-section-number">1.3</span> 三、Gamma 分布与 Gamma GLM</h2>
-<section id="gamma-vs.-poisson硬币的两面" class="level3" data-number="1.3.1">
-<h3 data-number="1.3.1" class="anchored" data-anchor-id="gamma-vs.-poisson硬币的两面"><span class="header-section-number">1.3.1</span> 3.1 Gamma vs.&nbsp;Poisson：硬币的两面</h3>
+<section id="gamma-distribution-and-gamma-glm" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="gamma-distribution-and-gamma-glm"><span class="header-section-number">1.3</span> 3. Gamma Distribution and Gamma GLM</h2>
+<section id="gamma-vs.-poisson-two-sides-of-the-same-coin" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="gamma-vs.-poisson-two-sides-of-the-same-coin"><span class="header-section-number">1.3.1</span> 3.1 Gamma vs.&nbsp;Poisson: Two Sides of the Same Coin</h3>
 <blockquote class="blockquote">
-<p><strong>核心区别</strong>：Poisson 描述<strong>离散整数</strong>（数个数），Gamma 描述<strong>连续正实数</strong>（量时间或金额）。两者都源于同一随机过程——<strong>泊松过程 (Poisson Process)</strong>。</p>
+<p><strong>Key distinction</strong>: Poisson describes <strong>discrete integers</strong> (counting events), while Gamma describes <strong>continuous positive real numbers</strong> (measuring time or monetary amounts). Both arise from the same underlying stochastic process — the <strong>Poisson process</strong>.</p>
 </blockquote>
-<p>以公交车站为例：</p>
+<p>Using a bus stop as an illustration:</p>
 <ul>
-<li><strong>Poisson 分布（问”多少次”）</strong>：固定 1 小时，数这段时间内来了多少辆公交车 → 结果只能是 0, 1, 2, 3 等整数</li>
-<li><strong>Gamma 分布（问”等多久”）</strong>：按下秒表，等到第 <span class="math inline">\(k\)</span> 辆公交车进站总共需要多少时间 → 结果是 15.2 分钟、43.78 分钟等大于 0 的连续实数</li>
+<li><strong>Poisson distribution (asking “how many?”)</strong>: fix a 1-hour window and count how many buses arrive during that period → the result can only be an integer: 0, 1, 2, 3, …</li>
+<li><strong>Gamma distribution (asking “how long?”)</strong>: start a stopwatch and measure the total time until the <span class="math inline">\(k\)</span>-th bus arrives → the result is a continuous positive real number such as 15.2 minutes or 43.78 minutes</li>
 </ul>
-<p><strong>数学联系</strong>：如果事件发生服从 Poisson 分布，那么等待多个事件发生所需的时间就服从 Gamma 分布。（特例：只等一个事件的等待时间 = <strong>指数分布 Exponential distribution</strong>，是 Gamma 的特殊情形）</p>
+<p><strong>Mathematical relationship</strong>: if events occur according to a Poisson process, the time required to wait for multiple events follows a Gamma distribution. (Special case: the waiting time for a single event follows an <strong>Exponential distribution</strong>, which is a special case of the Gamma.)</p>
 </section>
-<section id="gamma-glm-的适用场景" class="level3" data-number="1.3.2">
-<h3 data-number="1.3.2" class="anchored" data-anchor-id="gamma-glm-的适用场景"><span class="header-section-number">1.3.2</span> 3.2 Gamma GLM 的适用场景</h3>
-<p>Gamma GLM 专门用于处理同时满足以下三个条件的因变量 <span class="math inline">\(y\)</span>：</p>
+<section id="when-to-use-gamma-glm" class="level3" data-number="1.3.2">
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="when-to-use-gamma-glm"><span class="header-section-number">1.3.2</span> 3.2 When to Use Gamma GLM</h3>
+<p>Gamma GLM is designed for dependent variables <span class="math inline">\(y\)</span> that simultaneously satisfy all three of the following conditions:</p>
 <ul>
-<li><strong>连续型数值</strong>：不是整数计数，而是带有小数的连续量</li>
-<li><strong>严格为正 (Strictly Positive)</strong>：<span class="math inline">\(y &gt; 0\)</span>，不能为负，通常也不能为 0</li>
-<li><strong>长尾/右偏 (Right-skewed) 且方差不齐</strong>：大部分数值集中在较小区域，少数极大值拖出长尾；且<strong>随着均值的增大，数据的方差呈平方级增大</strong>（均值越大的群体，内部差异越悬殊）</li>
+<li><strong>Continuous numeric values</strong>: not integer counts, but continuous quantities that can take decimal values</li>
+<li><strong>Strictly positive</strong>: <span class="math inline">\(y &gt; 0\)</span>; values cannot be negative, and typically cannot be zero</li>
+<li><strong>Long-tailed/right-skewed and heteroscedastic</strong>: the majority of values are concentrated in a small range while a small number of extreme large values produce a long right tail; moreover, <strong>as the mean increases, the variance grows quadratically</strong> (groups with larger means exhibit far greater internal variability)</li>
 </ul>
-<p><strong>经典业务场景：</strong></p>
+<p><strong>Classic application domains:</strong></p>
 <ul>
-<li><strong>保险理赔金额</strong>：大多数理赔是小额刮蹭，但偶有巨额理赔（极端长尾）；且赔付均值越高的险种，波动往往越大</li>
-<li><strong>医疗花费或住院时间</strong>：大部分人看病花钱少、住院短，少数重症患者花费极高、时间极长</li>
+<li><strong>Insurance claim amounts</strong>: most claims are small (minor scrapes and dents), but occasional catastrophic claims generate an extreme right tail; furthermore, insurance lines with higher average payouts tend to have greater volatility</li>
+<li><strong>Medical expenditure or length of hospital stay</strong>: most patients incur modest costs and have short stays, while a small number of severely ill patients incur extremely high costs over extended periods</li>
 </ul>
 </section>
-<section id="公式与连接函数-link-function" class="level3" data-number="1.3.3">
-<h3 data-number="1.3.3" class="anchored" data-anchor-id="公式与连接函数-link-function"><span class="header-section-number">1.3.3</span> 3.3 公式与连接函数 (Link Function)</h3>
-<p>Gamma 分布的期望（均值）记为 <span class="math inline">\(\mu\)</span>。在 Gamma GLM 中：</p>
+<section id="formula-and-link-function" class="level3" data-number="1.3.3">
+<h3 data-number="1.3.3" class="anchored" data-anchor-id="formula-and-link-function"><span class="header-section-number">1.3.3</span> 3.3 Formula and Link Function</h3>
+<p>The expected value (mean) of the Gamma distribution is denoted <span class="math inline">\(\mu\)</span>. In Gamma GLM:</p>
 <ul>
-<li><strong>典型连接函数（Canonical Link）— 倒数函数 (Inverse Link)</strong>：</li>
+<li><strong>Canonical Link — Inverse (Reciprocal) Link</strong>:</li>
 </ul>
 <p><span class="math display">\[\frac{1}{\mu} = \beta_0 + \beta_1 x_1 + \cdots + \beta_p x_p\]</span></p>
 <ul>
-<li><strong>实践中更常用 — 对数函数 (Log Link)</strong>（保证预测均值 <span class="math inline">\(\mu\)</span> 永远为正数，与 Poisson 回归借用相同连接函数，这也是两者容易混淆的原因之一）：</li>
+<li><strong>The overwhelmingly preferred choice in practice — Log Link</strong> (ensures the predicted mean <span class="math inline">\(\mu\)</span> is always positive; shares the same link function as Poisson regression, which is one reason the two are sometimes confused):</li>
 </ul>
 <p><span class="math display">\[\ln(\mu) = \beta_0 + \beta_1 x_1 + \cdots + \beta_p x_p\]</span></p>
 <hr>
 </section>
 </section>
-<section id="四glm-连接函数深度解析" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="四glm-连接函数深度解析"><span class="header-section-number">1.4</span> 四、GLM 连接函数深度解析</h2>
-<section id="为什么-gamma-和-poisson-都用-log-link" class="level3" data-number="1.4.1">
-<h3 data-number="1.4.1" class="anchored" data-anchor-id="为什么-gamma-和-poisson-都用-log-link"><span class="header-section-number">1.4.1</span> 4.1 为什么 Gamma 和 Poisson 都用 Log Link？</h3>
-<p>Gamma 和 Poisson 预测的目标值（均值 <span class="math inline">\(\mu\)</span>）都有一个共同的严格限制：<strong>必须大于 0</strong>。Log Link 是保证这一点的最自然方式：</p>
+<section id="deep-dive-link-functions-in-glm" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="deep-dive-link-functions-in-glm"><span class="header-section-number">1.4</span> 4. Deep Dive: Link Functions in GLM</h2>
+<section id="why-do-both-gamma-and-poisson-use-the-log-link" class="level3" data-number="1.4.1">
+<h3 data-number="1.4.1" class="anchored" data-anchor-id="why-do-both-gamma-and-poisson-use-the-log-link"><span class="header-section-number">1.4.1</span> 4.1 Why Do Both Gamma and Poisson Use the Log Link?</h3>
+<p>The target quantity being predicted (the mean <span class="math inline">\(\mu\)</span>) in both Gamma and Poisson models shares a common strict constraint: <strong>it must be greater than zero</strong>. The Log Link is the most natural way to enforce this:</p>
 <p><span class="math display">\[\ln(\mu) = X\beta \quad \Rightarrow \quad \mu = e^{X\beta}\]</span></p>
-<p>无论 <span class="math inline">\(X\beta\)</span> 算出什么正负值，取指数后预测值 <span class="math inline">\(\mu = e^{X\beta}\)</span> <strong>永远大于 0</strong>。</p>
-<p><strong>Poisson 的 Link：</strong></p>
+<p>No matter what positive or negative value <span class="math inline">\(X\beta\)</span> takes, the predicted value <span class="math inline">\(\mu = e^{X\beta}\)</span> <strong>is always greater than zero</strong>.</p>
+<p><strong>Poisson link:</strong></p>
 <ul>
-<li><strong>标准 Link — Log</strong>：<span class="math inline">\(\ln(\mu) = X\beta\)</span></li>
-<li><strong>为什么？</strong> <span class="math inline">\(X\beta\)</span> 可以是任意实数，两边取指数后，预测值 <span class="math inline">\(\mu = e^{X\beta}\)</span> 永远大于 0，完美符合计数数据非负的特性</li>
+<li><strong>Standard link — Log</strong>: <span class="math inline">\(\ln(\mu) = X\beta\)</span></li>
+<li><strong>Why?</strong> <span class="math inline">\(X\beta\)</span> can take any real value; exponentiating both sides guarantees <span class="math inline">\(\mu = e^{X\beta} &gt; 0\)</span>, perfectly consistent with the non-negativity requirement of count data</li>
 </ul>
-<p><strong>Gamma 的 Link：</strong></p>
+<p><strong>Gamma link:</strong></p>
 <ul>
-<li><strong>理论标准（Canonical Link）— Inverse（倒数）</strong>：<span class="math inline">\(1/\mu = X\beta\)</span>；但实战中极少用，因为如果 <span class="math inline">\(X\beta\)</span> 为负数，预测出的均值就成负数了，违背了 Gamma 分布必须大于 0 的前提</li>
-<li><strong>实战中的绝对主流 — Log</strong>：<span class="math inline">\(\ln(\mu) = X\beta\)</span>，同样是为了保预测值永为正数；同时，Log Link 会把加法效应转化为<strong>乘数效应（百分比变化）</strong>，这在解释上非常有意义（见血液标志物解释）</li>
+<li><strong>Theoretical canonical link — Inverse (Reciprocal)</strong>: <span class="math inline">\(1/\mu = X\beta\)</span>; rarely used in practice because if <span class="math inline">\(X\beta\)</span> is negative the implied mean becomes negative, violating the Gamma distribution’s requirement that values be strictly positive</li>
+<li><strong>Dominant choice in practice — Log</strong>: <span class="math inline">\(\ln(\mu) = X\beta\)</span>; ensures predicted values are always positive; additionally, the Log Link converts additive effects into <strong>multiplicative effects (percentage changes)</strong>, which is substantively meaningful for interpretation (see the blood biomarker discussion below)</li>
 </ul>
 </section>
-<section id="为什么用-poisson-替换-logistic-能生成更有意义的-risk-ratio" class="level3" data-number="1.4.2">
-<h3 data-number="1.4.2" class="anchored" data-anchor-id="为什么用-poisson-替换-logistic-能生成更有意义的-risk-ratio"><span class="header-section-number">1.4.2</span> 4.2 为什么用 Poisson 替换 Logistic 能生成更有意义的 Risk Ratio？</h3>
+<section id="why-does-substituting-poisson-for-logistic-regression-yield-more-meaningful-risk-ratios" class="level3" data-number="1.4.2">
+<h3 data-number="1.4.2" class="anchored" data-anchor-id="why-does-substituting-poisson-for-logistic-regression-yield-more-meaningful-risk-ratios"><span class="header-section-number">1.4.2</span> 4.2 Why Does Substituting Poisson for Logistic Regression Yield More Meaningful Risk Ratios?</h3>
 <blockquote class="blockquote">
-<p>这是流行病学和医学统计中极经典的技巧，通常称为 <strong>Modified Poisson Regression / 修正泊松回归</strong>。</p>
+<p>This is a classic technique in epidemiology and medical statistics, commonly known as <strong>Modified Poisson Regression</strong>.</p>
 </blockquote>
-<section id="logistic-回归的痛点or-在高发病率时严重夸大-rr" class="level4" data-number="1.4.2.1">
-<h4 data-number="1.4.2.1" class="anchored" data-anchor-id="logistic-回归的痛点or-在高发病率时严重夸大-rr"><span class="header-section-number">1.4.2.1</span> Logistic 回归的”痛点”：OR 在高发病率时严重夸大 RR</h4>
-<p>Logistic 回归天然只能输出 OR（Odds Ratio，优势比/几率比），而医生和大众更想听到的词是 <strong>RR（Relative Risk，相对风险）</strong>：</p>
+<section id="the-pain-point-of-logistic-regression-or-severely-overestimates-rr-at-high-prevalence" class="level4" data-number="1.4.2.1">
+<h4 data-number="1.4.2.1" class="anchored" data-anchor-id="the-pain-point-of-logistic-regression-or-severely-overestimates-rr-at-high-prevalence"><span class="header-section-number">1.4.2.1</span> The “Pain Point” of Logistic Regression: OR Severely Overestimates RR at High Prevalence</h4>
+<p>Logistic regression inherently produces only OR (Odds Ratio), whereas clinicians and the general public think in terms of <strong>RR (Relative Risk)</strong>:</p>
 <ul>
-<li>当疾病<strong>极罕见（发生率 &lt; 10%）</strong>时，OR 和 RR 数值差异不大</li>
-<li>当疾病<strong>常见（发生率 &gt; 10%）</strong>时，OR 会<strong>严重夸大</strong>实际的 RR。例：
+<li>When a disease is <strong>very rare (incidence &lt; 10%)</strong>, the numerical difference between OR and RR is negligible</li>
+<li>When a disease is <strong>common (incidence &gt; 10%)</strong>, OR <strong>severely overestimates</strong> the true RR. For example:
 <ul>
-<li>真实 RR（相对风险）= 80% / 40% = <strong>2.0</strong>（治愈率翻了一倍，很好理解）</li>
-<li>Logistic 算出 OR = (0.8/0.2) / (0.4/0.6) = 4 / 0.67 = <strong>6.0</strong></li>
-<li>发表论文说”吃药让治愈几率提高 6 倍”就是在误导读者</li>
+<li>True RR (Relative Risk) = 80% / 40% = <strong>2.0</strong> (cure rate doubled — easy to understand)</li>
+<li>Logistic regression gives OR = (0.8/0.2) / (0.4/0.6) = 4 / 0.67 = <strong>6.0</strong></li>
+<li>Reporting that “the medication increased the odds of cure by 6-fold” is misleading to readers</li>
 </ul></li>
 </ul>
 </section>
-<section id="poisson-如何解决这个问题" class="level4" data-number="1.4.2.2">
-<h4 data-number="1.4.2.2" class="anchored" data-anchor-id="poisson-如何解决这个问题"><span class="header-section-number">1.4.2.2</span> Poisson 如何解决这个问题？</h4>
-<p>把二分类数据（0 和 1）强行塞进带有 Log Link 的广义线性模型中：</p>
+<section id="how-does-poisson-solve-this-problem" class="level4" data-number="1.4.2.2">
+<h4 data-number="1.4.2.2" class="anchored" data-anchor-id="how-does-poisson-solve-this-problem"><span class="header-section-number">1.4.2.2</span> How Does Poisson Solve This Problem?</h4>
+<p>By fitting binary outcome data (0 and 1) through a generalized linear model with a Log Link:</p>
 <p><span class="math display">\[\ln(p) = \beta_0 + \beta_1 x\]</span></p>
-<p>两边取指数：<span class="math inline">\(p = e^{\beta_0} \cdot e^{\beta_1 x}\)</span>。此时自变量 <span class="math inline">\(x\)</span> 对应的系数 <span class="math inline">\(e^{\beta_1}\)</span> 在统计学意义上<strong>直接就是 RR（Risk Ratio）</strong>！</p>
+<p>Exponentiating both sides: <span class="math inline">\(p = e^{\beta_0} \cdot e^{\beta_1 x}\)</span>. The exponentiated coefficient <span class="math inline">\(e^{\beta_1}\)</span> for predictor <span class="math inline">\(x\)</span> is <strong>directly interpretable as the RR (Risk Ratio)</strong> in a statistical sense.</p>
 <blockquote class="blockquote">
-<p><strong>注意</strong>：因为二分类数据不符合泊松分布的方差假设，直接跑 Poisson 回归算出来的 P 值和置信区间会变窄。所以必须在软件里勾选（或写了代码）<strong>“Robust Standard Errors（稳健标准误/三明治方差估计）”</strong>。这就是著名的 Zou (2004) 提出的经典解法。</p>
+<p><strong>Note</strong>: Because binary data do not satisfy the variance assumptions of the Poisson distribution, running a straight Poisson regression on 0/1 outcomes will produce p-values and confidence intervals that are too narrow. Therefore, <strong>Robust Standard Errors (sandwich variance estimator)</strong> must be specified in the software. This is the classic solution proposed by Zou (2004).</p>
 </blockquote>
 </section>
 </section>
-<section id="为什么研究血液标志物时要用-log-gamma" class="level3" data-number="1.4.3">
-<h3 data-number="1.4.3" class="anchored" data-anchor-id="为什么研究血液标志物时要用-log-gamma"><span class="header-section-number">1.4.3</span> 4.3 为什么研究血液标志物时要用 Log-Gamma？</h3>
-<p><strong>血液标志物完美契合 Gamma 分布的三个特征：</strong></p>
+<section id="why-use-log-gamma-when-studying-blood-biomarkers" class="level3" data-number="1.4.3">
+<h3 data-number="1.4.3" class="anchored" data-anchor-id="why-use-log-gamma-when-studying-blood-biomarkers"><span class="header-section-number">1.4.3</span> 4.3 Why Use Log-Gamma When Studying Blood Biomarkers?</h3>
+<p><strong>Blood biomarkers fit the three defining characteristics of a Gamma distribution perfectly:</strong></p>
 <ul>
-<li><strong>严格非负且高度右偏</strong>：健康人血液标志物浓度通常维持在极低水平（如 CRP 在 1–3 mg/L），但一旦发炎或生病，浓度不是增加几点，而是几十倍、上百倍地暴增（比如飙升到 100–300 mg/L）。数据在左侧高度右倾，在右侧拖出一条极长的尾巴，普通 OLS 遭遇灭灭性打击</li>
-<li><strong>方差随着均值的增大而急剧增大（<span class="math inline">\(\text{Var} \propto \mu^2\)</span>）</strong>：健康人群 CRP 都在 1–3 mg/L，个体差异极小（方差小）；但重度感染病房里的患者 CRP 可能是 50，也可能是 250，患者之间个体差异极其巨大（方差大）。均值越大，方差平方级放大，这正是 Gamma 分布的绝对强项</li>
-<li><strong>为什么是 “Log”-Gamma（乘法效应符合生物学直觉）</strong>：在使用了 Log Link 的 Gamma 回归中（<span class="math inline">\(\ln(\mu) = X\beta\)</span>），系数代表的是<strong>乘数效应（百分比变化）</strong>：
+<li><strong>Strictly non-negative and highly right-skewed</strong>: blood biomarker concentrations in healthy individuals are typically maintained at very low levels (e.g., CRP at 1–3 mg/L), but when inflammation or illness occurs, concentrations do not increase by a few points — they surge tens or hundreds of times over (e.g., spiking to 100–300 mg/L). The data are highly concentrated on the left with an extremely long right tail, which is catastrophic for ordinary OLS</li>
+<li><strong>Variance increases sharply as the mean increases (<span class="math inline">\(\text{Var} \propto \mu^2\)</span>)</strong>: CRP concentrations in healthy individuals cluster around 1–3 mg/L with very little individual variation (small variance); but in a severe infection ward, one patient’s CRP may be 50 while another’s is 250, with enormous inter-individual variability (large variance). As the mean grows, variance scales quadratically — this is precisely where the Gamma distribution excels</li>
+<li><strong>Why “Log”-Gamma (multiplicative effects align with biological intuition)</strong>: in a Gamma regression with a Log Link (<span class="math inline">\(\ln(\mu) = X\beta\)</span>), the coefficients represent <strong>multiplicative effects (percentage changes)</strong>:
 <ul>
-<li>如果是普通加法模型：会解释为”每增加一岁，标志物浓度增加 2 mg/L”。这在生物上不合理，因为基数为 1 的人增加 2 是翻倍，基数为 100 的人增加 2 毫无波澜</li>
-<li>如果是 Log-Gamma 模型：系数会被解释为”每增加一岁，标志物浓度增加 5%“。在人体的生化代谢、酶促反应和药物动力学中，浓度变化绝大多数都是以比例/指数（乘法）形式呈现的</li>
+<li>Under an ordinary additive model: the interpretation would be “each additional year of age increases biomarker concentration by 2 mg/L.” This is biologically implausible — an increase of 2 from a baseline of 1 is a doubling, whereas an increase of 2 from a baseline of 100 is negligible</li>
+<li>Under a Log-Gamma model: the coefficient is interpreted as “each additional year of age increases biomarker concentration by 5%.” In human biochemical metabolism, enzyme kinetics, and pharmacokinetics, concentration changes almost universally follow proportional (multiplicative) patterns</li>
 </ul></li>
 </ul>
 <blockquote class="blockquote">
-<p><strong>总结</strong>：研究血液标志物时，Gamma 分布精准拿捏了数据的长尾和异方差特性，而 Log 连接函数保证了浓度不为负，并且提供了符合人体生理学规律的”百分比/倍数”解释。这就是为什么 Log-Gamma 是处理这类数据的黄金标准。</p>
+<p><strong>Summary</strong>: When studying blood biomarkers, the Gamma distribution precisely captures the long-tailed and heteroscedastic nature of the data, the Log link function guarantees that predicted concentrations are always positive, and the resulting coefficients provide “percentage/fold-change” interpretations that align with human physiology. This is why Log-Gamma is the gold standard for this type of data.</p>
 </blockquote>
 <hr>
 </section>
 </section>
-<section id="五glm-的线性究竟是什么意思" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="五glm-的线性究竟是什么意思"><span class="header-section-number">1.5</span> 五、GLM 的”线性”究竟是什么意思？</h2>
-<p><strong>答案</strong>：在原始数据的视觉表现上，GLM 是非线性的（弯曲的）；但在数学方程的核心引擎上，它们是纯粹的线性模型。</p>
+<section id="what-does-linear-mean-in-glm" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="what-does-linear-mean-in-glm"><span class="header-section-number">1.5</span> 5. What Does “Linear” Mean in GLM?</h2>
+<p><strong>Answer</strong>: In terms of visual appearance in the original data space, GLMs are nonlinear (curved); but at the core of the mathematical equations, they are purely linear models.</p>
 <ul>
-<li><p><strong>视觉上的非线性（现实空间）</strong>：把逻辑回归（S 型曲线）、泊松回归（指数增长曲线）画在坐标轴上，因变量 <span class="math inline">\(Y\)</span> 和自变量 <span class="math inline">\(X\)</span> 之间的关系绝对是一条弯曲的线。从最终预测结果来看，它们处理的是非线性关系</p></li>
-<li><p><strong>数学上的线性（参数空间）</strong>：为什么还要叫它”线性”模型呢？因为在等号的右边，<strong>参数（<span class="math inline">\(\beta\)</span>）和自变量（<span class="math inline">\(X\)</span>）的组合方式是严格的线性相加</strong>：</p></li>
+<li><p><strong>Visually nonlinear (in the natural data space)</strong>: plotting logistic regression (an S-shaped curve) or Poisson regression (an exponential growth curve) on coordinate axes reveals that the relationship between the dependent variable <span class="math inline">\(Y\)</span> and the independent variable <span class="math inline">\(X\)</span> is unambiguously curved. In terms of the final predictions, these models accommodate nonlinear relationships</p></li>
+<li><p><strong>Mathematically linear (in the parameter space)</strong>: why, then, are they still called “linear” models? Because on the right-hand side of the equation, <strong>the parameters (<span class="math inline">\(\beta\)</span>) and the independent variables (<span class="math inline">\(X\)</span>) are combined in a strictly additive linear fashion</strong>:</p></li>
 </ul>
-<p><span class="math display">\[\text{线性预测器} = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots\]</span></p>
-<p>所谓”广义线性”，就是指模型虽然通过<strong>连接函数（Link Function）</strong>把弯曲的现实数据给”掰直”了（比如取 Log 或者 Logit），但在被掰直后的那个维度里，我们实际拟合的核心方程依然是最熟悉的直线方程。</p>
+<p><span class="math display">\[\text{Linear predictor} = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \ldots\]</span></p>
+<p>The term “generalized linear” means that although the model uses a <strong>link function</strong> to “straighten out” the curved real-world data (e.g., by taking the Log or Logit), in the transformed space — after the data have been linearized — the core equation being fitted is still the familiar straight-line equation.</p>
 <blockquote class="blockquote">
-<p><strong>总结</strong>：GLM 是披着”非线性”外衣的”线性”模型。它极其聪明地用一个数学转换（Link Function），保住了线性方程计算简单、容易解释的巨大优势，同时又解决了非线性数据的拟合问题。</p>
+<p><strong>Summary</strong>: A GLM is a “linear” model in “nonlinear” clothing. It cleverly uses a mathematical transformation (the link function) to retain the computational simplicity and interpretive clarity of linear equations, while simultaneously solving the problem of fitting nonlinear data.</p>
 </blockquote>
 <hr>
 </section>
-<section id="六二分类结局稀少时还需要-modified-poisson-吗" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="六二分类结局稀少时还需要-modified-poisson-吗"><span class="header-section-number">1.6</span> 六、二分类结局稀少时，还需要 Modified Poisson 吗？</h2>
-<p><strong>结论</strong>：在软件里确实可以跑得通，但从统计学和实战角度来说——<strong>完全没必要，甚至不推荐</strong>。</p>
-<section id="罕见病假设-rare-disease-assumption" class="level3" data-number="1.6.1">
-<h3 data-number="1.6.1" class="anchored" data-anchor-id="罕见病假设-rare-disease-assumption"><span class="header-section-number">1.6.1</span> 6.1 罕见病假设 (Rare Disease Assumption)</h3>
-<p>在流行病学中有一个铁律：<strong>当结局事件发生率很低时，OR 值在数学上会无限逼近 RR 值（<span class="math inline">\(OR \approx RR\)</span>）</strong>。</p>
+<section id="is-modified-poisson-regression-necessary-for-rare-binary-outcomes" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="is-modified-poisson-regression-necessary-for-rare-binary-outcomes"><span class="header-section-number">1.6</span> 6. Is Modified Poisson Regression Necessary for Rare Binary Outcomes?</h2>
+<p><strong>Conclusion</strong>: it is technically feasible in software, but from both a statistical and practical standpoint — <strong>it is entirely unnecessary and is in fact not recommended</strong>.</p>
+<section id="the-rare-disease-assumption" class="level3" data-number="1.6.1">
+<h3 data-number="1.6.1" class="anchored" data-anchor-id="the-rare-disease-assumption"><span class="header-section-number">1.6.1</span> 6.1 The Rare Disease Assumption</h3>
+<p>A fundamental principle in epidemiology states: <strong>when the event rate is low, the OR converges mathematically to the RR (<span class="math inline">\(OR \approx RR\)</span>)</strong>.</p>
 <ul>
-<li><strong>推导逻辑</strong>：几率 <span class="math inline">\(\text{Odds} = \frac{p}{1-p}\)</span>。如果发病率 <span class="math inline">\(p\)</span> 极小（比如 0.01），那么分母 <span class="math inline">\(1-p\)</span> 就极其接近 1，此时 <span class="math inline">\(\text{Odds} \approx p\)</span>。因此，两个 Odds 的比值（OR）也就等于两个概率的比值（RR）</li>
-<li><strong>实战意义</strong>：既然结局稀少时 OR 就等于 RR，你直接用最经典、最原汁原味的 Logistic 回归算出 OR，然后直接把它当成 RR 来向临床医生解释就可以了，完全不需要绕弯子去用 Modified Poisson</li>
+<li><strong>Derivation</strong>: <span class="math inline">\(\text{Odds} = \frac{p}{1-p}\)</span>. If the incidence <span class="math inline">\(p\)</span> is very small (e.g., 0.01), then the denominator <span class="math inline">\(1-p\)</span> is extremely close to 1, so <span class="math inline">\(\text{Odds} \approx p\)</span>. Consequently, the ratio of two odds (OR) approximates the ratio of two probabilities (RR)</li>
+<li><strong>Practical implication</strong>: since OR equals RR when outcomes are rare, one can simply apply the classic, well-established Logistic regression to obtain an OR and interpret it directly as an RR when communicating with clinicians — no need to take the roundabout route of Modified Poisson</li>
 </ul>
 </section>
-<section id="modified-poisson-的潜在隐患" class="level3" data-number="1.6.2">
-<h3 data-number="1.6.2" class="anchored" data-anchor-id="modified-poisson-的潜在隐患"><span class="header-section-number">1.6.2</span> 6.2 Modified Poisson 的潜在隐患</h3>
-<p>如果强行对稀少结局使用 Modified Poisson，反而可能引入一些麻烦：</p>
+<section id="potential-pitfalls-of-modified-poisson" class="level3" data-number="1.6.2">
+<h3 data-number="1.6.2" class="anchored" data-anchor-id="potential-pitfalls-of-modified-poisson"><span class="header-section-number">1.6.2</span> 6.2 Potential Pitfalls of Modified Poisson</h3>
+<p>Forcing Modified Poisson on rare outcomes may introduce problems:</p>
 <ul>
-<li><strong>收敛问题 (Convergence Issues)</strong>：Logistic 回归是专门为二分类数据”量身定制”的，它的最大似然估计（MLE）算法在处理稀少 0/1 数据时非常稳定。而 Poisson 回归本质上是为”计数（0, 1, 2, 3…）“设计的，你强行塞给它一堆全都是 0（极少数是 1）的数据，某些统计软件在迭代计算时可能会报错或无法收敛</li>
-<li><strong>边界溢出风险</strong>：Logistic 的 Logit 连接函数自带”安全锁”，能保证预测出的概率永远在 0 到 1 之间。而 Poisson 的 Log 连接函数是没有上限的，虽然对于稀少事件预测值很难超过 1，但在极端情况下（或者自变量有很多极端值时），数学上存在预测出”发病概率 &gt; 1（即 100%）“这种荒谬结果的风险</li>
+<li><strong>Convergence issues</strong>: Logistic regression is purpose-built for binary data; its maximum likelihood estimation (MLE) algorithm is highly stable when processing sparse 0/1 data. Poisson regression is fundamentally designed for count data (0, 1, 2, 3, …); forcing it to handle data consisting almost entirely of zeros (with very few ones) may cause certain statistical software packages to produce errors or fail to converge</li>
+<li><strong>Boundary overflow risk</strong>: the Logit link in Logistic regression acts as a built-in “safety lock,” guaranteeing that all predicted probabilities remain within [0, 1]. The Log link in Poisson regression has no upper bound; although predicted values are unlikely to exceed 1 for rare events, in extreme scenarios (or when some predictors take extreme values), it is mathematically possible for the model to predict an “event probability &gt; 1 (i.e., &gt; 100%),” which is an absurd result</li>
 </ul>
 </section>
-<section id="实战建议" class="level3" data-number="1.6.3">
-<h3 data-number="1.6.3" class="anchored" data-anchor-id="实战建议"><span class="header-section-number">1.6.3</span> 6.3 实战建议</h3>
-<p>下次做数据分析时，先看一下你的二分类结局（Y=1）的发生比例：</p>
+<section id="practical-recommendations" class="level3" data-number="1.6.3">
+<h3 data-number="1.6.3" class="anchored" data-anchor-id="practical-recommendations"><span class="header-section-number">1.6.3</span> 6.3 Practical Recommendations</h3>
+<p>Before analyzing binary outcome data, first examine the proportion of events (Y = 1):</p>
 <ul>
-<li><strong>发生率 &gt; 10%</strong>：使用 <strong>Modified Poisson</strong>（记得加 Robust 稳健标准误）来计算 RR</li>
-<li><strong>发生率 &lt; 10%</strong>：直接踏踏实实用 <strong>Logistic 回归</strong>，算出 OR，放心地把它当 RR 来解读</li>
+<li><strong>Event rate &gt; 10%</strong>: use <strong>Modified Poisson</strong> (with Robust standard errors) to estimate RR</li>
+<li><strong>Event rate &lt; 10%</strong>: use the straightforward <strong>Logistic regression</strong>, compute the OR, and interpret it confidently as an approximation of RR</li>
 </ul>
 <hr>
 </section>
 </section>
-<section id="七ols-的解析解-vs.-glm-的迭代数值解" class="level2" data-number="1.7">
-<h2 data-number="1.7" class="anchored" data-anchor-id="七ols-的解析解-vs.-glm-的迭代数值解"><span class="header-section-number">1.7</span> 七、OLS 的解析解 vs.&nbsp;GLM 的迭代数值解</h2>
-<section id="ols一步到位的解析解-closed-form-solution" class="level3" data-number="1.7.1">
-<h3 data-number="1.7.1" class="anchored" data-anchor-id="ols一步到位的解析解-closed-form-solution"><span class="header-section-number">1.7.1</span> 7.1 OLS：一步到位的解析解 (Closed-form Solution)</h3>
-<p>OLS 的唯一目标是让所有观测点到回归直线的垂直距离（残差）的平方和最小。</p>
-<p>因为 OLS 假设因变量是连续的、且恒定方差（同方差性），其数学公式极其优美。在矩阵代数中，求最小残差平方和相当于求一个抛物线的最低点，直接对参数求导并令其为 0 即可。它可以<strong>直接用一个固定的公式算出精确答案</strong>，无需任何试错：</p>
+<section id="ols-closed-form-solution-vs.-glm-iterative-numerical-solution" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="ols-closed-form-solution-vs.-glm-iterative-numerical-solution"><span class="header-section-number">1.7</span> 7. OLS Closed-Form Solution vs.&nbsp;GLM Iterative Numerical Solution</h2>
+<section id="ols-a-one-step-closed-form-solution" class="level3" data-number="1.7.1">
+<h3 data-number="1.7.1" class="anchored" data-anchor-id="ols-a-one-step-closed-form-solution"><span class="header-section-number">1.7.1</span> 7.1 OLS: A One-Step Closed-Form Solution</h3>
+<p>The sole objective of OLS is to minimize the sum of squared vertical distances (residuals) from all observations to the regression line.</p>
+<p>Because OLS assumes a continuous dependent variable with constant variance (homoscedasticity), its mathematical formulation is elegant. In matrix algebra, minimizing the sum of squared residuals is equivalent to finding the minimum of a paraboloid — one simply differentiates with respect to the parameters, sets the derivative to zero, and solves. The exact answer can be <strong>computed directly from a single fixed formula, with no iteration required</strong>:</p>
 <p><span class="math display">\[\hat{\beta} = (X^T X)^{-1} X^T Y\]</span></p>
 <blockquote class="blockquote">
-<p><strong>注</strong>：只要自变量之间没有完全的多重共线性（即矩阵 <span class="math inline">\(X^TX\)</span> 可逆），计算机只需要做一次矩阵乘法和求逆运算，就能瞬间给出 <span class="math inline">\(\beta\)</span> 的精确值。</p>
+<p><strong>Note</strong>: as long as there is no perfect multicollinearity among the predictors (i.e., the matrix <span class="math inline">\(X^TX\)</span> is invertible), the computer performs a single matrix multiplication and inversion to obtain the exact value of <span class="math inline">\(\beta\)</span> instantaneously.</p>
 </blockquote>
 </section>
-<section id="glm最大似然估计与迭代法-mle-irls" class="level3" data-number="1.7.2">
-<h3 data-number="1.7.2" class="anchored" data-anchor-id="glm最大似然估计与迭代法-mle-irls"><span class="header-section-number">1.7.2</span> 7.2 GLM：最大似然估计与迭代法 (MLE + IRLS)</h3>
-<p>广义线性模型（如 Logistic、Poisson、Gamma）面对的是非正态分布、非线性连接函数、且方差会随着均值变化的数据。这时候，最小二乘法的那个完美公式就失效了。</p>
-<section id="核心思想-最大似然估计-maximum-likelihood-estimation-mle" class="level4" data-number="1.7.2.1">
-<h4 data-number="1.7.2.1" class="anchored" data-anchor-id="核心思想-最大似然估计-maximum-likelihood-estimation-mle"><span class="header-section-number">1.7.2.1</span> 核心思想 — 最大似然估计 (Maximum Likelihood Estimation, MLE)</h4>
-<p>GLM 不再追求”误差平方和最小”，而是追求<strong>“让当前这组数据发生的概率（似然度）达到最大”</strong>。它会问：参数 <span class="math inline">\(\beta\)</span> 取何值时，我们手头观察到的这批数据最有可能出现？</p>
+<section id="glm-maximum-likelihood-estimation-and-iterative-methods-mle-irls" class="level3" data-number="1.7.2">
+<h3 data-number="1.7.2" class="anchored" data-anchor-id="glm-maximum-likelihood-estimation-and-iterative-methods-mle-irls"><span class="header-section-number">1.7.2</span> 7.2 GLM: Maximum Likelihood Estimation and Iterative Methods (MLE + IRLS)</h3>
+<p>Generalized linear models (such as Logistic, Poisson, and Gamma) deal with data that are non-normally distributed, involve nonlinear link functions, and have variances that change with the mean. In this setting, the elegant closed-form formula of least squares breaks down.</p>
+<section id="core-idea-maximum-likelihood-estimation-mle" class="level4" data-number="1.7.2.1">
+<h4 data-number="1.7.2.1" class="anchored" data-anchor-id="core-idea-maximum-likelihood-estimation-mle"><span class="header-section-number">1.7.2.1</span> Core Idea — Maximum Likelihood Estimation (MLE)</h4>
+<p>Rather than minimizing the sum of squared errors, GLM seeks to <strong>maximize the probability (likelihood) of observing the data at hand</strong>. It asks: for what value of the parameter <span class="math inline">\(\beta\)</span> would the observed data be most likely to occur?</p>
 </section>
-<section id="求解过程-迭代重加权最小二乘法-irls" class="level4" data-number="1.7.2.2">
-<h4 data-number="1.7.2.2" class="anchored" data-anchor-id="求解过程-迭代重加权最小二乘法-irls"><span class="header-section-number">1.7.2.2</span> 求解过程 — 迭代重加权最小二乘法 (IRLS)</h4>
-<p>因为引入了复杂的连接函数（如 Logit 或 Log），似然函数变得极其复杂，<strong>没有像 OLS 那样一步到位的公式（没有解析解）</strong>。计算机必须使用数值优化算法（通常是 Iteratively Reweighted Least Squares，IRLS，或牛顿-拉夫逊法 Newton-Raphson）来进行”盲人摸象”式的迭代寻优：</p>
+<section id="solution-method-iteratively-reweighted-least-squares-irls" class="level4" data-number="1.7.2.2">
+<h4 data-number="1.7.2.2" class="anchored" data-anchor-id="solution-method-iteratively-reweighted-least-squares-irls"><span class="header-section-number">1.7.2.2</span> Solution Method — Iteratively Reweighted Least Squares (IRLS)</h4>
+<p>Because complex link functions (such as Logit or Log) are involved, the likelihood function becomes highly complex, and <strong>there is no closed-form formula analogous to OLS</strong>. The computer must employ a numerical optimization algorithm — typically Iteratively Reweighted Least Squares (IRLS), or equivalently the Newton-Raphson method — to search iteratively for the optimum:</p>
 <ul>
-<li><strong>第 1 步（瞎猜一个起点）</strong>：计算机先给参数 <span class="math inline">\(\beta\)</span> 随便猜一组初始值（比如全设为 0）</li>
-<li><strong>第 2 步（计算权重与误差）</strong>：根据当前的 <span class="math inline">\(\beta\)</span> 值和选定的连接函数，计算出每个样本的预测值。由于 GLM 中数据的方差随均值变化，计算机会给方差小（更确定）的样本赋予<strong>更大的权重（Weight）</strong></li>
-<li><strong>第 3 步（修正方向）</strong>：利用加权后的误差，算出似然函数在当前位置的”坡度（梯度）“，朝着能让似然度变大的方向迈出一步，更新 <span class="math inline">\(\beta\)</span> 的值</li>
-<li><strong>第 4 步（循环往复）</strong>：用新的 <span class="math inline">\(\beta\)</span> 重新计算权重（所以叫”迭代重加权”），再次修正方向</li>
-<li><strong>第 5 步（收敛 Convergence）</strong>：当连续两次计算出的 <span class="math inline">\(\beta\)</span> 值几乎不再变化（比如相差小于 0.0001），计算机就认为自己找到了山顶（最大似然点），宣布<strong>模型收敛</strong>，停止计算并输出结果</li>
+<li><strong>Step 1 (initial guess)</strong>: the computer assigns an arbitrary starting value to <span class="math inline">\(\beta\)</span> (e.g., all zeros)</li>
+<li><strong>Step 2 (compute weights and residuals)</strong>: based on the current <span class="math inline">\(\beta\)</span> and the chosen link function, the predicted value for each observation is computed. Because the variance in a GLM changes with the mean, observations with smaller variance (greater certainty) are assigned <strong>larger weights</strong></li>
+<li><strong>Step 3 (update direction)</strong>: using the weighted residuals, the gradient of the likelihood function at the current point is computed, and <span class="math inline">\(\beta\)</span> is updated by stepping in the direction that increases the likelihood</li>
+<li><strong>Step 4 (repeat)</strong>: the new <span class="math inline">\(\beta\)</span> is used to recompute the weights (hence “iteratively reweighted”), and the direction is updated again</li>
+<li><strong>Step 5 (convergence)</strong>: when successive estimates of <span class="math inline">\(\beta\)</span> differ by a negligible amount (e.g., less than 0.0001), the computer concludes that it has reached the maximum of the likelihood function, declares <strong>model convergence</strong>, halts the computation, and reports the results</li>
 </ul>
 <hr>
 </section>
 </section>
 </section>
-<section id="八设计矩阵design-matrix" class="level2" data-number="1.8">
-<h2 data-number="1.8" class="anchored" data-anchor-id="八设计矩阵design-matrix"><span class="header-section-number">1.8</span> 八、设计矩阵（Design Matrix）</h2>
-<section id="核心概念" class="level3" data-number="1.8.1">
-<h3 data-number="1.8.1" class="anchored" data-anchor-id="核心概念"><span class="header-section-number">1.8.1</span> 8.1 核心概念</h3>
-<p>多元回归用矩阵形式统一表达：<span class="math inline">\(Y' = X\hat{\beta}\)</span></p>
+<section id="design-matrix" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="design-matrix"><span class="header-section-number">1.8</span> 8. Design Matrix</h2>
+<section id="core-concept" class="level3" data-number="1.8.1">
+<h3 data-number="1.8.1" class="anchored" data-anchor-id="core-concept"><span class="header-section-number">1.8.1</span> 8.1 Core Concept</h3>
+<p>Multiple regression is expressed compactly in matrix form as: <span class="math inline">\(Y' = X\hat{\beta}\)</span></p>
 <ul>
-<li><strong><span class="math inline">\(Y'\)</span></strong>：预测值构成的列向量</li>
-<li><strong><span class="math inline">\(X\)</span>（设计矩阵，Design Matrix）</strong>：包含截距列（全为 1）和所有自变量观测值的矩阵</li>
-<li><strong><span class="math inline">\(\hat{\beta}\)</span></strong>：回归系数估计向量</li>
+<li><strong><span class="math inline">\(Y'\)</span></strong>: a column vector of predicted values</li>
+<li><strong><span class="math inline">\(X\)</span> (Design Matrix)</strong>: a matrix containing a column of ones (for the intercept) and columns of observed values for all predictors</li>
+<li><strong><span class="math inline">\(\hat{\beta}\)</span></strong>: a vector of estimated regression coefficients</li>
 </ul>
-<p><strong>单预测变量（5 个观测）展开形式：</strong></p>
+<p><strong>Expanded form with a single predictor (5 observations):</strong></p>
 <p><span class="math display">\[Y'_i = \hat{\beta}_0 + \hat{\beta}_1 X_{1i} \;\equiv\; \hat{\beta}_0(1) + \hat{\beta}_1 X_{1i}\]</span></p>
 <p><span class="math display">\[\begin{bmatrix} Y'_1 \\ Y'_2 \\ Y'_3 \\ Y'_4 \\ Y'_5 \end{bmatrix} = \begin{bmatrix} 1 &amp; X_{11} \\ 1 &amp; X_{12} \\ 1 &amp; X_{13} \\ 1 &amp; X_{14} \\ 1 &amp; X_{15} \end{bmatrix} \begin{bmatrix} \hat{\beta}_0 \\ \hat{\beta}_1 \end{bmatrix} = \begin{bmatrix} \hat{\beta}_0 + \hat{\beta}_1 X_{11} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{12} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{13} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{14} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{15} \end{bmatrix}\]</span></p>
-<p><strong>两个预测变量展开形式：</strong></p>
+<p><strong>Expanded form with two predictors:</strong></p>
 <p><span class="math display">\[Y'_i = \hat{\beta}_0 + \hat{\beta}_1 X_{1i} + \hat{\beta}_2 X_{2i}\]</span></p>
 <p><span class="math display">\[\begin{bmatrix} Y'_1 \\ Y'_2 \\ Y'_3 \\ Y'_4 \\ Y'_5 \end{bmatrix} = \begin{bmatrix} 1 &amp; X_{11} &amp; X_{21} \\ 1 &amp; X_{12} &amp; X_{22} \\ 1 &amp; X_{13} &amp; X_{23} \\ 1 &amp; X_{14} &amp; X_{24} \\ 1 &amp; X_{15} &amp; X_{25} \end{bmatrix} \begin{bmatrix} \hat{\beta}_0 \\ \hat{\beta}_1 \\ \hat{\beta}_2 \end{bmatrix} = \begin{bmatrix} \hat{\beta}_0 + \hat{\beta}_1 X_{11} + \hat{\beta}_2 X_{21} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{12} + \hat{\beta}_2 X_{22} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{13} + \hat{\beta}_2 X_{23} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{14} + \hat{\beta}_2 X_{24} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{15} + \hat{\beta}_2 X_{25} \end{bmatrix}\]</span></p>
 </section>
-<section id="ols-矩阵解" class="level3" data-number="1.8.2">
-<h3 data-number="1.8.2" class="anchored" data-anchor-id="ols-矩阵解"><span class="header-section-number">1.8.2</span> 8.2 OLS 矩阵解</h3>
-<p>通过矩阵运算一步求出系数向量：构造设计矩阵 <span class="math inline">\(X\)</span>，计算转置 <span class="math inline">\(X'\)</span>，相乘得 <span class="math inline">\(X'X\)</span>，取逆后乘以 <span class="math inline">\(X'Y\)</span>：</p>
+<section id="ols-matrix-solution" class="level3" data-number="1.8.2">
+<h3 data-number="1.8.2" class="anchored" data-anchor-id="ols-matrix-solution"><span class="header-section-number">1.8.2</span> 8.2 OLS Matrix Solution</h3>
+<p>The coefficient vector is obtained in one step via matrix algebra: construct the design matrix <span class="math inline">\(X\)</span>, compute its transpose <span class="math inline">\(X'\)</span>, form the product <span class="math inline">\(X'X\)</span>, invert it, and multiply by <span class="math inline">\(X'Y\)</span>:</p>
 <p><span class="math display">\[\hat{\beta} = (X'X)^{-1}X'Y\]</span></p>
 <blockquote class="blockquote">
-<p>只要 <span class="math inline">\(X'X\)</span> 可逆（无完全多重共线性），此公式直接给出精确解，无需迭代。</p>
+<p>As long as <span class="math inline">\(X'X\)</span> is invertible (no perfect multicollinearity), this formula yields the exact solution directly, with no iteration.</p>
 </blockquote>
 </section>
-<section id="系数估计的协方差矩阵" class="level3" data-number="1.8.3">
-<h3 data-number="1.8.3" class="anchored" data-anchor-id="系数估计的协方差矩阵"><span class="header-section-number">1.8.3</span> 8.3 系数估计的协方差矩阵</h3>
-<p><span class="math inline">\(\hat{\beta}\)</span> 向量的协方差矩阵：</p>
+<section id="covariance-matrix-of-the-coefficient-estimates" class="level3" data-number="1.8.3">
+<h3 data-number="1.8.3" class="anchored" data-anchor-id="covariance-matrix-of-the-coefficient-estimates"><span class="header-section-number">1.8.3</span> 8.3 Covariance Matrix of the Coefficient Estimates</h3>
+<p>The covariance matrix of the vector <span class="math inline">\(\hat{\beta}\)</span>:</p>
 <p><span class="math display">\[\text{cov}(\hat{\beta}) = \sigma^2 (X'X)^{-1}\]</span></p>
-<p>其中残差方差 <span class="math inline">\(\sigma^2\)</span> 由残差向量 <span class="math inline">\(\epsilon\)</span> 估计：</p>
+<p>where the residual variance <span class="math inline">\(\sigma^2\)</span> is estimated from the residual vector <span class="math inline">\(\epsilon\)</span>:</p>
 <p><span class="math display">\[\sigma^2 = \frac{\epsilon'\epsilon}{n - s}\]</span></p>
 <ul>
-<li><strong><span class="math inline">\(\epsilon\)</span></strong>：残差向量（<span class="math inline">\(= Y - X\hat{\beta}\)</span>）</li>
-<li><strong><span class="math inline">\(s\)</span></strong>：模型中估计的回归系数个数（含截距）</li>
-<li><strong><span class="math inline">\(n - s\)</span></strong>：残差自由度</li>
+<li><strong><span class="math inline">\(\epsilon\)</span></strong>: the residual vector (<span class="math inline">\(= Y - X\hat{\beta}\)</span>)</li>
+<li><strong><span class="math inline">\(s\)</span></strong>: the number of regression coefficients estimated in the model (including the intercept)</li>
+<li><strong><span class="math inline">\(n - s\)</span></strong>: the residual degrees of freedom</li>
 </ul>
-<p>协方差矩阵的对角线元素即各系数估计量的方差，开根号后为各系数的<strong>标准误（SE）</strong>。可通过软件中的 <code>vcov()</code> 函数提取，验证输出结果中的 SE 值。</p>
+<p>The diagonal elements of the covariance matrix are the variances of the individual coefficient estimates; their square roots are the <strong>standard errors (SE)</strong> of the respective coefficients. This matrix can be extracted in software via the <code>vcov()</code> function to verify the SE values reported in the output.</p>
 </section>
-<section id="ols-中-textvarmathbfy-的矩阵表示" class="level3" data-number="1.8.4">
-<h3 data-number="1.8.4" class="anchored" data-anchor-id="ols-中-textvarmathbfy-的矩阵表示"><span class="header-section-number">1.8.4</span> 8.4 OLS 中 <span class="math inline">\(\text{Var}(\mathbf{y})\)</span> 的矩阵表示</h3>
-<p>OLS 的生成模型为 <span class="math inline">\(\mathbf{y} = X\beta + \boldsymbol{\epsilon}\)</span>，其中 <span class="math inline">\(X\beta\)</span> 是固定的（非随机），因此：</p>
+<section id="matrix-representation-of-textvarmathbfy-in-ols" class="level3" data-number="1.8.4">
+<h3 data-number="1.8.4" class="anchored" data-anchor-id="matrix-representation-of-textvarmathbfy-in-ols"><span class="header-section-number">1.8.4</span> 8.4 Matrix Representation of <span class="math inline">\(\text{Var}(\mathbf{y})\)</span> in OLS</h3>
+<p>The OLS data-generating model is <span class="math inline">\(\mathbf{y} = X\beta + \boldsymbol{\epsilon}\)</span>, where <span class="math inline">\(X\beta\)</span> is fixed (non-random), so:</p>
 <p><span class="math display">\[\text{Var}(\mathbf{y}) = \text{Var}(\boldsymbol{\epsilon}) = \sigma^2 \mathbf{I}_n\]</span></p>
-<p>展开为 <span class="math inline">\(n \times n\)</span> 矩阵：</p>
+<p>Expanded as an <span class="math inline">\(n \times n\)</span> matrix:</p>
 <p><span class="math display">\[\text{Var}(\mathbf{y}) = \begin{bmatrix} \sigma^2 &amp; 0 &amp; \cdots &amp; 0 \\ 0 &amp; \sigma^2 &amp; \cdots &amp; 0 \\ \vdots &amp; &amp; \ddots &amp; \vdots \\ 0 &amp; 0 &amp; \cdots &amp; \sigma^2 \end{bmatrix}\]</span></p>
-<p><strong>对角线 = 每个观测的方差（相同）；非对角线全为 0 = 观测之间相互独立。</strong></p>
-<p>这正是 OLS 在协方差矩阵语言下的两大核心假设：<strong>同方差性（Homoscedasticity）+ 独立性（Independence）</strong>。</p>
-<section id="与-mlm-lsem-的对应关系" class="level4" data-number="1.8.4.1">
-<h4 data-number="1.8.4.1" class="anchored" data-anchor-id="与-mlm-lsem-的对应关系"><span class="header-section-number">1.8.4.1</span> 与 MLM / LSEM 的对应关系</h4>
+<p><strong>The diagonal elements are the variance of each observation (all equal); the off-diagonal elements are all zero, indicating mutual independence across observations.</strong></p>
+<p>This is precisely the two core assumptions of OLS expressed in the language of covariance matrices: <strong>Homoscedasticity + Independence</strong>.</p>
+<section id="correspondence-to-mlm-lsem" class="level4" data-number="1.8.4.1">
+<h4 data-number="1.8.4.1" class="anchored" data-anchor-id="correspondence-to-mlm-lsem"><span class="header-section-number">1.8.4.1</span> Correspondence to MLM / LSEM</h4>
 <ul>
-<li><strong>OLS</strong>：<span class="math inline">\(\text{Var}(\mathbf{y}) = \sigma^2 \mathbf{I}_n\)</span> — 无随机效应，残差独立同方差</li>
-<li><strong>MLM</strong>：<span class="math inline">\(V_i = Z_i G Z_i' + R_i\)</span> — 随机效应 <span class="math inline">\(+\)</span> 个体内残差</li>
-<li><strong>LSEM</strong>：<span class="math inline">\(\Sigma(\theta) = \Lambda\Psi\Lambda' + \Theta\)</span> — 潜在因子 <span class="math inline">\(+\)</span> 指标残差</li>
+<li><strong>OLS</strong>: <span class="math inline">\(\text{Var}(\mathbf{y}) = \sigma^2 \mathbf{I}_n\)</span> — no random effects; residuals are independent and identically distributed</li>
+<li><strong>MLM</strong>: <span class="math inline">\(V_i = Z_i G Z_i' + R_i\)</span> — random effects plus within-individual residual structure</li>
+<li><strong>LSEM</strong>: <span class="math inline">\(\Sigma(\theta) = \Lambda\Psi\Lambda' + \Theta\)</span> — latent factors plus indicator residuals</li>
 </ul>
-<p>OLS 是三者中的<strong>最受限特例</strong>：令 <span class="math inline">\(Z_i = \mathbf{0}\)</span>（无随机效应）且 <span class="math inline">\(R_i = \sigma^2 \mathbf{I}\)</span>（同质独立残差），MLM 公式立即退化为 OLS 的 <span class="math inline">\(\sigma^2\mathbf{I}\)</span>；同理令 <span class="math inline">\(\Lambda = \mathbf{0}\)</span> 且 <span class="math inline">\(\Theta = \sigma^2\mathbf{I}\)</span>，LSEM 亦退化为 OLS。</p>
+<p>OLS is the <strong>most constrained special case</strong> of the three: setting <span class="math inline">\(Z_i = \mathbf{0}\)</span> (no random effects) and <span class="math inline">\(R_i = \sigma^2 \mathbf{I}\)</span> (homogeneous independent residuals) reduces the MLM formula immediately to the OLS form <span class="math inline">\(\sigma^2\mathbf{I}\)</span>; likewise, setting <span class="math inline">\(\Lambda = \mathbf{0}\)</span> and <span class="math inline">\(\Theta = \sigma^2\mathbf{I}\)</span> reduces the LSEM to OLS.</p>
 </section>
-<section id="假设违背时的扩展" class="level4" data-number="1.8.4.2">
-<h4 data-number="1.8.4.2" class="anchored" data-anchor-id="假设违背时的扩展"><span class="header-section-number">1.8.4.2</span> 假设违背时的扩展</h4>
+<section id="extensions-when-assumptions-are-violated" class="level4" data-number="1.8.4.2">
+<h4 data-number="1.8.4.2" class="anchored" data-anchor-id="extensions-when-assumptions-are-violated"><span class="header-section-number">1.8.4.2</span> Extensions When Assumptions Are Violated</h4>
 <ul>
-<li><strong>异方差（Heteroscedasticity）</strong>：非对角线仍为 0（独立），但对角线各不相同：</li>
+<li><strong>Heteroscedasticity</strong>: off-diagonal elements remain zero (independence holds), but diagonal elements differ:</li>
 </ul>
 <p><span class="math display">\[\text{Var}(\mathbf{y}) = \begin{bmatrix} \sigma_1^2 &amp; &amp; \\ &amp; \ddots &amp; \\ &amp; &amp; \sigma_n^2 \end{bmatrix} = \Omega\]</span></p>
 <ul>
-<li><strong>自相关（Autocorrelation，如 AR(1)）</strong>：对角线相同，但非对角线不为 0：</li>
+<li><strong>Autocorrelation (e.g., AR(1))</strong>: diagonal elements are equal, but off-diagonal elements are non-zero:</li>
 </ul>
 <p><span class="math display">\[\text{Var}(\mathbf{y}) = \sigma^2 \begin{bmatrix} 1 &amp; \rho &amp; \rho^2 &amp; \cdots \\ \rho &amp; 1 &amp; \rho &amp; \cdots \\ \rho^2 &amp; \rho &amp; 1 &amp; \cdots \\ \vdots &amp; &amp; &amp; \ddots \end{bmatrix}\]</span></p>
 <ul>
-<li><strong>一般情形（GLS）</strong>：<span class="math inline">\(\text{Var}(\mathbf{y}) = \sigma^2\Omega\)</span>，OLS 公式变为广义最小二乘（GLS）解：</li>
+<li><strong>General case (GLS)</strong>: <span class="math inline">\(\text{Var}(\mathbf{y}) = \sigma^2\Omega\)</span>; the OLS formula becomes the Generalized Least Squares (GLS) estimator:</li>
 </ul>
 <p><span class="math display">\[\hat{\beta}_{\text{GLS}} = (X'\Omega^{-1}X)^{-1}X'\Omega^{-1}Y\]</span></p>
-<p>当 <span class="math inline">\(\Omega = \mathbf{I}\)</span> 时即退化回 OLS 的 <span class="math inline">\(\hat{\beta} = (X'X)^{-1}X'Y\)</span>。</p>
+<p>When <span class="math inline">\(\Omega = \mathbf{I}\)</span>, this reduces back to the OLS estimator <span class="math inline">\(\hat{\beta} = (X'X)^{-1}X'Y\)</span>.</p>
 
 
 </section>
@@ -608,12 +613,12 @@ window.Quarto = {
       // flash "checked"
       button.classList.add('code-copy-button-checked');
       var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "已复制");
+      button.setAttribute("title", "Copied!");
       let tooltip;
       if (window.bootstrap) {
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "已复制");
+        button.setAttribute("data-bs-title", "Copied!");
         tooltip = new bootstrap.Tooltip(button, 
           { trigger: "manual", 
             customClass: "code-copy-button-tooltip",

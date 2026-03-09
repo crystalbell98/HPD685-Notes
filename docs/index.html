@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.7.32">
@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="">
+<meta name="dcterms.date" content="2026-03-08">
 
-<title>线性纵向建模笔记 – HPD 685 线性纵向建模</title>
+<title>Linear Longitudinal Modeling Notes – HPD 685 Linear Longitudinal Modeling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -90,17 +91,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "没有结果",
-    "search-matching-documents-text": "匹配的文档",
-    "search-copy-link-title": "复制搜索链接",
-    "search-hide-matches-text": "隐藏其它匹配结果",
-    "search-more-match-text": "更多匹配结果",
-    "search-more-matches-text": "更多匹配结果",
-    "search-clear-button-title": "清除",
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
     "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "取消",
-    "search-submit-button-title": "提交",
-    "search-label": "搜索"
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
@@ -146,22 +147,26 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">HPD 685 线性纵向建模</span>
+    <span class="navbar-title">HPD 685 Linear Longitudinal Modeling</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="搜索"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="展开或折叠导航栏" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link active" href="./index.html" aria-current="page"> 
-<span class="menu-text">纵向建模笔记</span></a>
+<span class="menu-text">Longitudinal Modeling Notes</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./ols.html"> 
-<span class="menu-text">OLS 回归笔记</span></a>
+<span class="menu-text">OLS Regression Notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./analysis.html"> 
+<span class="menu-text">R Code Examples</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -178,111 +183,111 @@ window.Quarto = {
     <h2 id="toc-title">目录</h2>
    
   <ul>
-  <li><a href="#线性纵向建模笔记" id="toc-线性纵向建模笔记" class="nav-link active" data-scroll-target="#线性纵向建模笔记"><span class="header-section-number">1</span> 线性纵向建模笔记</a>
+  <li><a href="#linear-longitudinal-modeling-notes" id="toc-linear-longitudinal-modeling-notes" class="nav-link active" data-scroll-target="#linear-longitudinal-modeling-notes"><span class="header-section-number">1</span> Linear Longitudinal Modeling Notes</a>
   <ul>
-  <li><a href="#统一记号notation" id="toc-统一记号notation" class="nav-link" data-scroll-target="#统一记号notation"><span class="header-section-number">1.1</span> 0. 统一记号（Notation）</a>
+  <li><a href="#unified-notation" id="toc-unified-notation" class="nav-link" data-scroll-target="#unified-notation"><span class="header-section-number">1.1</span> 0. Unified Notation</a>
   <ul class="collapse">
-  <li><a href="#基本索引与变量" id="toc-基本索引与变量" class="nav-link" data-scroll-target="#基本索引与变量"><span class="header-section-number">1.1.1</span> 0.1 基本索引与变量</a></li>
-  <li><a href="#统一的线性增长写法" id="toc-统一的线性增长写法" class="nav-link" data-scroll-target="#统一的线性增长写法"><span class="header-section-number">1.1.2</span> 0.2 统一的线性增长写法</a></li>
-  <li><a href="#与-sem-记法的对应" id="toc-与-sem-记法的对应" class="nav-link" data-scroll-target="#与-sem-记法的对应"><span class="header-section-number">1.1.3</span> 0.3 与 SEM 记法的对应</a></li>
+  <li><a href="#basic-indices-and-variables" id="toc-basic-indices-and-variables" class="nav-link" data-scroll-target="#basic-indices-and-variables"><span class="header-section-number">1.1.1</span> 0.1 Basic Indices and Variables</a></li>
+  <li><a href="#unified-linear-growth-notation" id="toc-unified-linear-growth-notation" class="nav-link" data-scroll-target="#unified-linear-growth-notation"><span class="header-section-number">1.1.2</span> 0.2 Unified Linear Growth Notation</a></li>
+  <li><a href="#correspondence-with-sem-notation" id="toc-correspondence-with-sem-notation" class="nav-link" data-scroll-target="#correspondence-with-sem-notation"><span class="header-section-number">1.1.3</span> 0.3 Correspondence with SEM Notation</a></li>
   </ul></li>
-  <li><a href="#方法论起点为什么纵向数据不能直接套-ols" id="toc-方法论起点为什么纵向数据不能直接套-ols" class="nav-link" data-scroll-target="#方法论起点为什么纵向数据不能直接套-ols"><span class="header-section-number">1.2</span> 1. 方法论起点：为什么纵向数据不能直接套 OLS</a>
+  <li><a href="#methodological-rationale-for-longitudinal-research-why-longitudinal-data-cannot-be-analyzed-directly-with-ols" id="toc-methodological-rationale-for-longitudinal-research-why-longitudinal-data-cannot-be-analyzed-directly-with-ols" class="nav-link" data-scroll-target="#methodological-rationale-for-longitudinal-research-why-longitudinal-data-cannot-be-analyzed-directly-with-ols"><span class="header-section-number">1.2</span> 1. Methodological Rationale for Longitudinal Research: Why Longitudinal Data Cannot Be Analyzed Directly with OLS</a>
   <ul class="collapse">
-  <li><a href="#独立性假设的破裂" id="toc-独立性假设的破裂" class="nav-link" data-scroll-target="#独立性假设的破裂"><span class="header-section-number">1.2.1</span> 1.1 独立性假设的破裂</a></li>
-  <li><a href="#强行使用-ols-的后果" id="toc-强行使用-ols-的后果" class="nav-link" data-scroll-target="#强行使用-ols-的后果"><span class="header-section-number">1.2.2</span> 1.2 强行使用 OLS 的后果</a></li>
-  <li><a href="#纵向建模真正要解决的问题" id="toc-纵向建模真正要解决的问题" class="nav-link" data-scroll-target="#纵向建模真正要解决的问题"><span class="header-section-number">1.2.3</span> 1.3 纵向建模真正要解决的问题</a></li>
+  <li><a href="#violation-of-the-independence-assumption" id="toc-violation-of-the-independence-assumption" class="nav-link" data-scroll-target="#violation-of-the-independence-assumption"><span class="header-section-number">1.2.1</span> 1.1 Violation of the Independence Assumption</a></li>
+  <li><a href="#consequences-of-applying-ols-naively" id="toc-consequences-of-applying-ols-naively" class="nav-link" data-scroll-target="#consequences-of-applying-ols-naively"><span class="header-section-number">1.2.2</span> 1.2 Consequences of Applying OLS Naively</a></li>
+  <li><a href="#what-longitudinal-modeling-actually-addresses" id="toc-what-longitudinal-modeling-actually-addresses" class="nav-link" data-scroll-target="#what-longitudinal-modeling-actually-addresses"><span class="header-section-number">1.2.3</span> 1.3 What Longitudinal Modeling Actually Addresses</a></li>
   </ul></li>
-  <li><a href="#两波变化的经典处理change-score-vs.-residualized-change" id="toc-两波变化的经典处理change-score-vs.-residualized-change" class="nav-link" data-scroll-target="#两波变化的经典处理change-score-vs.-residualized-change"><span class="header-section-number">1.3</span> 2. 两波变化的经典处理：Change Score vs.&nbsp;Residualized Change</a>
+  <li><a href="#classical-approaches-to-two-wave-change-change-score-vs.-residualized-change" id="toc-classical-approaches-to-two-wave-change-change-score-vs.-residualized-change" class="nav-link" data-scroll-target="#classical-approaches-to-two-wave-change-change-score-vs.-residualized-change"><span class="header-section-number">1.3</span> 2. Classical Approaches to Two-Wave Change: Change Score vs.&nbsp;Residualized Change</a>
   <ul class="collapse">
-  <li><a href="#原始变化分数raw-change-gain-score" id="toc-原始变化分数raw-change-gain-score" class="nav-link" data-scroll-target="#原始变化分数raw-change-gain-score"><span class="header-section-number">1.3.1</span> 2.1 原始变化分数（Raw Change / Gain Score）</a></li>
-  <li><a href="#残差化变化分数residualized-change-ancova" id="toc-残差化变化分数residualized-change-ancova" class="nav-link" data-scroll-target="#残差化变化分数residualized-change-ancova"><span class="header-section-number">1.3.2</span> 2.2 残差化变化分数（Residualized Change / ANCOVA）</a></li>
-  <li><a href="#两种变化分数的本质区别" id="toc-两种变化分数的本质区别" class="nav-link" data-scroll-target="#两种变化分数的本质区别"><span class="header-section-number">1.3.3</span> 2.3 两种变化分数的本质区别</a></li>
-  <li><a href="#一个具体例子为什么两人同样进步residualized-change-却不同" id="toc-一个具体例子为什么两人同样进步residualized-change-却不同" class="nav-link" data-scroll-target="#一个具体例子为什么两人同样进步residualized-change-却不同"><span class="header-section-number">1.3.4</span> 2.4 一个具体例子：为什么两人同样进步，residualized change 却不同</a></li>
-  <li><a href="#lords-paradox同一数据两个方法可能得出相反结论" id="toc-lords-paradox同一数据两个方法可能得出相反结论" class="nav-link" data-scroll-target="#lords-paradox同一数据两个方法可能得出相反结论"><span class="header-section-number">1.3.5</span> 2.5 Lord’s Paradox：同一数据，两个方法可能得出相反结论</a></li>
-  <li><a href="#什么时候用哪一种" id="toc-什么时候用哪一种" class="nav-link" data-scroll-target="#什么时候用哪一种"><span class="header-section-number">1.3.6</span> 2.6 什么时候用哪一种？</a>
+  <li><a href="#raw-change-score-gain-score" id="toc-raw-change-score-gain-score" class="nav-link" data-scroll-target="#raw-change-score-gain-score"><span class="header-section-number">1.3.1</span> 2.1 Raw Change Score (Gain Score)</a></li>
+  <li><a href="#residualized-change-score-ancova" id="toc-residualized-change-score-ancova" class="nav-link" data-scroll-target="#residualized-change-score-ancova"><span class="header-section-number">1.3.2</span> 2.2 Residualized Change Score (ANCOVA)</a></li>
+  <li><a href="#the-essential-distinction-between-the-two-change-scores" id="toc-the-essential-distinction-between-the-two-change-scores" class="nav-link" data-scroll-target="#the-essential-distinction-between-the-two-change-scores"><span class="header-section-number">1.3.3</span> 2.3 The Essential Distinction Between the Two Change Scores</a></li>
+  <li><a href="#a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes" id="toc-a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes" class="nav-link" data-scroll-target="#a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes"><span class="header-section-number">1.3.4</span> 2.4 A Concrete Example: Why Two Students with Equal Raw Gains Have Different Residualized Changes</a></li>
+  <li><a href="#lords-paradox-two-methods-opposite-conclusions-from-the-same-data" id="toc-lords-paradox-two-methods-opposite-conclusions-from-the-same-data" class="nav-link" data-scroll-target="#lords-paradox-two-methods-opposite-conclusions-from-the-same-data"><span class="header-section-number">1.3.5</span> 2.5 Lord’s Paradox: Two Methods, Opposite Conclusions from the Same Data</a></li>
+  <li><a href="#when-to-use-which-approach" id="toc-when-to-use-which-approach" class="nav-link" data-scroll-target="#when-to-use-which-approach"><span class="header-section-number">1.3.6</span> 2.6 When to Use Which Approach?</a>
   <ul class="collapse">
-  <li><a href="#随机对照试验rct" id="toc-随机对照试验rct" class="nav-link" data-scroll-target="#随机对照试验rct"><span class="header-section-number">1.3.6.1</span> 随机对照试验（RCT）</a></li>
-  <li><a href="#观察性研究组别非随机" id="toc-观察性研究组别非随机" class="nav-link" data-scroll-target="#观察性研究组别非随机"><span class="header-section-number">1.3.6.2</span> 观察性研究（组别非随机）</a></li>
+  <li><a href="#randomized-controlled-trials-rcts" id="toc-randomized-controlled-trials-rcts" class="nav-link" data-scroll-target="#randomized-controlled-trials-rcts"><span class="header-section-number">1.3.6.1</span> Randomized Controlled Trials (RCTs)</a></li>
+  <li><a href="#observational-studies-non-random-group-assignment" id="toc-observational-studies-non-random-group-assignment" class="nav-link" data-scroll-target="#observational-studies-non-random-group-assignment"><span class="header-section-number">1.3.6.2</span> Observational Studies (Non-random Group Assignment)</a></li>
   </ul></li>
-  <li><a href="#为什么-change-score-容易误导测量层面的原因" id="toc-为什么-change-score-容易误导测量层面的原因" class="nav-link" data-scroll-target="#为什么-change-score-容易误导测量层面的原因"><span class="header-section-number">1.3.7</span> 2.7 为什么 change score 容易误导：测量层面的原因</a></li>
-  <li><a href="#为什么-change-score-容易误导因果层面的原因" id="toc-为什么-change-score-容易误导因果层面的原因" class="nav-link" data-scroll-target="#为什么-change-score-容易误导因果层面的原因"><span class="header-section-number">1.3.8</span> 2.8 为什么 change score 容易误导：因果层面的原因</a></li>
-  <li><a href="#这一组方法真正适合回答什么问题" id="toc-这一组方法真正适合回答什么问题" class="nav-link" data-scroll-target="#这一组方法真正适合回答什么问题"><span class="header-section-number">1.3.9</span> 2.9 这一组方法真正适合回答什么问题？</a></li>
+  <li><a href="#why-change-scores-can-be-misleading-measurement-level-reasons" id="toc-why-change-scores-can-be-misleading-measurement-level-reasons" class="nav-link" data-scroll-target="#why-change-scores-can-be-misleading-measurement-level-reasons"><span class="header-section-number">1.3.7</span> 2.7 Why Change Scores Can Be Misleading: Measurement-Level Reasons</a></li>
+  <li><a href="#why-change-scores-can-be-misleading-causal-reasons" id="toc-why-change-scores-can-be-misleading-causal-reasons" class="nav-link" data-scroll-target="#why-change-scores-can-be-misleading-causal-reasons"><span class="header-section-number">1.3.8</span> 2.8 Why Change Scores Can Be Misleading: Causal Reasons</a></li>
+  <li><a href="#what-questions-are-these-methods-best-suited-to-answer" id="toc-what-questions-are-these-methods-best-suited-to-answer" class="nav-link" data-scroll-target="#what-questions-are-these-methods-best-suited-to-answer"><span class="header-section-number">1.3.9</span> 2.9 What Questions Are These Methods Best Suited to Answer?</a></li>
   </ul></li>
-  <li><a href="#统一数学视角把相关性显式放进模型" id="toc-统一数学视角把相关性显式放进模型" class="nav-link" data-scroll-target="#统一数学视角把相关性显式放进模型"><span class="header-section-number">1.4</span> 3. 统一数学视角：把相关性显式放进模型</a>
+  <li><a href="#a-unified-mathematical-perspective-explicitly-modeling-dependence" id="toc-a-unified-mathematical-perspective-explicitly-modeling-dependence" class="nav-link" data-scroll-target="#a-unified-mathematical-perspective-explicitly-modeling-dependence"><span class="header-section-number">1.4</span> 3. A Unified Mathematical Perspective: Explicitly Modeling Dependence</a>
   <ul class="collapse">
-  <li><a href="#mlm-lmm-的矩阵形式" id="toc-mlm-lmm-的矩阵形式" class="nav-link" data-scroll-target="#mlm-lmm-的矩阵形式"><span class="header-section-number">1.4.1</span> 3.1 MLM / LMM 的矩阵形式</a></li>
-  <li><a href="#同一个思想在标量层面的展开" id="toc-同一个思想在标量层面的展开" class="nav-link" data-scroll-target="#同一个思想在标量层面的展开"><span class="header-section-number">1.4.2</span> 3.2 同一个思想在标量层面的展开</a></li>
-  <li><a href="#纵向-sem-lgm-的矩阵形式" id="toc-纵向-sem-lgm-的矩阵形式" class="nav-link" data-scroll-target="#纵向-sem-lgm-的矩阵形式"><span class="header-section-number">1.4.3</span> 3.3 纵向 SEM / LGM 的矩阵形式</a></li>
-  <li><a href="#从条件表示到边际表示mlm-与-sem-在数学上其实是同一件事" id="toc-从条件表示到边际表示mlm-与-sem-在数学上其实是同一件事" class="nav-link" data-scroll-target="#从条件表示到边际表示mlm-与-sem-在数学上其实是同一件事"><span class="header-section-number">1.4.4</span> 3.4 从条件表示到边际表示：MLM 与 SEM 在数学上其实是同一件事</a></li>
-  <li><a href="#翻译词典" id="toc-翻译词典" class="nav-link" data-scroll-target="#翻译词典"><span class="header-section-number">1.4.5</span> 3.5 翻译词典</a></li>
-  <li><a href="#四波线性增长的具体对应" id="toc-四波线性增长的具体对应" class="nav-link" data-scroll-target="#四波线性增长的具体对应"><span class="header-section-number">1.4.6</span> 3.6 四波线性增长的具体对应</a></li>
-  <li><a href="#只有随机截距时与-null-model-的完全对应" id="toc-只有随机截距时与-null-model-的完全对应" class="nav-link" data-scroll-target="#只有随机截距时与-null-model-的完全对应"><span class="header-section-number">1.4.7</span> 3.7 只有随机截距时：与 null model 的完全对应</a></li>
-  <li><a href="#level-2-预测变量在两套语言里的翻译" id="toc-level-2-预测变量在两套语言里的翻译" class="nav-link" data-scroll-target="#level-2-预测变量在两套语言里的翻译"><span class="header-section-number">1.4.8</span> 3.8 Level-2 预测变量在两套语言里的翻译</a></li>
-  <li><a href="#两者什么时候不再等价" id="toc-两者什么时候不再等价" class="nav-link" data-scroll-target="#两者什么时候不再等价"><span class="header-section-number">1.4.9</span> 3.9 两者什么时候不再等价？</a></li>
+  <li><a href="#matrix-form-of-mlm-lmm" id="toc-matrix-form-of-mlm-lmm" class="nav-link" data-scroll-target="#matrix-form-of-mlm-lmm"><span class="header-section-number">1.4.1</span> 3.1 Matrix Form of MLM / LMM</a></li>
+  <li><a href="#the-same-idea-at-the-scalar-level" id="toc-the-same-idea-at-the-scalar-level" class="nav-link" data-scroll-target="#the-same-idea-at-the-scalar-level"><span class="header-section-number">1.4.2</span> 3.2 The Same Idea at the Scalar Level</a></li>
+  <li><a href="#matrix-form-of-longitudinal-sem-lgm" id="toc-matrix-form-of-longitudinal-sem-lgm" class="nav-link" data-scroll-target="#matrix-form-of-longitudinal-sem-lgm"><span class="header-section-number">1.4.3</span> 3.3 Matrix Form of Longitudinal SEM / LGM</a></li>
+  <li><a href="#from-conditional-to-marginal-representation-mlm-and-sem-are-mathematically-the-same" id="toc-from-conditional-to-marginal-representation-mlm-and-sem-are-mathematically-the-same" class="nav-link" data-scroll-target="#from-conditional-to-marginal-representation-mlm-and-sem-are-mathematically-the-same"><span class="header-section-number">1.4.4</span> 3.4 From Conditional to Marginal Representation: MLM and SEM Are Mathematically the Same</a></li>
+  <li><a href="#translation-dictionary" id="toc-translation-dictionary" class="nav-link" data-scroll-target="#translation-dictionary"><span class="header-section-number">1.4.5</span> 3.5 Translation Dictionary</a></li>
+  <li><a href="#concrete-correspondence-for-a-four-wave-linear-growth-model" id="toc-concrete-correspondence-for-a-four-wave-linear-growth-model" class="nav-link" data-scroll-target="#concrete-correspondence-for-a-four-wave-linear-growth-model"><span class="header-section-number">1.4.6</span> 3.6 Concrete Correspondence for a Four-Wave Linear Growth Model</a></li>
+  <li><a href="#random-intercept-only-full-correspondence-with-the-null-model" id="toc-random-intercept-only-full-correspondence-with-the-null-model" class="nav-link" data-scroll-target="#random-intercept-only-full-correspondence-with-the-null-model"><span class="header-section-number">1.4.7</span> 3.7 Random Intercept Only: Full Correspondence with the Null Model</a></li>
+  <li><a href="#level-2-predictors-in-both-frameworks" id="toc-level-2-predictors-in-both-frameworks" class="nav-link" data-scroll-target="#level-2-predictors-in-both-frameworks"><span class="header-section-number">1.4.8</span> 3.8 Level-2 Predictors in Both Frameworks</a></li>
+  <li><a href="#when-does-the-equivalence-break-down" id="toc-when-does-the-equivalence-break-down" class="nav-link" data-scroll-target="#when-does-the-equivalence-break-down"><span class="header-section-number">1.4.9</span> 3.9 When Does the Equivalence Break Down?</a></li>
   </ul></li>
-  <li><a href="#三类主流框架geemlmlmm纵向-sem" id="toc-三类主流框架geemlmlmm纵向-sem" class="nav-link" data-scroll-target="#三类主流框架geemlmlmm纵向-sem"><span class="header-section-number">1.5</span> 4. 三类主流框架：GEE、MLM/LMM、纵向 SEM</a>
+  <li><a href="#three-major-frameworks-gee-mlmlmm-and-longitudinal-sem" id="toc-three-major-frameworks-gee-mlmlmm-and-longitudinal-sem" class="nav-link" data-scroll-target="#three-major-frameworks-gee-mlmlmm-and-longitudinal-sem"><span class="header-section-number">1.5</span> 4. Three Major Frameworks: GEE, MLM/LMM, and Longitudinal SEM</a>
   <ul class="collapse">
-  <li><a href="#gee群体平均的边际视角" id="toc-gee群体平均的边际视角" class="nav-link" data-scroll-target="#gee群体平均的边际视角"><span class="header-section-number">1.5.1</span> 4.1 GEE：群体平均的边际视角</a></li>
-  <li><a href="#mlm-lmm个体条件轨迹的视角" id="toc-mlm-lmm个体条件轨迹的视角" class="nav-link" data-scroll-target="#mlm-lmm个体条件轨迹的视角"><span class="header-section-number">1.5.2</span> 4.2 MLM / LMM：个体条件轨迹的视角</a></li>
-  <li><a href="#纵向-sem潜在过程的视角" id="toc-纵向-sem潜在过程的视角" class="nav-link" data-scroll-target="#纵向-sem潜在过程的视角"><span class="header-section-number">1.5.3</span> 4.3 纵向 SEM：潜在过程的视角</a></li>
-  <li><a href="#一页式对比" id="toc-一页式对比" class="nav-link" data-scroll-target="#一页式对比"><span class="header-section-number">1.5.4</span> 4.4 一页式对比</a></li>
+  <li><a href="#gee-a-marginal-population-averaged-perspective" id="toc-gee-a-marginal-population-averaged-perspective" class="nav-link" data-scroll-target="#gee-a-marginal-population-averaged-perspective"><span class="header-section-number">1.5.1</span> 4.1 GEE: A Marginal, Population-Averaged Perspective</a></li>
+  <li><a href="#mlm-lmm-a-conditional-individual-trajectory-perspective" id="toc-mlm-lmm-a-conditional-individual-trajectory-perspective" class="nav-link" data-scroll-target="#mlm-lmm-a-conditional-individual-trajectory-perspective"><span class="header-section-number">1.5.2</span> 4.2 MLM / LMM: A Conditional Individual Trajectory Perspective</a></li>
+  <li><a href="#longitudinal-sem-a-latent-process-perspective" id="toc-longitudinal-sem-a-latent-process-perspective" class="nav-link" data-scroll-target="#longitudinal-sem-a-latent-process-perspective"><span class="header-section-number">1.5.3</span> 4.3 Longitudinal SEM: A Latent Process Perspective</a></li>
+  <li><a href="#one-page-comparison" id="toc-one-page-comparison" class="nav-link" data-scroll-target="#one-page-comparison"><span class="header-section-number">1.5.4</span> 4.4 One-Page Comparison</a></li>
   </ul></li>
-  <li><a href="#mlm-lmm个体轨迹的条件模型" id="toc-mlm-lmm个体轨迹的条件模型" class="nav-link" data-scroll-target="#mlm-lmm个体轨迹的条件模型"><span class="header-section-number">1.6</span> 5. MLM / LMM：个体轨迹的条件模型</a>
+  <li><a href="#mlm-lmm-conditional-model-for-individual-trajectories" id="toc-mlm-lmm-conditional-model-for-individual-trajectories" class="nav-link" data-scroll-target="#mlm-lmm-conditional-model-for-individual-trajectories"><span class="header-section-number">1.6</span> 5. MLM / LMM: Conditional Model for Individual Trajectories</a>
   <ul class="collapse">
-  <li><a href="#基本框架时间是-level-1个体是-level-2" id="toc-基本框架时间是-level-1个体是-level-2" class="nav-link" data-scroll-target="#基本框架时间是-level-1个体是-level-2"><span class="header-section-number">1.6.1</span> 5.1 基本框架：时间是 Level 1，个体是 Level 2</a></li>
-  <li><a href="#null-model-随机效应-anova先看相关性有多强" id="toc-null-model-随机效应-anova先看相关性有多强" class="nav-link" data-scroll-target="#null-model-随机效应-anova先看相关性有多强"><span class="header-section-number">1.6.2</span> 5.2 Null Model / 随机效应 ANOVA：先看相关性有多强</a>
+  <li><a href="#basic-framework-time-at-level-1-individuals-at-level-2" id="toc-basic-framework-time-at-level-1-individuals-at-level-2" class="nav-link" data-scroll-target="#basic-framework-time-at-level-1-individuals-at-level-2"><span class="header-section-number">1.6.1</span> 5.1 Basic Framework: Time at Level 1, Individuals at Level 2</a></li>
+  <li><a href="#null-model-random-effects-anova-first-assessing-the-strength-of-dependence" id="toc-null-model-random-effects-anova-first-assessing-the-strength-of-dependence" class="nav-link" data-scroll-target="#null-model-random-effects-anova-first-assessing-the-strength-of-dependence"><span class="header-section-number">1.6.2</span> 5.2 Null Model / Random-Effects ANOVA: First Assessing the Strength of Dependence</a>
   <ul class="collapse">
-  <li><a href="#三条核心推论" id="toc-三条核心推论" class="nav-link" data-scroll-target="#三条核心推论"><span class="header-section-number">1.6.2.1</span> 三条核心推论</a></li>
-  <li><a href="#组内相关系数icc" id="toc-组内相关系数icc" class="nav-link" data-scroll-target="#组内相关系数icc"><span class="header-section-number">1.6.2.2</span> 组内相关系数（ICC）</a></li>
-  <li><a href="#显式协方差矩阵以-3-个时间点为例" id="toc-显式协方差矩阵以-3-个时间点为例" class="nav-link" data-scroll-target="#显式协方差矩阵以-3-个时间点为例"><span class="header-section-number">1.6.2.3</span> 显式协方差矩阵（以 3 个时间点为例）</a></li>
-  <li><a href="#为什么又叫随机效应-anova" id="toc-为什么又叫随机效应-anova" class="nav-link" data-scroll-target="#为什么又叫随机效应-anova"><span class="header-section-number">1.6.2.4</span> 为什么又叫“随机效应 ANOVA”？</a></li>
-  <li><a href="#icc-的局限" id="toc-icc-的局限" class="nav-link" data-scroll-target="#icc-的局限"><span class="header-section-number">1.6.2.5</span> ICC 的局限</a></li>
+  <li><a href="#three-core-implications" id="toc-three-core-implications" class="nav-link" data-scroll-target="#three-core-implications"><span class="header-section-number">1.6.2.1</span> Three Core Implications</a></li>
+  <li><a href="#intraclass-correlation-coefficient-icc" id="toc-intraclass-correlation-coefficient-icc" class="nav-link" data-scroll-target="#intraclass-correlation-coefficient-icc"><span class="header-section-number">1.6.2.2</span> Intraclass Correlation Coefficient (ICC)</a></li>
+  <li><a href="#explicit-covariance-matrix-for-3-time-points" id="toc-explicit-covariance-matrix-for-3-time-points" class="nav-link" data-scroll-target="#explicit-covariance-matrix-for-3-time-points"><span class="header-section-number">1.6.2.3</span> Explicit Covariance Matrix (for 3 Time Points)</a></li>
+  <li><a href="#why-is-it-also-called-random-effects-anova" id="toc-why-is-it-also-called-random-effects-anova" class="nav-link" data-scroll-target="#why-is-it-also-called-random-effects-anova"><span class="header-section-number">1.6.2.4</span> Why Is It Also Called “Random-Effects ANOVA”?</a></li>
+  <li><a href="#limitations-of-the-icc" id="toc-limitations-of-the-icc" class="nav-link" data-scroll-target="#limitations-of-the-icc"><span class="header-section-number">1.6.2.5</span> Limitations of the ICC</a></li>
   </ul></li>
-  <li><a href="#随机截距模型与随机斜率模型" id="toc-随机截距模型与随机斜率模型" class="nav-link" data-scroll-target="#随机截距模型与随机斜率模型"><span class="header-section-number">1.6.3</span> 5.3 随机截距模型与随机斜率模型</a>
+  <li><a href="#random-intercept-and-random-slope-models" id="toc-random-intercept-and-random-slope-models" class="nav-link" data-scroll-target="#random-intercept-and-random-slope-models"><span class="header-section-number">1.6.3</span> 5.3 Random Intercept and Random Slope Models</a>
   <ul class="collapse">
-  <li><a href="#随机截距模型" id="toc-随机截距模型" class="nav-link" data-scroll-target="#随机截距模型"><span class="header-section-number">1.6.3.1</span> 随机截距模型</a></li>
-  <li><a href="#随机斜率模型" id="toc-随机斜率模型" class="nav-link" data-scroll-target="#随机斜率模型"><span class="header-section-number">1.6.3.2</span> 随机斜率模型</a></li>
+  <li><a href="#random-intercept-model" id="toc-random-intercept-model" class="nav-link" data-scroll-target="#random-intercept-model"><span class="header-section-number">1.6.3.1</span> Random Intercept Model</a></li>
+  <li><a href="#random-slope-model" id="toc-random-slope-model" class="nav-link" data-scroll-target="#random-slope-model"><span class="header-section-number">1.6.3.2</span> Random Slope Model</a></li>
   </ul></li>
-  <li><a href="#参数怎么解读" id="toc-参数怎么解读" class="nav-link" data-scroll-target="#参数怎么解读"><span class="header-section-number">1.6.4</span> 5.4 参数怎么解读？</a></li>
-  <li><a href="#读-mlm-结果时至少看这四项" id="toc-读-mlm-结果时至少看这四项" class="nav-link" data-scroll-target="#读-mlm-结果时至少看这四项"><span class="header-section-number">1.6.5</span> 5.5 读 MLM 结果时，至少看这四项</a></li>
-  <li><a href="#r-lmer-代码示例gpa-场景" id="toc-r-lmer-代码示例gpa-场景" class="nav-link" data-scroll-target="#r-lmer-代码示例gpa-场景"><span class="header-section-number">1.6.6</span> 5.6 R / lmer 代码示例（GPA 场景）</a></li>
-  <li><a href="#应用例子青少年酒精使用轨迹" id="toc-应用例子青少年酒精使用轨迹" class="nav-link" data-scroll-target="#应用例子青少年酒精使用轨迹"><span class="header-section-number">1.6.7</span> 5.7 应用例子：青少年酒精使用轨迹</a></li>
-  <li><a href="#within-person-between-person-分解为什么必须拆开" id="toc-within-person-between-person-分解为什么必须拆开" class="nav-link" data-scroll-target="#within-person-between-person-分解为什么必须拆开"><span class="header-section-number">1.6.8</span> 5.8 Within-Person / Between-Person 分解：为什么必须拆开</a>
+  <li><a href="#how-are-the-parameters-interpreted" id="toc-how-are-the-parameters-interpreted" class="nav-link" data-scroll-target="#how-are-the-parameters-interpreted"><span class="header-section-number">1.6.4</span> 5.4 How Are the Parameters Interpreted?</a></li>
+  <li><a href="#four-key-quantities-to-examine-when-reading-mlm-results" id="toc-four-key-quantities-to-examine-when-reading-mlm-results" class="nav-link" data-scroll-target="#four-key-quantities-to-examine-when-reading-mlm-results"><span class="header-section-number">1.6.5</span> 5.5 Four Key Quantities to Examine When Reading MLM Results</a></li>
+  <li><a href="#r-lmer-code-example-gpa-setting" id="toc-r-lmer-code-example-gpa-setting" class="nav-link" data-scroll-target="#r-lmer-code-example-gpa-setting"><span class="header-section-number">1.6.6</span> 5.6 R / lmer Code Example (GPA Setting)</a></li>
+  <li><a href="#applied-example-adolescent-alcohol-use-trajectories" id="toc-applied-example-adolescent-alcohol-use-trajectories" class="nav-link" data-scroll-target="#applied-example-adolescent-alcohol-use-trajectories"><span class="header-section-number">1.6.7</span> 5.7 Applied Example: Adolescent Alcohol Use Trajectories</a></li>
+  <li><a href="#within-person-between-person-decomposition-why-separation-is-necessary" id="toc-within-person-between-person-decomposition-why-separation-is-necessary" class="nav-link" data-scroll-target="#within-person-between-person-decomposition-why-separation-is-necessary"><span class="header-section-number">1.6.8</span> 5.8 Within-Person / Between-Person Decomposition: Why Separation Is Necessary</a>
   <ul class="collapse">
-  <li><a href="#person-mean-centering组内中心化" id="toc-person-mean-centering组内中心化" class="nav-link" data-scroll-target="#person-mean-centering组内中心化"><span class="header-section-number">1.6.8.1</span> Person-Mean Centering（组内中心化）</a></li>
-  <li><a href="#具体应用案例" id="toc-具体应用案例" class="nav-link" data-scroll-target="#具体应用案例"><span class="header-section-number">1.6.8.2</span> 具体应用案例</a></li>
-  </ul></li>
-  </ul></li>
-  <li><a href="#纵向-sem-lgm潜在过程时间编码与测量模型" id="toc-纵向-sem-lgm潜在过程时间编码与测量模型" class="nav-link" data-scroll-target="#纵向-sem-lgm潜在过程时间编码与测量模型"><span class="header-section-number">1.7</span> 6. 纵向 SEM / LGM：潜在过程、时间编码与测量模型</a>
-  <ul class="collapse">
-  <li><a href="#lgm-的基本结构把增长参数变成潜变量" id="toc-lgm-的基本结构把增长参数变成潜变量" class="nav-link" data-scroll-target="#lgm-的基本结构把增长参数变成潜变量"><span class="header-section-number">1.7.1</span> 6.1 LGM 的基本结构：把增长参数变成潜变量</a>
-  <ul class="collapse">
-  <li><a href="#lavaan-代码示例" id="toc-lavaan-代码示例" class="nav-link" data-scroll-target="#lavaan-代码示例"><span class="header-section-number">1.7.1.1</span> lavaan 代码示例</a></li>
-  </ul></li>
-  <li><a href="#lgm-是均值结构-协方差结构一起估" id="toc-lgm-是均值结构-协方差结构一起估" class="nav-link" data-scroll-target="#lgm-是均值结构-协方差结构一起估"><span class="header-section-number">1.7.2</span> 6.2 LGM 是“均值结构 + 协方差结构”一起估</a></li>
-  <li><a href="#时间编码中心化与截距的含义" id="toc-时间编码中心化与截距的含义" class="nav-link" data-scroll-target="#时间编码中心化与截距的含义"><span class="header-section-number">1.7.3</span> 6.3 时间编码、中心化与截距的含义</a>
-  <ul class="collapse">
-  <li><a href="#在-lgm-中" id="toc-在-lgm-中" class="nav-link" data-scroll-target="#在-lgm-中"><span class="header-section-number">1.7.3.1</span> 在 LGM 中</a></li>
-  <li><a href="#在-mlm-中" id="toc-在-mlm-中" class="nav-link" data-scroll-target="#在-mlm-中"><span class="header-section-number">1.7.3.2</span> 在 MLM 中</a></li>
-  <li><a href="#常见时间度量time-metric" id="toc-常见时间度量time-metric" class="nav-link" data-scroll-target="#常见时间度量time-metric"><span class="header-section-number">1.7.3.3</span> 常见时间度量（Time Metric）</a></li>
-  <li><a href="#零点移动会影响什么" id="toc-零点移动会影响什么" class="nav-link" data-scroll-target="#零点移动会影响什么"><span class="header-section-number">1.7.3.4</span> 零点移动会影响什么？</a></li>
-  </ul></li>
-  <li><a href="#潜基底模型latent-basis-model-lbm" id="toc-潜基底模型latent-basis-model-lbm" class="nav-link" data-scroll-target="#潜基底模型latent-basis-model-lbm"><span class="header-section-number">1.7.4</span> 6.4 潜基底模型（Latent Basis Model, LBM）</a></li>
-  <li><a href="#纵向测量等价性做增长模型前先确认量尺没变" id="toc-纵向测量等价性做增长模型前先确认量尺没变" class="nav-link" data-scroll-target="#纵向测量等价性做增长模型前先确认量尺没变"><span class="header-section-number">1.7.5</span> 6.5 纵向测量等价性：做增长模型前，先确认“量尺没变”</a>
-  <ul class="collapse">
-  <li><a href="#弱等价metric-invariance" id="toc-弱等价metric-invariance" class="nav-link" data-scroll-target="#弱等价metric-invariance"><span class="header-section-number">1.7.5.1</span> 弱等价（Metric Invariance）</a></li>
-  <li><a href="#强等价scalar-invariance" id="toc-强等价scalar-invariance" class="nav-link" data-scroll-target="#强等价scalar-invariance"><span class="header-section-number">1.7.5.2</span> 强等价（Scalar Invariance）</a></li>
+  <li><a href="#person-mean-centering-within-person-centering" id="toc-person-mean-centering-within-person-centering" class="nav-link" data-scroll-target="#person-mean-centering-within-person-centering"><span class="header-section-number">1.6.8.1</span> Person-Mean Centering (Within-Person Centering)</a></li>
+  <li><a href="#specific-application-examples" id="toc-specific-application-examples" class="nav-link" data-scroll-target="#specific-application-examples"><span class="header-section-number">1.6.8.2</span> Specific Application Examples</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#建模决策到底该用哪一类纵向模型" id="toc-建模决策到底该用哪一类纵向模型" class="nav-link" data-scroll-target="#建模决策到底该用哪一类纵向模型"><span class="header-section-number">1.8</span> 9. 建模决策：到底该用哪一类纵向模型？</a>
+  <li><a href="#longitudinal-sem-lgm-latent-processes-time-coding-and-measurement-models" id="toc-longitudinal-sem-lgm-latent-processes-time-coding-and-measurement-models" class="nav-link" data-scroll-target="#longitudinal-sem-lgm-latent-processes-time-coding-and-measurement-models"><span class="header-section-number">1.7</span> 6. Longitudinal SEM / LGM: Latent Processes, Time Coding, and Measurement Models</a>
   <ul class="collapse">
-  <li><a href="#更适合-mlm-的情况" id="toc-更适合-mlm-的情况" class="nav-link" data-scroll-target="#更适合-mlm-的情况"><span class="header-section-number">1.8.1</span> 更适合 MLM 的情况</a>
+  <li><a href="#basic-structure-of-lgm-growth-parameters-as-latent-variables" id="toc-basic-structure-of-lgm-growth-parameters-as-latent-variables" class="nav-link" data-scroll-target="#basic-structure-of-lgm-growth-parameters-as-latent-variables"><span class="header-section-number">1.7.1</span> 6.1 Basic Structure of LGM: Growth Parameters as Latent Variables</a>
   <ul class="collapse">
-  <li><a href="#更适合-lgm-纵向-sem-的情况" id="toc-更适合-lgm-纵向-sem-的情况" class="nav-link" data-scroll-target="#更适合-lgm-纵向-sem-的情况"><span class="header-section-number">1.8.1.1</span> 更适合 LGM / 纵向 SEM 的情况</a></li>
+  <li><a href="#lavaan-code-example" id="toc-lavaan-code-example" class="nav-link" data-scroll-target="#lavaan-code-example"><span class="header-section-number">1.7.1.1</span> lavaan Code Example</a></li>
+  </ul></li>
+  <li><a href="#lgm-simultaneously-estimates-mean-structure-and-covariance-structure" id="toc-lgm-simultaneously-estimates-mean-structure-and-covariance-structure" class="nav-link" data-scroll-target="#lgm-simultaneously-estimates-mean-structure-and-covariance-structure"><span class="header-section-number">1.7.2</span> 6.2 LGM Simultaneously Estimates Mean Structure and Covariance Structure</a></li>
+  <li><a href="#time-coding-centering-and-the-meaning-of-the-intercept" id="toc-time-coding-centering-and-the-meaning-of-the-intercept" class="nav-link" data-scroll-target="#time-coding-centering-and-the-meaning-of-the-intercept"><span class="header-section-number">1.7.3</span> 6.3 Time Coding, Centering, and the Meaning of the Intercept</a>
+  <ul class="collapse">
+  <li><a href="#in-lgm" id="toc-in-lgm" class="nav-link" data-scroll-target="#in-lgm"><span class="header-section-number">1.7.3.1</span> In LGM</a></li>
+  <li><a href="#in-mlm" id="toc-in-mlm" class="nav-link" data-scroll-target="#in-mlm"><span class="header-section-number">1.7.3.2</span> In MLM</a></li>
+  <li><a href="#common-time-metrics" id="toc-common-time-metrics" class="nav-link" data-scroll-target="#common-time-metrics"><span class="header-section-number">1.7.3.3</span> Common Time Metrics</a></li>
+  <li><a href="#what-changes-when-the-zero-point-is-shifted" id="toc-what-changes-when-the-zero-point-is-shifted" class="nav-link" data-scroll-target="#what-changes-when-the-zero-point-is-shifted"><span class="header-section-number">1.7.3.4</span> What Changes When the Zero Point Is Shifted?</a></li>
+  </ul></li>
+  <li><a href="#latent-basis-model-lbm" id="toc-latent-basis-model-lbm" class="nav-link" data-scroll-target="#latent-basis-model-lbm"><span class="header-section-number">1.7.4</span> 6.4 Latent Basis Model (LBM)</a></li>
+  <li><a href="#longitudinal-measurement-invariance-verify-the-scale-has-not-shifted-before-fitting-a-growth-model" id="toc-longitudinal-measurement-invariance-verify-the-scale-has-not-shifted-before-fitting-a-growth-model" class="nav-link" data-scroll-target="#longitudinal-measurement-invariance-verify-the-scale-has-not-shifted-before-fitting-a-growth-model"><span class="header-section-number">1.7.5</span> 6.5 Longitudinal Measurement Invariance: Verify the Scale Has Not Shifted Before Fitting a Growth Model</a>
+  <ul class="collapse">
+  <li><a href="#metric-invariance-weak-invariance" id="toc-metric-invariance-weak-invariance" class="nav-link" data-scroll-target="#metric-invariance-weak-invariance"><span class="header-section-number">1.7.5.1</span> Metric Invariance (Weak Invariance)</a></li>
+  <li><a href="#scalar-invariance-strong-invariance" id="toc-scalar-invariance-strong-invariance" class="nav-link" data-scroll-target="#scalar-invariance-strong-invariance"><span class="header-section-number">1.7.5.2</span> Scalar Invariance (Strong Invariance)</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#一页总结整份笔记的主线" id="toc-一页总结整份笔记的主线" class="nav-link" data-scroll-target="#一页总结整份笔记的主线"><span class="header-section-number">1.9</span> 10. 一页总结：整份笔记的主线</a></li>
-  <li><a href="#附本版统一符号速查表" id="toc-附本版统一符号速查表" class="nav-link" data-scroll-target="#附本版统一符号速查表"><span class="header-section-number">1.10</span> 附：本版统一符号速查表</a></li>
+  <li><a href="#modeling-decisions-which-type-of-longitudinal-model-should-be-used" id="toc-modeling-decisions-which-type-of-longitudinal-model-should-be-used" class="nav-link" data-scroll-target="#modeling-decisions-which-type-of-longitudinal-model-should-be-used"><span class="header-section-number">1.8</span> 9. Modeling Decisions: Which Type of Longitudinal Model Should Be Used?</a>
+  <ul class="collapse">
+  <li><a href="#when-mlm-is-more-appropriate" id="toc-when-mlm-is-more-appropriate" class="nav-link" data-scroll-target="#when-mlm-is-more-appropriate"><span class="header-section-number">1.8.1</span> When MLM Is More Appropriate</a>
+  <ul class="collapse">
+  <li><a href="#when-lgm-longitudinal-sem-is-more-appropriate" id="toc-when-lgm-longitudinal-sem-is-more-appropriate" class="nav-link" data-scroll-target="#when-lgm-longitudinal-sem-is-more-appropriate"><span class="header-section-number">1.8.1.1</span> When LGM / Longitudinal SEM Is More Appropriate</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#one-page-summary-the-core-thread-of-this-document" id="toc-one-page-summary-the-core-thread-of-this-document" class="nav-link" data-scroll-target="#one-page-summary-the-core-thread-of-this-document"><span class="header-section-number">1.9</span> 10. One-Page Summary: The Core Thread of This Document</a></li>
+  <li><a href="#appendix-unified-symbol-reference-table" id="toc-appendix-unified-symbol-reference-table" class="nav-link" data-scroll-target="#appendix-unified-symbol-reference-table"><span class="header-section-number">1.10</span> Appendix: Unified Symbol Reference Table</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -296,7 +301,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">线性纵向建模笔记</h1>
+<h1 class="title">Linear Longitudinal Modeling Notes</h1>
 <p class="subtitle lead">HPD 685 — Linear Longitudinal Modeling</p>
 </div>
 
@@ -306,9 +311,9 @@ window.Quarto = {
 
     
     <div>
-    <div class="quarto-title-meta-heading">发布于</div>
+    <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2026年03月08日</p>
+      <p class="date">March 08, 2026</p>
     </div>
   </div>
   
@@ -320,38 +325,38 @@ window.Quarto = {
 </header>
 
 
-<section id="线性纵向建模笔记" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> 线性纵向建模笔记</h1>
-<section id="统一记号notation" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="统一记号notation"><span class="header-section-number">1.1</span> 0. 统一记号（Notation）</h2>
-<section id="基本索引与变量" class="level3" data-number="1.1.1">
-<h3 data-number="1.1.1" class="anchored" data-anchor-id="基本索引与变量"><span class="header-section-number">1.1.1</span> 0.1 基本索引与变量</h3>
+<section id="linear-longitudinal-modeling-notes" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Linear Longitudinal Modeling Notes</h1>
+<section id="unified-notation" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="unified-notation"><span class="header-section-number">1.1</span> 0. Unified Notation</h2>
+<section id="basic-indices-and-variables" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="basic-indices-and-variables"><span class="header-section-number">1.1.1</span> 0.1 Basic Indices and Variables</h3>
 <ul>
-<li><span class="math inline">\(i\)</span>：个体</li>
-<li><span class="math inline">\(t,s\)</span>：时间点</li>
-<li><span class="math inline">\(y_{it}\)</span>：个体 <span class="math inline">\(i\)</span> 在时间点 <span class="math inline">\(t\)</span> 的观测结果</li>
-<li><span class="math inline">\(\mathbf y_i = (y_{i1}, \dots, y_{iT_i})'\)</span>：个体 <span class="math inline">\(i\)</span> 的整条纵向观测向量</li>
-<li><span class="math inline">\(x_{it}\)</span>：时间分数 / 时间度量（例如 <span class="math inline">\(0,1,2,3\)</span>；也可以是年龄、治疗后天数等）</li>
-<li><span class="math inline">\(w_i\)</span>：时间不变协变量（time-invariant covariate, TIC）</li>
-<li><span class="math inline">\(z_{it}\)</span>：时变协变量（time-varying covariate, TVC）</li>
-<li><span class="math inline">\(\Delta y_{it} = y_{it} - y_{i,t-1}\)</span>：从 <span class="math inline">\(t-1\)</span> 到 <span class="math inline">\(t\)</span> 的变化量</li>
+<li><span class="math inline">\(i\)</span>: individual</li>
+<li><span class="math inline">\(t,s\)</span>: time points</li>
+<li><span class="math inline">\(y_{it}\)</span>: observed outcome for individual <span class="math inline">\(i\)</span> at time point <span class="math inline">\(t\)</span></li>
+<li><span class="math inline">\(\mathbf y_i = (y_{i1}, \dots, y_{iT_i})'\)</span>: full longitudinal observation vector for individual <span class="math inline">\(i\)</span></li>
+<li><span class="math inline">\(x_{it}\)</span>: time score / time metric (e.g., <span class="math inline">\(0,1,2,3\)</span>; can also be age, days since treatment, etc.)</li>
+<li><span class="math inline">\(w_i\)</span>: time-invariant covariate (TIC)</li>
+<li><span class="math inline">\(z_{it}\)</span>: time-varying covariate (TVC)</li>
+<li><span class="math inline">\(\Delta y_{it} = y_{it} - y_{i,t-1}\)</span>: change from <span class="math inline">\(t-1\)</span> to <span class="math inline">\(t\)</span></li>
 </ul>
 </section>
-<section id="统一的线性增长写法" class="level3" data-number="1.1.2">
-<h3 data-number="1.1.2" class="anchored" data-anchor-id="统一的线性增长写法"><span class="header-section-number">1.1.2</span> 0.2 统一的线性增长写法</h3>
-<p>全文对“线性增长”统一使用下面这条式子：</p>
+<section id="unified-linear-growth-notation" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="unified-linear-growth-notation"><span class="header-section-number">1.1.2</span> 0.2 Unified Linear Growth Notation</h3>
+<p>Throughout this document, “linear growth” consistently refers to the following equation:</p>
 <p><span class="math display">\[
 y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
 \]</span></p>
-<p>其中：</p>
+<p>where:</p>
 <ul>
-<li><span class="math inline">\(\mu_0\)</span>：总体平均截距</li>
-<li><span class="math inline">\(\mu_1\)</span>：总体平均斜率</li>
-<li><span class="math inline">\(b_{0i}\)</span>：个体 <span class="math inline">\(i\)</span> 的随机截距偏差</li>
-<li><span class="math inline">\(b_{1i}\)</span>：个体 <span class="math inline">\(i\)</span> 的随机斜率偏差</li>
-<li><span class="math inline">\(\varepsilon_{it}\)</span>：时间点 <span class="math inline">\(t\)</span> 的残差 / 测量误差</li>
+<li><span class="math inline">\(\mu_0\)</span>: population mean intercept</li>
+<li><span class="math inline">\(\mu_1\)</span>: population mean slope</li>
+<li><span class="math inline">\(b_{0i}\)</span>: random intercept deviation for individual <span class="math inline">\(i\)</span></li>
+<li><span class="math inline">\(b_{1i}\)</span>: random slope deviation for individual <span class="math inline">\(i\)</span></li>
+<li><span class="math inline">\(\varepsilon_{it}\)</span>: residual / measurement error at time point <span class="math inline">\(t\)</span></li>
 </ul>
-<p>随机效应向量记为：</p>
+<p>The random effects vector is denoted:</p>
 <p><span class="math display">\[
 \mathbf b_i =
 \begin{bmatrix}
@@ -366,187 +371,187 @@ b_{1i}
 \end{bmatrix}
 \]</span></p>
 <ul>
-<li><span class="math inline">\(\tau_{00}\)</span>：随机截距方差</li>
-<li><span class="math inline">\(\tau_{11}\)</span>：随机斜率方差</li>
-<li><span class="math inline">\(\tau_{01}\)</span>：随机截距与随机斜率的协方差</li>
+<li><span class="math inline">\(\tau_{00}\)</span>: random intercept variance</li>
+<li><span class="math inline">\(\tau_{11}\)</span>: random slope variance</li>
+<li><span class="math inline">\(\tau_{01}\)</span>: covariance between the random intercept and random slope</li>
 </ul>
 </section>
-<section id="与-sem-记法的对应" class="level3" data-number="1.1.3">
-<h3 data-number="1.1.3" class="anchored" data-anchor-id="与-sem-记法的对应"><span class="header-section-number">1.1.3</span> 0.3 与 SEM 记法的对应</h3>
-<p>在纵向 SEM / LGM 文献中，常把随机增长因子的协方差矩阵记为 <span class="math inline">\(\Psi\)</span>，把残差协方差矩阵记为 <span class="math inline">\(\Theta\)</span>。本文统一理解为：</p>
+<section id="correspondence-with-sem-notation" class="level3" data-number="1.1.3">
+<h3 data-number="1.1.3" class="anchored" data-anchor-id="correspondence-with-sem-notation"><span class="header-section-number">1.1.3</span> 0.3 Correspondence with SEM Notation</h3>
+<p>In the longitudinal SEM / LGM literature, the covariance matrix of the random growth factors is commonly denoted <span class="math inline">\(\Psi\)</span>, and the residual covariance matrix is denoted <span class="math inline">\(\Theta\)</span>. Throughout this document, the correspondence is understood as:</p>
 <ul>
-<li>MLM/LMM 中的随机效应协方差矩阵：<span class="math inline">\(\mathbf D\)</span></li>
-<li>SEM/LGM 中的潜增长因子协方差矩阵：<span class="math inline">\(\Psi\)</span></li>
+<li>Random effects covariance matrix in MLM/LMM: <span class="math inline">\(\mathbf D\)</span></li>
+<li>Latent growth factor covariance matrix in SEM/LGM: <span class="math inline">\(\Psi\)</span></li>
 </ul>
-<p>两者在简单线性增长模型下是同一个东西，只是记号不同：</p>
+<p>Under a simple linear growth model, the two refer to the same quantity and differ only in notation:</p>
 <p><span class="math display">\[
 \mathbf D \equiv \Psi
 \]</span></p>
-<p>同理，MLM/LMM 中的 Level-1 残差结构 <span class="math inline">\(\mathbf R_i\)</span> 与 SEM 中的指标残差结构 <span class="math inline">\(\Theta_i\)</span> 也是对应的。</p>
+<p>Similarly, the Level-1 residual structure <span class="math inline">\(\mathbf R_i\)</span> in MLM/LMM corresponds to the indicator residual structure <span class="math inline">\(\Theta_i\)</span> in SEM.</p>
 <hr>
 </section>
 </section>
-<section id="方法论起点为什么纵向数据不能直接套-ols" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="方法论起点为什么纵向数据不能直接套-ols"><span class="header-section-number">1.2</span> 1. 方法论起点：为什么纵向数据不能直接套 OLS</h2>
-<section id="独立性假设的破裂" class="level3" data-number="1.2.1">
-<h3 data-number="1.2.1" class="anchored" data-anchor-id="独立性假设的破裂"><span class="header-section-number">1.2.1</span> 1.1 独立性假设的破裂</h3>
-<p>经典 OLS 的核心前提是观测值独立同分布（i.i.d.），残差协方差矩阵满足：</p>
+<section id="methodological-rationale-for-longitudinal-research-why-longitudinal-data-cannot-be-analyzed-directly-with-ols" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="methodological-rationale-for-longitudinal-research-why-longitudinal-data-cannot-be-analyzed-directly-with-ols"><span class="header-section-number">1.2</span> 1. Methodological Rationale for Longitudinal Research: Why Longitudinal Data Cannot Be Analyzed Directly with OLS</h2>
+<section id="violation-of-the-independence-assumption" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="violation-of-the-independence-assumption"><span class="header-section-number">1.2.1</span> 1.1 Violation of the Independence Assumption</h3>
+<p>The core prerequisite of classical OLS is that observations are independently and identically distributed (i.i.d.), such that the residual covariance matrix satisfies:</p>
 <p><span class="math display">\[
 \Omega = \sigma^2 I
 \]</span></p>
-<p>纵向数据从设计层面就违背了这一假设：同一个体在不同时间点的得分受相同的基因、人格、环境及历史因素影响，因此必然存在系统性相关性。</p>
+<p>Longitudinal data violate this assumption by design: observations from the same individual at different time points are influenced by the same genetic, personality, environmental, and historical factors, and thus exhibit systematic dependence.</p>
 </section>
-<section id="强行使用-ols-的后果" class="level3" data-number="1.2.2">
-<h3 data-number="1.2.2" class="anchored" data-anchor-id="强行使用-ols-的后果"><span class="header-section-number">1.2.2</span> 1.2 强行使用 OLS 的后果</h3>
+<section id="consequences-of-applying-ols-naively" class="level3" data-number="1.2.2">
+<h3 data-number="1.2.2" class="anchored" data-anchor-id="consequences-of-applying-ols-naively"><span class="header-section-number">1.2.2</span> 1.2 Consequences of Applying OLS Naively</h3>
 <ul>
-<li><strong>正向自相关</strong>：系统性低估标准误，导致 <span class="math inline">\(t\)</span> / <span class="math inline">\(F\)</span> 统计量虚高，假阳性（I 类错误）增多</li>
-<li><strong>异质性被误当噪声</strong>：个体之间真实存在的稳定差异被误归入随机误差</li>
-<li><strong>组内变化与组间差异混淆</strong>：无法分清“谁本来就高”和“谁后来增长更快”</li>
-<li><strong>缺失数据处理能力差</strong>：OLS 对非平衡数据结构不友好，容易造成样本偏差和信息损失</li>
+<li><strong>Positive autocorrelation</strong>: standard errors are systematically underestimated, inflating <span class="math inline">\(t\)</span> / <span class="math inline">\(F\)</span> statistics and increasing Type I error rates</li>
+<li><strong>Heterogeneity misattributed to noise</strong>: genuine stable differences between individuals are incorrectly absorbed into random error</li>
+<li><strong>Confounding of within-person change and between-person differences</strong>: it becomes impossible to distinguish “who started higher” from “who grew faster”</li>
+<li><strong>Poor handling of missing data</strong>: OLS is ill-suited for unbalanced data structures and is prone to sample bias and information loss</li>
 </ul>
 </section>
-<section id="纵向建模真正要解决的问题" class="level3" data-number="1.2.3">
-<h3 data-number="1.2.3" class="anchored" data-anchor-id="纵向建模真正要解决的问题"><span class="header-section-number">1.2.3</span> 1.3 纵向建模真正要解决的问题</h3>
-<p>纵向模型并不是把相关性“消掉”，而是把相关性<strong>参数化</strong>： 把“独立性假设失效”转化成“协方差矩阵如何被建模”的问题。</p>
+<section id="what-longitudinal-modeling-actually-addresses" class="level3" data-number="1.2.3">
+<h3 data-number="1.2.3" class="anchored" data-anchor-id="what-longitudinal-modeling-actually-addresses"><span class="header-section-number">1.2.3</span> 1.3 What Longitudinal Modeling Actually Addresses</h3>
+<p>Longitudinal models do not eliminate dependence; they <strong>parameterize</strong> it: the failure of the independence assumption is transformed into a question of how the covariance matrix is modeled.</p>
 <hr>
 </section>
 </section>
-<section id="两波变化的经典处理change-score-vs.-residualized-change" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="两波变化的经典处理change-score-vs.-residualized-change"><span class="header-section-number">1.3</span> 2. 两波变化的经典处理：Change Score vs.&nbsp;Residualized Change</h2>
-<p>这一部分整合了原笔记中关于 <strong>原始变化分数、残差化变化分数、Lord’s Paradox、change score 的测量/因果局限</strong> 的内容。</p>
-<section id="原始变化分数raw-change-gain-score" class="level3" data-number="1.3.1">
-<h3 data-number="1.3.1" class="anchored" data-anchor-id="原始变化分数raw-change-gain-score"><span class="header-section-number">1.3.1</span> 2.1 原始变化分数（Raw Change / Gain Score）</h3>
-<p>最直接的变化定义是：</p>
+<section id="classical-approaches-to-two-wave-change-change-score-vs.-residualized-change" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="classical-approaches-to-two-wave-change-change-score-vs.-residualized-change"><span class="header-section-number">1.3</span> 2. Classical Approaches to Two-Wave Change: Change Score vs.&nbsp;Residualized Change</h2>
+<p>This section integrates content from the original notes on <strong>raw change scores, residualized change scores, Lord’s Paradox, and the measurement and causal limitations of change scores</strong>.</p>
+<section id="raw-change-score-gain-score" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="raw-change-score-gain-score"><span class="header-section-number">1.3.1</span> 2.1 Raw Change Score (Gain Score)</h3>
+<p>The most direct definition of change is:</p>
 <p><span class="math display">\[
 \Delta y_i = y_{i2} - y_{i1}
 \]</span></p>
-<p>若把变化量作为因变量，对某个基线预测变量 <span class="math inline">\(w_i\)</span> 回归，则模型为：</p>
+<p>If the change score is used as the outcome variable and regressed on a baseline predictor <span class="math inline">\(w_i\)</span>, the model is:</p>
 <p><span class="math display">\[
 \Delta y_i = \beta_0 + \beta_1 w_i + e_i
 \]</span></p>
-<p><strong>它回答的问题是：</strong></p>
+<p><strong>The question this answers:</strong></p>
 <ul>
-<li>谁的指标变化得最多？</li>
-<li>哪些人经历了更大的<strong>绝对变化量</strong>？</li>
+<li>Whose outcome changed the most?</li>
+<li>Which individuals experienced the largest <strong>absolute change</strong>?</li>
 </ul>
-<p><strong>优点：</strong></p>
+<p><strong>Advantages:</strong></p>
 <ul>
-<li>直观</li>
-<li>在随机对照试验（RCT）中直接反映个体层面的前后变化</li>
+<li>Intuitive</li>
+<li>Directly reflects individual-level pre–post change in randomized controlled trials (RCTs)</li>
 </ul>
-<p><strong>局限：</strong></p>
+<p><strong>Limitations:</strong></p>
 <ul>
-<li>受基线水平影响</li>
-<li>当两次测量高度相关时，变化分数的可靠性反而可能低于原始分数（“可靠性悖论”）</li>
+<li>Influenced by baseline level</li>
+<li>When two measurements are highly correlated, the reliability of the change score may actually be lower than that of the raw scores (“reliability paradox”)</li>
 </ul>
 </section>
-<section id="残差化变化分数residualized-change-ancova" class="level3" data-number="1.3.2">
-<h3 data-number="1.3.2" class="anchored" data-anchor-id="残差化变化分数residualized-change-ancova"><span class="header-section-number">1.3.2</span> 2.2 残差化变化分数（Residualized Change / ANCOVA）</h3>
-<p>另一条思路是：以前测预测后测，把“无法由起始状态解释的剩余部分”当作变化。</p>
-<p>模型写为：</p>
+<section id="residualized-change-score-ancova" class="level3" data-number="1.3.2">
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="residualized-change-score-ancova"><span class="header-section-number">1.3.2</span> 2.2 Residualized Change Score (ANCOVA)</h3>
+<p>An alternative approach is to predict the posttest from the pretest, and treat the portion “unexplained by the initial state” as change.</p>
+<p>The model is written as:</p>
 <p><span class="math display">\[
 y_{i2} = \beta_0 + \rho y_{i1} + \beta_1 w_i + e_i
 \]</span></p>
-<p>若只看“在给定基线后的偏离”，则可先做回归：</p>
+<p>If one is interested only in “deviation from a given baseline,” one may first run the regression:</p>
 <p><span class="math display">\[
 \hat y_{i2} = \hat\beta_0 + \hat\rho y_{i1},
 \qquad
 r_i = y_{i2} - \hat y_{i2}
 \]</span></p>
-<p>这里的 <span class="math inline">\(r_i\)</span> 就是 residualized change。</p>
-<p><strong>它回答的问题是：</strong></p>
+<p>Here, <span class="math inline">\(r_i\)</span> is the residualized change.</p>
+<p><strong>The question this answers:</strong></p>
 <ul>
-<li>在相同基线水平的人群中，谁的后测表现<strong>超出了平均预期</strong>？</li>
-<li>谁的变化是“相对预期的偏离”，而不是单纯“绝对多变了多少”？</li>
+<li>Among individuals with the same baseline level, whose posttest performance <strong>exceeded the average expectation</strong>?</li>
+<li>Whose change represents a “deviation from expectation” rather than simply “how much they changed in absolute terms”?</li>
 </ul>
 </section>
-<section id="两种变化分数的本质区别" class="level3" data-number="1.3.3">
-<h3 data-number="1.3.3" class="anchored" data-anchor-id="两种变化分数的本质区别"><span class="header-section-number">1.3.3</span> 2.3 两种变化分数的本质区别</h3>
-<p>可以把两者概括成一句话：</p>
+<section id="the-essential-distinction-between-the-two-change-scores" class="level3" data-number="1.3.3">
+<h3 data-number="1.3.3" class="anchored" data-anchor-id="the-essential-distinction-between-the-two-change-scores"><span class="header-section-number">1.3.3</span> 2.3 The Essential Distinction Between the Two Change Scores</h3>
+<p>The two approaches can be summarized in a single sentence:</p>
 <ul>
 <li><strong>change score</strong> = <strong>absolute change</strong></li>
 <li><strong>residualized change</strong> = <strong>baseline-adjusted deviation from expected posttest</strong></li>
 </ul>
-<p>也就是说：</p>
+<p>That is:</p>
 <ul>
-<li><span class="math inline">\(\Delta y_i = 0\)</span> 表示“没有绝对变化”</li>
-<li><span class="math inline">\(r_i = 0\)</span> 不表示“没有变化”，而表示“此人的变化刚好等于同样基线人群的平均预期变化”</li>
+<li><span class="math inline">\(\Delta y_i = 0\)</span> means “no absolute change”</li>
+<li><span class="math inline">\(r_i = 0\)</span> does not mean “no change”; it means “this person’s change is exactly equal to the average expected change for individuals with the same baseline”</li>
 </ul>
 </section>
-<section id="一个具体例子为什么两人同样进步residualized-change-却不同" class="level3" data-number="1.3.4">
-<h3 data-number="1.3.4" class="anchored" data-anchor-id="一个具体例子为什么两人同样进步residualized-change-却不同"><span class="header-section-number">1.3.4</span> 2.4 一个具体例子：为什么两人同样进步，residualized change 却不同</h3>
-<p>设全班的前测—后测回归线为：</p>
+<section id="a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes" class="level3" data-number="1.3.4">
+<h3 data-number="1.3.4" class="anchored" data-anchor-id="a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes"><span class="header-section-number">1.3.4</span> 2.4 A Concrete Example: Why Two Students with Equal Raw Gains Have Different Residualized Changes</h3>
+<p>Suppose the class-level pretest–posttest regression line is:</p>
 <p><span class="math display">\[
 \hat y_{\text{post}} = 20 + 0.7\, y_{\text{pre}}
 \]</span></p>
-<p>斜率 <span class="math inline">\(0.7 &lt; 1\)</span>，反映向平均数回归。</p>
+<p>The slope <span class="math inline">\(0.7 &lt; 1\)</span> reflects regression to the mean.</p>
 <ul>
-<li><strong>学生 A</strong>：pre = 40，post = 50predicted = 48raw change = <span class="math inline">\(+10\)</span>residualized change = <span class="math inline">\(+2\)</span></li>
-<li><strong>学生 B</strong>：pre = 80，post = 90predicted = 76raw change = <span class="math inline">\(+10\)</span>residualized change = <span class="math inline">\(+14\)</span></li>
-<li><strong>学生 C</strong>：pre = 70，post = 69 predicted = 69 raw change = <span class="math inline">\(-1\)</span> residualized change = <span class="math inline">\(0\)</span></li>
+<li><strong>Student A</strong>: pre = 40, post = 50; predicted = 48; raw change = <span class="math inline">\(+10\)</span>; residualized change = <span class="math inline">\(+2\)</span></li>
+<li><strong>Student B</strong>: pre = 80, post = 90; predicted = 76; raw change = <span class="math inline">\(+10\)</span>; residualized change = <span class="math inline">\(+14\)</span></li>
+<li><strong>Student C</strong>: pre = 70, post = 69 predicted = 69 raw change = <span class="math inline">\(-1\)</span> residualized change = <span class="math inline">\(0\)</span></li>
 </ul>
-<p>解释：</p>
+<p>Interpretation:</p>
 <ul>
-<li>A 和 B 的绝对进步都一样，都是 <span class="math inline">\(+10\)</span></li>
-<li>但 B 相对于“同等基线者的平均预期”进步更多</li>
-<li>C 虽然绝对退步了 <span class="math inline">\(1\)</span> 分，但这刚好就是相同基线人群的平均变化，因此 residualized change = 0</li>
-</ul>
-</section>
-<section id="lords-paradox同一数据两个方法可能得出相反结论" class="level3" data-number="1.3.5">
-<h3 data-number="1.3.5" class="anchored" data-anchor-id="lords-paradox同一数据两个方法可能得出相反结论"><span class="header-section-number">1.3.5</span> 2.5 Lord’s Paradox：同一数据，两个方法可能得出相反结论</h3>
-<p>Lord（1967）指出：在同一组数据上，change score 与 ANCOVA 可能得出完全相反的结论。</p>
-<p>经典例子：大学食堂膳食对男女体重的影响。基线和随访时，男女总体体重分布看起来都一样。</p>
-<ul>
-<li><strong>change score 的结论</strong>：男女平均变化都为 0，因此“无性别差异”</li>
-<li><strong>ANCOVA 的结论</strong>：控制基线后，相同初始体重的男生预期后测体重大于女生，因此“膳食对男生有显著正向影响”</li>
-</ul>
-<p><strong>核心原因：</strong></p>
-<ul>
-<li>change score 相当于把前测系数固定为 1</li>
-<li>ANCOVA 则让这个系数 <span class="math inline">\(\rho\)</span> 由数据估计（通常 <span class="math inline">\(&lt; 1\)</span>），因此会对初始差异进行“校正”</li>
-</ul>
-<p>在非随机分组的观察研究中，两者给出的不是同一个 estimand，因此并不奇怪会冲突。</p>
-</section>
-<section id="什么时候用哪一种" class="level3" data-number="1.3.6">
-<h3 data-number="1.3.6" class="anchored" data-anchor-id="什么时候用哪一种"><span class="header-section-number">1.3.6</span> 2.6 什么时候用哪一种？</h3>
-<section id="随机对照试验rct" class="level4" data-number="1.3.6.1">
-<h4 data-number="1.3.6.1" class="anchored" data-anchor-id="随机对照试验rct"><span class="header-section-number">1.3.6.1</span> 随机对照试验（RCT）</h4>
-<p>两种方法通常更接近：</p>
-<ul>
-<li>随机分配使各组基线在统计上相等</li>
-<li>向平均数回归在组间会相互抵消</li>
-<li>ANCOVA 往往有更高检验力</li>
+<li>A and B show identical absolute gains of <span class="math inline">\(+10\)</span></li>
+<li>But B improved far more relative to the average expectation for individuals with the same baseline</li>
+<li>C declined by <span class="math inline">\(1\)</span> point in absolute terms, but this is exactly the average change expected for individuals with the same baseline; hence residualized change = 0</li>
 </ul>
 </section>
-<section id="观察性研究组别非随机" class="level4" data-number="1.3.6.2">
-<h4 data-number="1.3.6.2" class="anchored" data-anchor-id="观察性研究组别非随机"><span class="header-section-number">1.3.6.2</span> 观察性研究（组别非随机）</h4>
-<p>必须谨慎：</p>
+<section id="lords-paradox-two-methods-opposite-conclusions-from-the-same-data" class="level3" data-number="1.3.5">
+<h3 data-number="1.3.5" class="anchored" data-anchor-id="lords-paradox-two-methods-opposite-conclusions-from-the-same-data"><span class="header-section-number">1.3.5</span> 2.5 Lord’s Paradox: Two Methods, Opposite Conclusions from the Same Data</h3>
+<p>Lord (1967) noted that, applied to the same dataset, the change score approach and ANCOVA can yield diametrically opposite conclusions.</p>
+<p>The classic example involves the effect of a university dining hall’s meal plan on the weights of male and female students. At both baseline and follow-up, the overall weight distributions of males and females appear identical.</p>
 <ul>
-<li>若你关心<strong>总效应 / 绝对变化量</strong> → 更接近 change score</li>
-<li>若你关心<strong>控制起点后的相对变化</strong> → 更接近 ANCOVA / residualized change</li>
+<li><strong>Change score conclusion</strong>: average change is zero for both sexes, therefore “no sex difference”</li>
+<li><strong>ANCOVA conclusion</strong>: after controlling for baseline, males with the same initial weight are expected to have a higher posttest weight than females, therefore “the meal plan has a significant positive effect for males”</li>
 </ul>
-<p>但前提是：你必须相信“控制基线”符合你的因果结构；否则很容易引入向平均数回归（RTM）偏误。</p>
+<p><strong>The underlying reason:</strong></p>
+<ul>
+<li>The change score approach implicitly fixes the coefficient on the pretest at 1</li>
+<li>ANCOVA allows this coefficient <span class="math inline">\(\rho\)</span> to be estimated from the data (typically <span class="math inline">\(&lt; 1\)</span>), and thus “adjusts” for initial differences</li>
+</ul>
+<p>In non-randomized observational studies, the two approaches do not target the same estimand, so it is not surprising that they conflict.</p>
+</section>
+<section id="when-to-use-which-approach" class="level3" data-number="1.3.6">
+<h3 data-number="1.3.6" class="anchored" data-anchor-id="when-to-use-which-approach"><span class="header-section-number">1.3.6</span> 2.6 When to Use Which Approach?</h3>
+<section id="randomized-controlled-trials-rcts" class="level4" data-number="1.3.6.1">
+<h4 data-number="1.3.6.1" class="anchored" data-anchor-id="randomized-controlled-trials-rcts"><span class="header-section-number">1.3.6.1</span> Randomized Controlled Trials (RCTs)</h4>
+<p>The two approaches tend to converge:</p>
+<ul>
+<li>Random assignment makes baseline values statistically equivalent across groups</li>
+<li>Regression to the mean cancels out across groups</li>
+<li>ANCOVA typically achieves greater statistical power</li>
+</ul>
+</section>
+<section id="observational-studies-non-random-group-assignment" class="level4" data-number="1.3.6.2">
+<h4 data-number="1.3.6.2" class="anchored" data-anchor-id="observational-studies-non-random-group-assignment"><span class="header-section-number">1.3.6.2</span> Observational Studies (Non-random Group Assignment)</h4>
+<p>Caution is required:</p>
+<ul>
+<li>If you are interested in <strong>total effects / absolute change</strong> → change score is more appropriate</li>
+<li>If you are interested in <strong>relative change after accounting for starting point</strong> → ANCOVA / residualized change is more appropriate</li>
+</ul>
+<p>However, the prerequisite is: you must believe that “controlling for baseline” is consistent with your causal structure; otherwise, regression-to-the-mean (RTM) bias is easily introduced.</p>
 </section>
 </section>
-<section id="为什么-change-score-容易误导测量层面的原因" class="level3" data-number="1.3.7">
-<h3 data-number="1.3.7" class="anchored" data-anchor-id="为什么-change-score-容易误导测量层面的原因"><span class="header-section-number">1.3.7</span> 2.7 为什么 change score 容易误导：测量层面的原因</h3>
-<p>设两次测量分别为：</p>
+<section id="why-change-scores-can-be-misleading-measurement-level-reasons" class="level3" data-number="1.3.7">
+<h3 data-number="1.3.7" class="anchored" data-anchor-id="why-change-scores-can-be-misleading-measurement-level-reasons"><span class="header-section-number">1.3.7</span> 2.7 Why Change Scores Can Be Misleading: Measurement-Level Reasons</h3>
+<p>Suppose the two measurements are:</p>
 <p><span class="math display">\[
 y_{i1} = T_{i1} + e_{i1},
 \qquad
 y_{i2} = T_{i2} + e_{i2}
 \]</span></p>
-<p>则 change score 为：</p>
+<p>Then the change score is:</p>
 <p><span class="math display">\[
 \Delta y_i = y_{i2} - y_{i1}
 = (T_{i2} - T_{i1}) + (e_{i2} - e_{i1})
 \]</span></p>
-<p>若两次误差独立，则：</p>
+<p>If the two errors are independent, then:</p>
 <p><span class="math display">\[
 \text{Var}(e_{i2} - e_{i1}) = \text{Var}(e_{i2}) + \text{Var}(e_{i1})
 \]</span></p>
-<p>也就是说，差值中的误差会<strong>直接叠加</strong>，因此 change score 往往比单次测量更不稳定。</p>
-<p>此外，change score 与 baseline 还存在机械负相关：</p>
+<p>That is, measurement errors in the difference <strong>accumulate directly</strong>, so change scores are typically less stable than single-occasion measurements.</p>
+<p>In addition, change scores exhibit a mechanical negative correlation with the baseline:</p>
 <p><span class="math display">\[
 \text{Cov}(\Delta y_i, y_{i1})
 =
@@ -554,68 +559,68 @@ y_{i2} = T_{i2} + e_{i2}
 =
 \text{Cov}(y_{i2}, y_{i1}) - \text{Var}(y_{i1})
 \]</span></p>
-<p>只要跨时相关小于 1，这个协方差往往为负：</p>
+<p>As long as the cross-time correlation is less than 1, this covariance tends to be negative:</p>
 <ul>
-<li>baseline 高的人更容易显得“涨得少”</li>
-<li>baseline 低的人更容易显得“涨得多”</li>
+<li>Individuals with a higher baseline are more likely to appear to have gained less</li>
+<li>Individuals with a lower baseline are more likely to appear to have gained more</li>
 </ul>
-<p>这不一定反映真实的心理或行为机制。</p>
+<p>This does not necessarily reflect genuine psychological or behavioral mechanisms.</p>
 </section>
-<section id="为什么-change-score-容易误导因果层面的原因" class="level3" data-number="1.3.8">
-<h3 data-number="1.3.8" class="anchored" data-anchor-id="为什么-change-score-容易误导因果层面的原因"><span class="header-section-number">1.3.8</span> 2.8 为什么 change score 容易误导：因果层面的原因</h3>
-<p>在非随机化数据中，把 change score 作为结果变量去回归某个基线暴露，往往并不对应一个清晰的因果效应。</p>
-<p>尤其当基线结局同时扮演：</p>
+<section id="why-change-scores-can-be-misleading-causal-reasons" class="level3" data-number="1.3.8">
+<h3 data-number="1.3.8" class="anchored" data-anchor-id="why-change-scores-can-be-misleading-causal-reasons"><span class="header-section-number">1.3.8</span> 2.8 Why Change Scores Can Be Misleading: Causal Reasons</h3>
+<p>In non-randomized data, regressing a change score as the outcome on some baseline exposure often does not correspond to a well-defined causal effect.</p>
+<p>This is particularly problematic when the baseline outcome simultaneously serves as a:</p>
 <ul>
-<li>confounder（混杂因素），或</li>
-<li>mediator（中介）</li>
+<li>confounder, or</li>
+<li>mediator</li>
 </ul>
-<p>时，change score 的回归系数甚至可能与真实 total effect / direct effect 方向相反。</p>
-<p><strong>结论</strong>：change score 不是绝对不能用，而是它在非随机化因果问题里，经常并不对应你以为自己在估计的那个效应。</p>
+<p>In such cases, the regression coefficient for the change score may even be in the opposite direction from the true total effect / direct effect.</p>
+<p><strong>Conclusion</strong>: change scores are not inherently unusable, but in non-randomized causal problems they frequently do not correspond to the effect one intends to estimate.</p>
 </section>
-<section id="这一组方法真正适合回答什么问题" class="level3" data-number="1.3.9">
-<h3 data-number="1.3.9" class="anchored" data-anchor-id="这一组方法真正适合回答什么问题"><span class="header-section-number">1.3.9</span> 2.9 这一组方法真正适合回答什么问题？</h3>
+<section id="what-questions-are-these-methods-best-suited-to-answer" class="level3" data-number="1.3.9">
+<h3 data-number="1.3.9" class="anchored" data-anchor-id="what-questions-are-these-methods-best-suited-to-answer"><span class="header-section-number">1.3.9</span> 2.9 What Questions Are These Methods Best Suited to Answer?</h3>
 <ul>
-<li>“变了多少？” → change score / ANCOVA 都可以</li>
-<li>“变化过程是什么形状？” → 两波方法不够</li>
-<li>“不同人变化速率是否不同？” → 需要 MLM / LGM</li>
-<li>“前一状态如何驱动后一状态的变化？” → 需要 CLPM 或 LCSM</li>
+<li>“How much did it change?” → both change score and ANCOVA are appropriate</li>
+<li>“What is the shape of the change trajectory?” → two-wave methods are insufficient</li>
+<li>“Do different individuals change at different rates?” → MLM / LGM is required</li>
+<li>“How does a prior state drive subsequent change?” → CLPM or LCSM is required</li>
 </ul>
-<p>这也是为什么“absolute change vs.&nbsp;conditional change”的差别，会在后面的 CLPM、LGM、LCSM 中被进一步展开。</p>
+<p>This is also why the distinction between “absolute change vs.&nbsp;conditional change” will be revisited in the subsequent discussions of CLPM, LGM, and LCSM.</p>
 <hr>
 </section>
 </section>
-<section id="统一数学视角把相关性显式放进模型" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="统一数学视角把相关性显式放进模型"><span class="header-section-number">1.4</span> 3. 统一数学视角：把相关性显式放进模型</h2>
-<p>这一部分整合了原笔记里关于 <strong>LMM 的矩阵表达、SEM 的隐含协方差、MLM ↔︎ SEM/LGM 的翻译词典与等价关系</strong> 的内容。</p>
-<section id="mlm-lmm-的矩阵形式" class="level3" data-number="1.4.1">
-<h3 data-number="1.4.1" class="anchored" data-anchor-id="mlm-lmm-的矩阵形式"><span class="header-section-number">1.4.1</span> 3.1 MLM / LMM 的矩阵形式</h3>
-<p>对个体 <span class="math inline">\(i\)</span>，LMM 写成：</p>
+<section id="a-unified-mathematical-perspective-explicitly-modeling-dependence" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="a-unified-mathematical-perspective-explicitly-modeling-dependence"><span class="header-section-number">1.4</span> 3. A Unified Mathematical Perspective: Explicitly Modeling Dependence</h2>
+<p>This section integrates content from the original notes on <strong>the matrix representation of LMM, the implied covariance structure in SEM, and the translation dictionary and equivalence between MLM and SEM/LGM</strong>.</p>
+<section id="matrix-form-of-mlm-lmm" class="level3" data-number="1.4.1">
+<h3 data-number="1.4.1" class="anchored" data-anchor-id="matrix-form-of-mlm-lmm"><span class="header-section-number">1.4.1</span> 3.1 Matrix Form of MLM / LMM</h3>
+<p>For individual <span class="math inline">\(i\)</span>, the LMM is written as:</p>
 <p><span class="math display">\[
 \mathbf y_i = X_i\beta + Z_i\mathbf b_i + \boldsymbol\varepsilon_i
 \]</span></p>
-<p>其中：</p>
+<p>where:</p>
 <ul>
-<li><span class="math inline">\(X_i\beta\)</span>：固定效应，代表群体平均结构</li>
-<li><span class="math inline">\(Z_i\mathbf b_i\)</span>：随机效应，代表个体相对平均轨迹的偏离</li>
-<li><span class="math inline">\(\boldsymbol\varepsilon_i\)</span>：残差</li>
+<li><span class="math inline">\(X_i\beta\)</span>: fixed effects, representing the population mean structure</li>
+<li><span class="math inline">\(Z_i\mathbf b_i\)</span>: random effects, representing individual deviations from the mean trajectory</li>
+<li><span class="math inline">\(\boldsymbol\varepsilon_i\)</span>: residuals</li>
 </ul>
-<p>该模型隐含的边际协方差矩阵为：</p>
+<p>The marginal covariance matrix implied by this model is:</p>
 <p><span class="math display">\[
 V_i = \text{Cov}(\mathbf y_i) = Z_i\mathbf D Z_i' + R_i
 \]</span></p>
 <ul>
-<li><span class="math inline">\(\mathbf D\)</span>：随机效应协方差矩阵，对应截距和斜率的异质性</li>
-<li><span class="math inline">\(R_i\)</span>：个体内残差结构，表示测量误差或短期波动</li>
+<li><span class="math inline">\(\mathbf D\)</span>: random effects covariance matrix, corresponding to heterogeneity in intercepts and slopes</li>
+<li><span class="math inline">\(R_i\)</span>: within-individual residual structure, representing measurement error or short-term fluctuation</li>
 </ul>
-<p>这就是 LMM 在矩阵层面“解决相关性”的方式： 不是要求相关性消失，而是直接说明相关性从哪里来。</p>
+<p>This is how LMM “addresses dependence” at the matrix level: rather than requiring dependence to disappear, it explicitly specifies its sources.</p>
 </section>
-<section id="同一个思想在标量层面的展开" class="level3" data-number="1.4.2">
-<h3 data-number="1.4.2" class="anchored" data-anchor-id="同一个思想在标量层面的展开"><span class="header-section-number">1.4.2</span> 3.2 同一个思想在标量层面的展开</h3>
-<p>对于线性增长模型：</p>
+<section id="the-same-idea-at-the-scalar-level" class="level3" data-number="1.4.2">
+<h3 data-number="1.4.2" class="anchored" data-anchor-id="the-same-idea-at-the-scalar-level"><span class="header-section-number">1.4.2</span> 3.2 The Same Idea at the Scalar Level</h3>
+<p>For the linear growth model:</p>
 <p><span class="math display">\[
 y_{it} = \mu_0 + \mu_1x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
 \]</span></p>
-<p>同一个体在两个时间点 <span class="math inline">\(t\)</span> 和 <span class="math inline">\(s\)</span> 上的协方差为：</p>
+<p>the covariance between two time points <span class="math inline">\(t\)</span> and <span class="math inline">\(s\)</span> for the same individual is:</p>
 <p><span class="math display">\[
 \text{Cov}(y_{it}, y_{is})
 =
@@ -625,47 +630,47 @@ y_{it} = \mu_0 + \mu_1x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
 + x_{it}x_{is}\tau_{11}
 + \text{Cov}(\varepsilon_{it}, \varepsilon_{is})
 \]</span></p>
-<p>若假设给定随机效应后 Level-1 残差独立，则：</p>
+<p>If Level-1 residuals are assumed to be independent conditional on the random effects, then:</p>
 <p><span class="math display">\[
 \text{Cov}(\varepsilon_{it}, \varepsilon_{is}) = 0
 \qquad (t \neq s)
 \]</span></p>
-<p>于是相关性完全来自共享的随机截距与随机斜率。</p>
-<p>最简单的随机截距模型中：</p>
+<p>and the dependence arises entirely from the shared random intercept and random slope.</p>
+<p>In the simplest random-intercept model:</p>
 <p><span class="math display">\[
 \text{Cov}(y_{it}, y_{is}) = \tau_{00}
 \qquad (t \neq s)
 \]</span></p>
-<p>在密集测量下，还常需要额外加入残差序列相关，例如 AR(1)：</p>
+<p>Under intensive longitudinal measurement, it is often necessary to additionally model residual serial dependence, for example AR(1):</p>
 <p><span class="math display">\[
 \text{Cov}(\varepsilon_{it}, \varepsilon_{is})
 =
 \sigma^2 \rho^{|x_{it} - x_{is}|}
 \]</span></p>
-<p>这表示相近时间点的误差更相似，时间间隔越远，相关越弱。</p>
+<p>This indicates that errors at nearby time points are more similar, with the correlation weakening as the time interval increases.</p>
 </section>
-<section id="纵向-sem-lgm-的矩阵形式" class="level3" data-number="1.4.3">
-<h3 data-number="1.4.3" class="anchored" data-anchor-id="纵向-sem-lgm-的矩阵形式"><span class="header-section-number">1.4.3</span> 3.3 纵向 SEM / LGM 的矩阵形式</h3>
-<p>在 SEM 语言里，纵向增长模型写为：</p>
+<section id="matrix-form-of-longitudinal-sem-lgm" class="level3" data-number="1.4.3">
+<h3 data-number="1.4.3" class="anchored" data-anchor-id="matrix-form-of-longitudinal-sem-lgm"><span class="header-section-number">1.4.3</span> 3.3 Matrix Form of Longitudinal SEM / LGM</h3>
+<p>In the SEM framework, the longitudinal growth model is written as:</p>
 <p><span class="math display">\[
 \mathbf y_i = \Lambda_i \eta_i + \varepsilon_i,
 \qquad
 \eta_i = \alpha + \zeta_i
 \]</span></p>
-<p>因此：</p>
+<p>Therefore:</p>
 <p><span class="math display">\[
 E(\mathbf y_i) = \Lambda_i \alpha
 \]</span></p>
 <p><span class="math display">\[
 \Sigma_i = \text{Var}(\mathbf y_i) = \Lambda_i \Psi \Lambda_i' + \Theta_i
 \]</span></p>
-<p>其中：</p>
+<p>where:</p>
 <ul>
-<li><span class="math inline">\(\Lambda_i\)</span>：载荷矩阵，定义时间形状（线性、二次、潜基底等）</li>
-<li><span class="math inline">\(\Psi\)</span>：潜增长因子协方差矩阵</li>
-<li><span class="math inline">\(\Theta_i\)</span>：指标残差协方差矩阵</li>
+<li><span class="math inline">\(\Lambda_i\)</span>: factor loading matrix, defining the temporal shape (linear, quadratic, latent basis, etc.)</li>
+<li><span class="math inline">\(\Psi\)</span>: latent growth factor covariance matrix</li>
+<li><span class="math inline">\(\Theta_i\)</span>: indicator residual covariance matrix</li>
 </ul>
-<p>对第 <span class="math inline">\(t\)</span> 个时间点，若载荷行为 <span class="math inline">\(\lambda_t = [1, x_t]\)</span>，则任意两时间点的协方差为：</p>
+<p>For the <span class="math inline">\(t\)</span>-th time point, if the loading row is <span class="math inline">\(\lambda_t = [1, x_t]\)</span>, then the covariance between any two time points is:</p>
 <p><span class="math display">\[
 \text{Cov}(y_{it}, y_{is})
 =
@@ -675,47 +680,47 @@ E(\mathbf y_i) = \Lambda_i \alpha
 + x_tx_s\psi_{11}
 + \theta_{ts}
 \]</span></p>
-<p>这里：</p>
+<p>where:</p>
 <ul>
-<li><span class="math inline">\(\psi_{00}, \psi_{11}, \psi_{01}\)</span>：潜截距和潜斜率的方差、协方差</li>
-<li><span class="math inline">\(\theta_{ts}\)</span>：残差协方差，可用来表示同题项跨时间的 residual dependence</li>
+<li><span class="math inline">\(\psi_{00}, \psi_{11}, \psi_{01}\)</span>: variances and covariance of the latent intercept and latent slope</li>
+<li><span class="math inline">\(\theta_{ts}\)</span>: residual covariance, used to represent residual dependence of the same indicator across time</li>
 </ul>
 </section>
-<section id="从条件表示到边际表示mlm-与-sem-在数学上其实是同一件事" class="level3" data-number="1.4.4">
-<h3 data-number="1.4.4" class="anchored" data-anchor-id="从条件表示到边际表示mlm-与-sem-在数学上其实是同一件事"><span class="header-section-number">1.4.4</span> 3.4 从条件表示到边际表示：MLM 与 SEM 在数学上其实是同一件事</h3>
-<p>把随机效应积分掉后，MLM 的边际分布是：</p>
+<section id="from-conditional-to-marginal-representation-mlm-and-sem-are-mathematically-the-same" class="level3" data-number="1.4.4">
+<h3 data-number="1.4.4" class="anchored" data-anchor-id="from-conditional-to-marginal-representation-mlm-and-sem-are-mathematically-the-same"><span class="header-section-number">1.4.4</span> 3.4 From Conditional to Marginal Representation: MLM and SEM Are Mathematically the Same</h3>
+<p>After integrating out the random effects, the marginal distribution of the LMM is:</p>
 <p><span class="math display">\[
 E(\mathbf y_i) = X_i\beta
 \]</span></p>
 <p><span class="math display">\[
 \text{Var}(\mathbf y_i) = Z_i\mathbf D Z_i' + R_i
 \]</span></p>
-<p>而 SEM/LGM 给出的边际结构是：</p>
+<p>The marginal structure implied by SEM/LGM is:</p>
 <p><span class="math display">\[
 E(\mathbf y_i) = \Lambda_i\alpha
 \]</span></p>
 <p><span class="math display">\[
 \text{Var}(\mathbf y_i) = \Lambda_i\Psi\Lambda_i' + \Theta_i
 \]</span></p>
-<p>两者的形式是同构的。</p>
+<p>The two forms are isomorphic.</p>
 </section>
-<section id="翻译词典" class="level3" data-number="1.4.5">
-<h3 data-number="1.4.5" class="anchored" data-anchor-id="翻译词典"><span class="header-section-number">1.4.5</span> 3.5 翻译词典</h3>
+<section id="translation-dictionary" class="level3" data-number="1.4.5">
+<h3 data-number="1.4.5" class="anchored" data-anchor-id="translation-dictionary"><span class="header-section-number">1.4.5</span> 3.5 Translation Dictionary</h3>
 <ul>
-<li><span class="math inline">\(Z_i\)</span>（MLM 的 random-effects design matrix）<span class="math inline">\(\leftrightarrow\)</span> <span class="math inline">\(\Lambda_i\)</span>（SEM 的 factor loading matrix）</li>
-<li><span class="math inline">\(\mathbf b_i\)</span>（random intercept / slope）<span class="math inline">\(\leftrightarrow\)</span> <span class="math inline">\(\zeta_i\)</span>（潜增长因子的个体偏差）</li>
+<li><span class="math inline">\(Z_i\)</span> (MLM random-effects design matrix) <span class="math inline">\(\leftrightarrow\)</span> <span class="math inline">\(\Lambda_i\)</span> (SEM factor loading matrix)</li>
+<li><span class="math inline">\(\mathbf b_i\)</span> (random intercept / slope) <span class="math inline">\(\leftrightarrow\)</span> <span class="math inline">\(\zeta_i\)</span> (individual deviation of the latent growth factor)</li>
 <li><span class="math inline">\(\mathbf D\)</span> <span class="math inline">\(\leftrightarrow\)</span> <span class="math inline">\(\Psi\)</span></li>
 <li><span class="math inline">\(R_i\)</span> <span class="math inline">\(\leftrightarrow\)</span> <span class="math inline">\(\Theta_i\)</span></li>
 <li><span class="math inline">\(X_i\beta\)</span> <span class="math inline">\(\leftrightarrow\)</span> <span class="math inline">\(\Lambda_i\alpha\)</span></li>
 </ul>
-<p>最值得记住的一句话是：</p>
+<p>The most important thing to remember is:</p>
 <blockquote class="blockquote">
-<p><strong>MLM 里的 <span class="math inline">\([1, x_{it}]\)</span> 行向量，到了 SEM 里就是载荷矩阵 <span class="math inline">\(\Lambda_i\)</span> 的一行。</strong></p>
+<p><strong>The row vector <span class="math inline">\([1, x_{it}]\)</span> in MLM corresponds to a row of the factor loading matrix <span class="math inline">\(\Lambda_i\)</span> in SEM.</strong></p>
 </blockquote>
 </section>
-<section id="四波线性增长的具体对应" class="level3" data-number="1.4.6">
-<h3 data-number="1.4.6" class="anchored" data-anchor-id="四波线性增长的具体对应"><span class="header-section-number">1.4.6</span> 3.6 四波线性增长的具体对应</h3>
-<p>若有四个等距时间点 <span class="math inline">\(t = 0,1,2,3\)</span>，则：</p>
+<section id="concrete-correspondence-for-a-four-wave-linear-growth-model" class="level3" data-number="1.4.6">
+<h3 data-number="1.4.6" class="anchored" data-anchor-id="concrete-correspondence-for-a-four-wave-linear-growth-model"><span class="header-section-number">1.4.6</span> 3.6 Concrete Correspondence for a Four-Wave Linear Growth Model</h3>
+<p>For four equally spaced time points <span class="math inline">\(t = 0,1,2,3\)</span>:</p>
 <p><span class="math display">\[
 Z_i = \Lambda_i =
 \begin{bmatrix}
@@ -726,13 +731,13 @@ Z_i = \Lambda_i =
 \end{bmatrix}
 \]</span></p>
 <ul>
-<li><strong>MLM 读法</strong>：</li>
+<li><strong>MLM reading</strong>:</li>
 </ul>
 <p><span class="math display">\[
 y_{it} = \mu_0 + \mu_1 t + b_{0i} + b_{1i}t + \varepsilon_{it}
 \]</span></p>
 <ul>
-<li><strong>SEM 读法</strong>：</li>
+<li><strong>SEM reading</strong>:</li>
 </ul>
 <p><span class="math display">\[
 \mathbf y_i = \Lambda_i \eta_i + \varepsilon_i,
@@ -743,15 +748,15 @@ y_{it} = \mu_0 + \mu_1 t + b_{0i} + b_{1i}t + \varepsilon_{it}
 \mu_1 + b_{1i}
 \end{bmatrix}
 \]</span></p>
-<p>只要时间编码一致、误差结构一致，它们就是同一个增长模型的两种表示。</p>
+<p>As long as the time coding and error structure are consistent, these are two representations of the same growth model.</p>
 </section>
-<section id="只有随机截距时与-null-model-的完全对应" class="level3" data-number="1.4.7">
-<h3 data-number="1.4.7" class="anchored" data-anchor-id="只有随机截距时与-null-model-的完全对应"><span class="header-section-number">1.4.7</span> 3.7 只有随机截距时：与 null model 的完全对应</h3>
-<p>若只有随机截距，则：</p>
+<section id="random-intercept-only-full-correspondence-with-the-null-model" class="level3" data-number="1.4.7">
+<h3 data-number="1.4.7" class="anchored" data-anchor-id="random-intercept-only-full-correspondence-with-the-null-model"><span class="header-section-number">1.4.7</span> 3.7 Random Intercept Only: Full Correspondence with the Null Model</h3>
+<p>When only a random intercept is included:</p>
 <p><span class="math display">\[
 \mathbf D = [\tau_{00}]
 \]</span></p>
-<p>相应的 SEM 就是一个 intercept-only 的潜因子，所有载荷固定为 1：</p>
+<p>The corresponding SEM is an intercept-only latent factor with all loadings fixed to 1:</p>
 <p><span class="math display">\[
 \lambda =
 \begin{bmatrix}
@@ -760,7 +765,7 @@ y_{it} = \mu_0 + \mu_1 t + b_{0i} + b_{1i}t + \varepsilon_{it}
 1
 \end{bmatrix}
 \]</span></p>
-<p>此时：</p>
+<p>In this case:</p>
 <p><span class="math display">\[
 \text{Var}(\mathbf y_i)
 =
@@ -768,12 +773,12 @@ y_{it} = \mu_0 + \mu_1 t + b_{0i} + b_{1i}t + \varepsilon_{it}
 =
 \tau_{00}J + \sigma^2 I
 \]</span></p>
-<p>这与随机截距的 MLM / null model 完全一致。</p>
+<p>This is exactly equivalent to the random-intercept MLM / null model.</p>
 </section>
-<section id="level-2-预测变量在两套语言里的翻译" class="level3" data-number="1.4.8">
-<h3 data-number="1.4.8" class="anchored" data-anchor-id="level-2-预测变量在两套语言里的翻译"><span class="header-section-number">1.4.8</span> 3.8 Level-2 预测变量在两套语言里的翻译</h3>
-<p>设 <span class="math inline">\(w_i\)</span> 为时间不变协变量。</p>
-<p>在 MLM 中，它既可以预测截距，也可以预测斜率：</p>
+<section id="level-2-predictors-in-both-frameworks" class="level3" data-number="1.4.8">
+<h3 data-number="1.4.8" class="anchored" data-anchor-id="level-2-predictors-in-both-frameworks"><span class="header-section-number">1.4.8</span> 3.8 Level-2 Predictors in Both Frameworks</h3>
+<p>Let <span class="math inline">\(w_i\)</span> be a time-invariant covariate.</p>
+<p>In MLM, it can predict both the intercept and the slope:</p>
 <p><span class="math display">\[
 y_{it}
 =
@@ -787,192 +792,192 @@ b_{1i}x_{it}
 +
 \varepsilon_{it}
 \]</span></p>
-<p>在 SEM 中，同一个效应写成：</p>
+<p>In SEM, the same effect is written as:</p>
 <p><span class="math display">\[
 \eta_{0i} = \mu_0 + \beta_0 w_i + b_{0i}
 \]</span></p>
 <p><span class="math display">\[
 \eta_{1i} = \mu_1 + \beta_1 w_i + b_{1i}
 \]</span></p>
-<p>也就是说：</p>
+<p>That is:</p>
 <ul>
-<li><strong>MLM 里的 cross-level interaction</strong></li>
-<li><strong>SEM 里的 “预测 latent slope factor”</strong></li>
+<li><strong>Cross-level interaction in MLM</strong></li>
+<li><strong>“Predicting the latent slope factor” in SEM</strong></li>
 </ul>
-<p>在数学上是同一个东西。</p>
+<p>are mathematically the same thing.</p>
 </section>
-<section id="两者什么时候不再等价" class="level3" data-number="1.4.9">
-<h3 data-number="1.4.9" class="anchored" data-anchor-id="两者什么时候不再等价"><span class="header-section-number">1.4.9</span> 3.9 两者什么时候不再等价？</h3>
-<p>这种等价关系有前提：</p>
+<section id="when-does-the-equivalence-break-down" class="level3" data-number="1.4.9">
+<h3 data-number="1.4.9" class="anchored" data-anchor-id="when-does-the-equivalence-break-down"><span class="header-section-number">1.4.9</span> 3.9 When Does the Equivalence Break Down?</h3>
+<p>This equivalence holds under certain prerequisites:</p>
 <ul>
-<li>线性高斯模型</li>
-<li>时间编码一致</li>
-<li>残差结构设定一致</li>
-<li>没有额外的显式测量模型</li>
+<li>Linear Gaussian model</li>
+<li>Consistent time coding</li>
+<li>Consistent residual structure specification</li>
+<li>No additional explicit measurement model</li>
 </ul>
-<p>一旦下面任一条件出现，两者就会分叉：</p>
+<p>Once any of the following conditions arise, the two approaches diverge:</p>
 <ol type="1">
-<li><p><strong>残差结构不同</strong></p>
+<li><p><strong>Different residual structures</strong></p>
 <ul>
-<li>LGM 默认更容易允许各时间点残差方差不同</li>
-<li>MLM 常默认 Level-1 残差同质</li>
+<li>LGM more readily allows residual variances to differ across time points by default</li>
+<li>MLM commonly assumes homogeneous Level-1 residuals by default</li>
 </ul></li>
-<li><p><strong>SEM 显式处理测量模型</strong> 若每个时间点本身是潜构念（例如抑郁由 5 个题目测量），那么 SEM 可以先建测量模型，再建增长模型；MLM 若仍以总分为结果变量，则两者就不再同构。</p></li>
+<li><p><strong>SEM explicitly incorporates a measurement model</strong> If each time point itself is a latent construct (e.g., depression measured by 5 items), SEM can first specify a measurement model and then a growth model; if MLM still uses sum scores as the outcome, the two are no longer isomorphic.</p></li>
 </ol>
-<p>因此，更精确的说法是：</p>
+<p>Therefore, a more precise statement is:</p>
 <blockquote class="blockquote">
-<p><strong>MLM 与 LGM 的等价，成立于“观测层面的简单线性增长模型”。当 SEM 进一步显式建模测量误差与测量结构时，它就超出了简单一一翻译的范围。</strong></p>
+<p><strong>The equivalence between MLM and LGM holds for observed-variable simple linear growth models. When SEM further explicitly models measurement error and measurement structure, it goes beyond the scope of a simple one-to-one translation.</strong></p>
 </blockquote>
 <hr>
 </section>
 </section>
-<section id="三类主流框架geemlmlmm纵向-sem" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="三类主流框架geemlmlmm纵向-sem"><span class="header-section-number">1.5</span> 4. 三类主流框架：GEE、MLM/LMM、纵向 SEM</h2>
-<section id="gee群体平均的边际视角" class="level3" data-number="1.5.1">
-<h3 data-number="1.5.1" class="anchored" data-anchor-id="gee群体平均的边际视角"><span class="header-section-number">1.5.1</span> 4.1 GEE：群体平均的边际视角</h3>
-<p>GEE 关注的是：</p>
+<section id="three-major-frameworks-gee-mlmlmm-and-longitudinal-sem" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="three-major-frameworks-gee-mlmlmm-and-longitudinal-sem"><span class="header-section-number">1.5</span> 4. Three Major Frameworks: GEE, MLM/LMM, and Longitudinal SEM</h2>
+<section id="gee-a-marginal-population-averaged-perspective" class="level3" data-number="1.5.1">
+<h3 data-number="1.5.1" class="anchored" data-anchor-id="gee-a-marginal-population-averaged-perspective"><span class="header-section-number">1.5.1</span> 4.1 GEE: A Marginal, Population-Averaged Perspective</h3>
+<p>GEE focuses on:</p>
 <ul>
-<li>协变量变化一个单位时，<strong>整个人群平均响应</strong>会如何变化</li>
+<li>How the <strong>population-averaged response</strong> changes when a covariate changes by one unit</li>
 </ul>
-<p>它通过指定一个“工作相关矩阵” <span class="math inline">\(R(\alpha)\)</span> 来近似描述组内相关，并用 <strong>夹心方差估计（sandwich estimator）</strong> 修正标准误。</p>
-<p><strong>优点：</strong></p>
+<p>It approximates within-cluster dependence by specifying a “working correlation matrix” <span class="math inline">\(R(\alpha)\)</span>, and uses a <strong>sandwich variance estimator</strong> to correct the standard errors.</p>
+<p><strong>Advantages:</strong></p>
 <ul>
-<li>即使工作相关矩阵设错，只要均值模型正确，参数估计仍然一致</li>
-<li>特别适合公共卫生、政策评估这类关注总体平均趋势的问题</li>
+<li>Even if the working correlation matrix is misspecified, the parameter estimates remain consistent as long as the mean model is correctly specified</li>
+<li>Particularly well-suited for public health and policy evaluation contexts where the interest lies in population-level average trends</li>
 </ul>
-<p><strong>局限：</strong></p>
+<p><strong>Limitations:</strong></p>
 <ul>
-<li>不擅长刻画个体差异来源</li>
-<li>缺失数据通常更依赖 MCAR；若希望在 MAR 下处理，往往需要多重插补（MI）</li>
-</ul>
-</section>
-<section id="mlm-lmm个体条件轨迹的视角" class="level3" data-number="1.5.2">
-<h3 data-number="1.5.2" class="anchored" data-anchor-id="mlm-lmm个体条件轨迹的视角"><span class="header-section-number">1.5.2</span> 4.2 MLM / LMM：个体条件轨迹的视角</h3>
-<p>MLM / LMM 关注的是：</p>
-<ul>
-<li>在给定个体随机效应的条件下，某个体的轨迹如何变化</li>
-<li>个体之间在起点、变化速率上的差异有多大</li>
-</ul>
-<p><strong>在非线性模型中，LMM 与 GEE 的系数往往不同：</strong></p>
-<p>例如在逻辑回归里，LMM 的固定效应估计通常大于 GEE 的边际效应，因为：</p>
-<ul>
-<li>LMM 更接近“控制了个体异质性后的纯效应”</li>
-<li>GEE 的效应会被个体间异质性稀释</li>
+<li>Less effective at characterizing sources of individual variation</li>
+<li>Missing data typically requires MCAR; handling missingness under MAR often requires multiple imputation (MI)</li>
 </ul>
 </section>
-<section id="纵向-sem潜在过程的视角" class="level3" data-number="1.5.3">
-<h3 data-number="1.5.3" class="anchored" data-anchor-id="纵向-sem潜在过程的视角"><span class="header-section-number">1.5.3</span> 4.3 纵向 SEM：潜在过程的视角</h3>
-<p>纵向 SEM 的关键优势在于：</p>
+<section id="mlm-lmm-a-conditional-individual-trajectory-perspective" class="level3" data-number="1.5.2">
+<h3 data-number="1.5.2" class="anchored" data-anchor-id="mlm-lmm-a-conditional-individual-trajectory-perspective"><span class="header-section-number">1.5.2</span> 4.2 MLM / LMM: A Conditional Individual Trajectory Perspective</h3>
+<p>MLM / LMM focuses on:</p>
 <ul>
-<li>可以用多个指标定义同一个潜在构念</li>
-<li>在增长建模时显式分离“真实变化”与“测量误差”</li>
-<li>便于引入中介、调节、并行过程增长等复杂路径</li>
+<li>How a given individual’s trajectory changes, conditional on that individual’s random effects</li>
+<li>How much individuals differ in their starting points and rates of change</li>
 </ul>
-<p>这也是它相对于单纯 LMM 的“杀手锏”所在。</p>
+<p><strong>In nonlinear models, the coefficients from LMM and GEE typically differ:</strong></p>
+<p>For example, in logistic regression, the fixed-effect estimates from LMM are generally larger than the marginal effects from GEE, because:</p>
+<ul>
+<li>LMM more closely approximates a “pure effect after controlling for individual heterogeneity”</li>
+<li>The GEE effect is attenuated by between-individual heterogeneity</li>
+</ul>
 </section>
-<section id="一页式对比" class="level3" data-number="1.5.4">
-<h3 data-number="1.5.4" class="anchored" data-anchor-id="一页式对比"><span class="header-section-number">1.5.4</span> 4.4 一页式对比</h3>
+<section id="longitudinal-sem-a-latent-process-perspective" class="level3" data-number="1.5.3">
+<h3 data-number="1.5.3" class="anchored" data-anchor-id="longitudinal-sem-a-latent-process-perspective"><span class="header-section-number">1.5.3</span> 4.3 Longitudinal SEM: A Latent Process Perspective</h3>
+<p>The key advantage of longitudinal SEM is that it:</p>
 <ul>
-<li><p><strong>解释层次</strong></p>
+<li>Can define a latent construct using multiple indicators</li>
+<li>Explicitly separates “true change” from “measurement error” in growth modeling</li>
+<li>Readily accommodates complex pathways involving mediation, moderation, and parallel process growth</li>
+</ul>
+<p>This is its principal advantage over LMM alone.</p>
+</section>
+<section id="one-page-comparison" class="level3" data-number="1.5.4">
+<h3 data-number="1.5.4" class="anchored" data-anchor-id="one-page-comparison"><span class="header-section-number">1.5.4</span> 4.4 One-Page Comparison</h3>
 <ul>
-<li>GEE = 群体平均趋势</li>
-<li>MLM/LMM = 个体条件轨迹</li>
-<li>纵向 SEM = 潜在过程轨迹</li>
+<li><p><strong>Level of interpretation</strong></p>
+<ul>
+<li>GEE = population-averaged trend</li>
+<li>MLM/LMM = individual conditional trajectory</li>
+<li>Longitudinal SEM = latent process trajectory</li>
 </ul></li>
-<li><p><strong>数据格式</strong></p>
+<li><p><strong>Data format</strong></p>
 <ul>
-<li>GEE / MLM = 通常更常用长格式（long）</li>
-<li>纵向 SEM / LGM = 通常更常用宽格式（wide）</li>
+<li>GEE / MLM = long format is typically preferred</li>
+<li>Longitudinal SEM / LGM = wide format is typically preferred</li>
 </ul></li>
-<li><p><strong>统计基础</strong></p>
+<li><p><strong>Statistical basis</strong></p>
 <ul>
-<li>GEE = 拟似然 / 边际模型</li>
-<li>MLM = 极大似然（ML / REML）</li>
-<li>纵向 SEM = 协方差结构分析</li>
+<li>GEE = quasi-likelihood / marginal model</li>
+<li>MLM = maximum likelihood (ML / REML)</li>
+<li>Longitudinal SEM = covariance structure analysis</li>
 </ul></li>
-<li><p><strong>缺失值机制</strong></p>
+<li><p><strong>Missing data mechanism</strong></p>
 <ul>
-<li>GEE = 更依赖 MCAR（或需借助 MI）</li>
-<li>MLM = 可在 MAR 下直接估计</li>
-<li>纵向 SEM = 可在 MAR 下使用 FIML</li>
+<li>GEE = relies more heavily on MCAR (or requires MI)</li>
+<li>MLM = can be estimated directly under MAR</li>
+<li>Longitudinal SEM = can use FIML under MAR</li>
 </ul></li>
-<li><p><strong>测量误差</strong></p>
+<li><p><strong>Measurement error</strong></p>
 <ul>
-<li>GEE = 不显式处理</li>
-<li>MLM = 视为残差的一部分</li>
-<li>纵向 SEM = 可显式建模并“纯化”潜变量</li>
+<li>GEE = not explicitly addressed</li>
+<li>MLM = treated as part of the residual</li>
+<li>Longitudinal SEM = can be explicitly modeled to “purify” the latent variable</li>
 </ul></li>
 </ul>
 <hr>
 </section>
 </section>
-<section id="mlm-lmm个体轨迹的条件模型" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="mlm-lmm个体轨迹的条件模型"><span class="header-section-number">1.6</span> 5. MLM / LMM：个体轨迹的条件模型</h2>
-<section id="基本框架时间是-level-1个体是-level-2" class="level3" data-number="1.6.1">
-<h3 data-number="1.6.1" class="anchored" data-anchor-id="基本框架时间是-level-1个体是-level-2"><span class="header-section-number">1.6.1</span> 5.1 基本框架：时间是 Level 1，个体是 Level 2</h3>
-<p>纵向 MLM 的基本思想是：</p>
+<section id="mlm-lmm-conditional-model-for-individual-trajectories" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="mlm-lmm-conditional-model-for-individual-trajectories"><span class="header-section-number">1.6</span> 5. MLM / LMM: Conditional Model for Individual Trajectories</h2>
+<section id="basic-framework-time-at-level-1-individuals-at-level-2" class="level3" data-number="1.6.1">
+<h3 data-number="1.6.1" class="anchored" data-anchor-id="basic-framework-time-at-level-1-individuals-at-level-2"><span class="header-section-number">1.6.1</span> 5.1 Basic Framework: Time at Level 1, Individuals at Level 2</h3>
+<p>The fundamental idea of longitudinal MLM is:</p>
 <ul>
-<li><strong>Level 1</strong>：个体内随时间变化的观测</li>
-<li><strong>Level 2</strong>：个体之间的差异</li>
+<li><strong>Level 1</strong>: within-individual observations varying over time</li>
+<li><strong>Level 2</strong>: between-individual differences</li>
 </ul>
-<p>最基本的线性增长模型写为：</p>
+<p>The most basic linear growth model is:</p>
 <p><span class="math display">\[
 y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
 \]</span></p>
-<p>也可以理解成：</p>
+<p>This can also be understood as:</p>
 <ul>
-<li>每个人都有自己的起点：<span class="math inline">\(\mu_0 + b_{0i}\)</span></li>
-<li>每个人也有自己的增长速率：<span class="math inline">\(\mu_1 + b_{1i}\)</span></li>
+<li>Each person has their own starting point: <span class="math inline">\(\mu_0 + b_{0i}\)</span></li>
+<li>Each person also has their own rate of growth: <span class="math inline">\(\mu_1 + b_{1i}\)</span></li>
 </ul>
 </section>
-<section id="null-model-随机效应-anova先看相关性有多强" class="level3" data-number="1.6.2">
-<h3 data-number="1.6.2" class="anchored" data-anchor-id="null-model-随机效应-anova先看相关性有多强"><span class="header-section-number">1.6.2</span> 5.2 Null Model / 随机效应 ANOVA：先看相关性有多强</h3>
-<p>最简无条件模型是：</p>
+<section id="null-model-random-effects-anova-first-assessing-the-strength-of-dependence" class="level3" data-number="1.6.2">
+<h3 data-number="1.6.2" class="anchored" data-anchor-id="null-model-random-effects-anova-first-assessing-the-strength-of-dependence"><span class="header-section-number">1.6.2</span> 5.2 Null Model / Random-Effects ANOVA: First Assessing the Strength of Dependence</h3>
+<p>The simplest unconditional model is:</p>
 <p><span class="math display">\[
 y_{it} = \mu_0 + b_{0i} + \varepsilon_{it}
 \]</span></p>
-<p>其中：</p>
+<p>where:</p>
 <p><span class="math display">\[
 b_{0i} \sim N(0, \tau_{00}),
 \qquad
 \varepsilon_{it} \sim N(0, \sigma^2)
 \]</span></p>
-<section id="三条核心推论" class="level4" data-number="1.6.2.1">
-<h4 data-number="1.6.2.1" class="anchored" data-anchor-id="三条核心推论"><span class="header-section-number">1.6.2.1</span> 三条核心推论</h4>
+<section id="three-core-implications" class="level4" data-number="1.6.2.1">
+<h4 data-number="1.6.2.1" class="anchored" data-anchor-id="three-core-implications"><span class="header-section-number">1.6.2.1</span> Three Core Implications</h4>
 <ol type="1">
-<li><strong>期望值</strong></li>
+<li><strong>Expected value</strong></li>
 </ol>
 <p><span class="math display">\[
 E(y_{it}) = \mu_0
 \]</span></p>
 <ol type="1">
-<li><strong>总方差</strong></li>
+<li><strong>Total variance</strong></li>
 </ol>
 <p><span class="math display">\[
 \text{Var}(y_{it}) = \tau_{00} + \sigma^2
 \]</span></p>
 <ol type="1">
-<li><strong>同一个体内两次测量的协方差</strong></li>
+<li><strong>Covariance between two measurements from the same individual</strong></li>
 </ol>
 <p><span class="math display">\[
 \text{Cov}(y_{it}, y_{is}) = \tau_{00}
 \qquad (t \neq s)
 \]</span></p>
-<p>只要 <span class="math inline">\(\tau_{00} &gt; 0\)</span>，同一个体的重复测量就不是独立的。</p>
+<p>As long as <span class="math inline">\(\tau_{00} &gt; 0\)</span>, repeated measurements from the same individual are not independent.</p>
 </section>
-<section id="组内相关系数icc" class="level4" data-number="1.6.2.2">
-<h4 data-number="1.6.2.2" class="anchored" data-anchor-id="组内相关系数icc"><span class="header-section-number">1.6.2.2</span> 组内相关系数（ICC）</h4>
+<section id="intraclass-correlation-coefficient-icc" class="level4" data-number="1.6.2.2">
+<h4 data-number="1.6.2.2" class="anchored" data-anchor-id="intraclass-correlation-coefficient-icc"><span class="header-section-number">1.6.2.2</span> Intraclass Correlation Coefficient (ICC)</h4>
 <p><span class="math display">\[
 \text{ICC} = \frac{\tau_{00}}{\tau_{00} + \sigma^2}
 \]</span></p>
-<p>ICC 表示：总变异中有多大比例来自个体间差异，同时量化了数据依赖性的强弱。</p>
+<p>The ICC indicates what proportion of total variance is attributable to between-individual differences, and simultaneously quantifies the strength of data dependence.</p>
 <ul>
-<li>ICC 越高，重复测量越不独立</li>
-<li>ICC 越高，越不适合用 OLS</li>
+<li>Higher ICC means repeated measurements are less independent</li>
+<li>Higher ICC means OLS is less appropriate</li>
 </ul>
 </section>
-<section id="显式协方差矩阵以-3-个时间点为例" class="level4" data-number="1.6.2.3">
-<h4 data-number="1.6.2.3" class="anchored" data-anchor-id="显式协方差矩阵以-3-个时间点为例"><span class="header-section-number">1.6.2.3</span> 显式协方差矩阵（以 3 个时间点为例）</h4>
+<section id="explicit-covariance-matrix-for-3-time-points" class="level4" data-number="1.6.2.3">
+<h4 data-number="1.6.2.3" class="anchored" data-anchor-id="explicit-covariance-matrix-for-3-time-points"><span class="header-section-number">1.6.2.3</span> Explicit Covariance Matrix (for 3 Time Points)</h4>
 <p><span class="math display">\[
 V_i =
 \begin{bmatrix}
@@ -982,198 +987,198 @@ V_i =
 \end{bmatrix}
 \]</span></p>
 <ul>
-<li>对角线：总方差</li>
-<li>非对角线：同一个体内两次测量的协方差</li>
+<li>Diagonal entries: total variance</li>
+<li>Off-diagonal entries: covariance between two measurements from the same individual</li>
 </ul>
-<p>这也是为什么 OLS 会失败： OLS 隐含假设的是 <span class="math inline">\(V_i = \sigma^2 I\)</span>，也就是非对角线全为 0。</p>
+<p>This is why OLS fails: OLS implicitly assumes <span class="math inline">\(V_i = \sigma^2 I\)</span>, i.e., all off-diagonal entries are zero.</p>
 </section>
-<section id="为什么又叫随机效应-anova" class="level4" data-number="1.6.2.4">
-<h4 data-number="1.6.2.4" class="anchored" data-anchor-id="为什么又叫随机效应-anova"><span class="header-section-number">1.6.2.4</span> 为什么又叫“随机效应 ANOVA”？</h4>
-<p>在一般聚类数据中，这个模型也可写成“群体随机效应 ANOVA”：</p>
+<section id="why-is-it-also-called-random-effects-anova" class="level4" data-number="1.6.2.4">
+<h4 data-number="1.6.2.4" class="anchored" data-anchor-id="why-is-it-also-called-random-effects-anova"><span class="header-section-number">1.6.2.4</span> Why Is It Also Called “Random-Effects ANOVA”?</h4>
+<p>In general clustered data, this model can also be written as a “random-effects ANOVA”:</p>
 <ul>
-<li>传统 ANOVA 把组别视为固定因子</li>
-<li>随机效应 ANOVA 把组别视为从总体中随机抽到的一组 cluster</li>
+<li>Traditional ANOVA treats group membership as a fixed factor</li>
+<li>Random-effects ANOVA treats group membership as a set of clusters randomly sampled from a population</li>
 </ul>
-<p>在纵向场景里，cluster 就是“个体”，所以这套逻辑完全一样。</p>
+<p>In the longitudinal setting, the cluster is the “individual,” so the same logic applies directly.</p>
 </section>
-<section id="icc-的局限" class="level4" data-number="1.6.2.5">
-<h4 data-number="1.6.2.5" class="anchored" data-anchor-id="icc-的局限"><span class="header-section-number">1.6.2.5</span> ICC 的局限</h4>
-<p>ICC 不是任何情况下都可靠：</p>
+<section id="limitations-of-the-icc" class="level4" data-number="1.6.2.5">
+<h4 data-number="1.6.2.5" class="anchored" data-anchor-id="limitations-of-the-icc"><span class="header-section-number">1.6.2.5</span> Limitations of the ICC</h4>
+<p>The ICC is not reliable in all situations:</p>
 <ul>
-<li><strong>二分结果变量</strong>：logistic 等模型中没有一个简单、统一的 Level-1 方差项，ICC 的定义不再直接</li>
-<li><strong>含随机斜率时</strong>：组内相关性会随自变量取值变化，单一 ICC 总结不够</li>
-<li><strong>每个 cluster 很小</strong>：群体均值估计不稳定，ICC 容易偏</li>
+<li><strong>Binary outcomes</strong>: in models such as logistic regression, there is no simple, unified Level-1 variance term, so the ICC is no longer straightforwardly defined</li>
+<li><strong>Models with random slopes</strong>: within-cluster correlation varies as a function of the predictor value, and a single ICC is insufficient as a summary</li>
+<li><strong>Very small clusters</strong>: population mean estimates are unstable, and ICC estimates tend to be biased</li>
 </ul>
 </section>
 </section>
-<section id="随机截距模型与随机斜率模型" class="level3" data-number="1.6.3">
-<h3 data-number="1.6.3" class="anchored" data-anchor-id="随机截距模型与随机斜率模型"><span class="header-section-number">1.6.3</span> 5.3 随机截距模型与随机斜率模型</h3>
-<section id="随机截距模型" class="level4" data-number="1.6.3.1">
-<h4 data-number="1.6.3.1" class="anchored" data-anchor-id="随机截距模型"><span class="header-section-number">1.6.3.1</span> 随机截距模型</h4>
-<p>若只允许起点不同，变化速率相同：</p>
+<section id="random-intercept-and-random-slope-models" class="level3" data-number="1.6.3">
+<h3 data-number="1.6.3" class="anchored" data-anchor-id="random-intercept-and-random-slope-models"><span class="header-section-number">1.6.3</span> 5.3 Random Intercept and Random Slope Models</h3>
+<section id="random-intercept-model" class="level4" data-number="1.6.3.1">
+<h4 data-number="1.6.3.1" class="anchored" data-anchor-id="random-intercept-model"><span class="header-section-number">1.6.3.1</span> Random Intercept Model</h4>
+<p>If only starting points are allowed to vary while the rate of change is fixed:</p>
 <p><span class="math display">\[
 y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + \varepsilon_{it}
 \]</span></p>
-<p>这表示每个人的基线不同，但时间效应是固定的。</p>
+<p>This indicates that each person has a different baseline, but the time effect is fixed.</p>
 </section>
-<section id="随机斜率模型" class="level4" data-number="1.6.3.2">
-<h4 data-number="1.6.3.2" class="anchored" data-anchor-id="随机斜率模型"><span class="header-section-number">1.6.3.2</span> 随机斜率模型</h4>
-<p>若个体不仅起点不同，变化速率也不同：</p>
+<section id="random-slope-model" class="level4" data-number="1.6.3.2">
+<h4 data-number="1.6.3.2" class="anchored" data-anchor-id="random-slope-model"><span class="header-section-number">1.6.3.2</span> Random Slope Model</h4>
+<p>If individuals differ not only in their starting points but also in their rates of change:</p>
 <p><span class="math display">\[
 y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
 \]</span></p>
-<p>这时：</p>
+<p>In this case:</p>
 <ul>
-<li><span class="math inline">\(b_{0i}\)</span>：解释“谁起点高”</li>
-<li><span class="math inline">\(b_{1i}\)</span>：解释“谁变化更快”</li>
+<li><span class="math inline">\(b_{0i}\)</span>: accounts for “who starts higher”</li>
+<li><span class="math inline">\(b_{1i}\)</span>: accounts for “who changes faster”</li>
 </ul>
 </section>
 </section>
-<section id="参数怎么解读" class="level3" data-number="1.6.4">
-<h3 data-number="1.6.4" class="anchored" data-anchor-id="参数怎么解读"><span class="header-section-number">1.6.4</span> 5.4 参数怎么解读？</h3>
+<section id="how-are-the-parameters-interpreted" class="level3" data-number="1.6.4">
+<h3 data-number="1.6.4" class="anchored" data-anchor-id="how-are-the-parameters-interpreted"><span class="header-section-number">1.6.4</span> 5.4 How Are the Parameters Interpreted?</h3>
 <ul>
-<li><strong><span class="math inline">\(\mu_0\)</span></strong>：时间零点上的总体平均水平</li>
-<li><strong><span class="math inline">\(\mu_1\)</span></strong>：总体平均变化速率</li>
-<li><strong><span class="math inline">\(\tau_{00}\)</span></strong>：个体起点差异有多大</li>
-<li><strong><span class="math inline">\(\tau_{11}\)</span></strong>：个体增长速率差异有多大</li>
-<li><strong><span class="math inline">\(\tau_{01}\)</span></strong>：起点与增长速率是否相关</li>
+<li><strong><span class="math inline">\(\mu_0\)</span></strong>: population mean level at time zero</li>
+<li><strong><span class="math inline">\(\mu_1\)</span></strong>: population mean rate of change</li>
+<li><strong><span class="math inline">\(\tau_{00}\)</span></strong>: magnitude of between-individual differences in starting point</li>
+<li><strong><span class="math inline">\(\tau_{11}\)</span></strong>: magnitude of between-individual differences in rate of growth</li>
+<li><strong><span class="math inline">\(\tau_{01}\)</span></strong>: whether starting point and rate of growth are correlated</li>
 </ul>
-<p>其中 <span class="math inline">\(\tau_{01}\)</span> 的解释常很有研究意义：</p>
+<p>The interpretation of <span class="math inline">\(\tau_{01}\)</span> is often of particular research interest:</p>
 <ul>
-<li><strong>正相关</strong>：起点高的人后来增长更快（马太效应）</li>
-<li><strong>负相关</strong>：起点高的人后来增长更慢（高原效应）</li>
-</ul>
-</section>
-<section id="读-mlm-结果时至少看这四项" class="level3" data-number="1.6.5">
-<h3 data-number="1.6.5" class="anchored" data-anchor-id="读-mlm-结果时至少看这四项"><span class="header-section-number">1.6.5</span> 5.5 读 MLM 结果时，至少看这四项</h3>
-<ul>
-<li><strong>固定时间效应</strong>：平均增长 / 下降趋势</li>
-<li><strong>随机截距方差</strong>：个体起点差异</li>
-<li><strong>随机斜率方差</strong>：个体变化速率差异</li>
-<li><strong>截距—斜率协方差</strong>：起点高的人后来是加速还是放缓</li>
+<li><strong>Positive correlation</strong>: individuals who start higher subsequently grow faster (Matthew effect)</li>
+<li><strong>Negative correlation</strong>: individuals who start higher subsequently grow more slowly (ceiling / plateau effect)</li>
 </ul>
 </section>
-<section id="r-lmer-代码示例gpa-场景" class="level3" data-number="1.6.6">
-<h3 data-number="1.6.6" class="anchored" data-anchor-id="r-lmer-代码示例gpa-场景"><span class="header-section-number">1.6.6</span> 5.6 R / lmer 代码示例（GPA 场景）</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 随机截距模型：每个学生起点不同，斜率固定</span></span>
+<section id="four-key-quantities-to-examine-when-reading-mlm-results" class="level3" data-number="1.6.5">
+<h3 data-number="1.6.5" class="anchored" data-anchor-id="four-key-quantities-to-examine-when-reading-mlm-results"><span class="header-section-number">1.6.5</span> 5.5 Four Key Quantities to Examine When Reading MLM Results</h3>
+<ul>
+<li><strong>Fixed time effect</strong>: average growth / decline trend</li>
+<li><strong>Random intercept variance</strong>: between-individual differences in starting point</li>
+<li><strong>Random slope variance</strong>: between-individual differences in rate of change</li>
+<li><strong>Intercept–slope covariance</strong>: whether individuals who start higher subsequently accelerate or decelerate</li>
+</ul>
+</section>
+<section id="r-lmer-code-example-gpa-setting" class="level3" data-number="1.6.6">
+<h3 data-number="1.6.6" class="anchored" data-anchor-id="r-lmer-code-example-gpa-setting"><span class="header-section-number">1.6.6</span> 5.6 R / lmer Code Example (GPA Setting)</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Random intercept model: each student has a different starting point, slope is fixed</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gpa <span class="sc">~</span> time <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> student), <span class="at">data =</span> longdat)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 随机截距 + 随机斜率 + 性别交互：起点和增长速率均因人而异</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gpa <span class="sc">~</span> time <span class="sc">*</span> sex <span class="sc">+</span> (time <span class="sc">|</span> student), <span class="at">data =</span> longdat)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>解释：</p>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Random intercept + random slope + sex interaction: starting point and growth rate both vary by individual</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gpa <span class="sc">~</span> time <span class="sc">*</span> sex <span class="sc">+</span> (time <span class="sc">|</span> student), <span class="at">data =</span> longdat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Interpretation:</p>
 <ul>
-<li><code>(1 | student)</code>：只允许截距随个体变化</li>
-<li><code>(time | student)</code>：截距和时间斜率都随个体变化</li>
+<li><code>(1 | student)</code>: allows only the intercept to vary across individuals</li>
+<li><code>(time | student)</code>: both the intercept and the time slope vary across individuals</li>
 </ul>
-<p>在 LGM 的语言里，“让某个变量预测截距与斜率”对应到 MLM 中，往往就是“主效应 + time 交互项 + 随机截距 / 随机斜率”。</p>
+<p>In LGM terms, “having a variable predict the intercept and slope” corresponds in MLM to “main effect + time interaction + random intercept / random slope.”</p>
 </section>
-<section id="应用例子青少年酒精使用轨迹" class="level3" data-number="1.6.7">
-<h3 data-number="1.6.7" class="anchored" data-anchor-id="应用例子青少年酒精使用轨迹"><span class="header-section-number">1.6.7</span> 5.7 应用例子：青少年酒精使用轨迹</h3>
-<p>在 14、15、16 岁三个时间点测量酒精使用频率，拟合随机斜率模型后：</p>
+<section id="applied-example-adolescent-alcohol-use-trajectories" class="level3" data-number="1.6.7">
+<h3 data-number="1.6.7" class="anchored" data-anchor-id="applied-example-adolescent-alcohol-use-trajectories"><span class="header-section-number">1.6.7</span> 5.7 Applied Example: Adolescent Alcohol Use Trajectories</h3>
+<p>Alcohol use frequency was measured at ages 14, 15, and 16. After fitting a random slope model:</p>
 <ul>
-<li><p><strong>固定效应</strong></p>
+<li><p><strong>Fixed effects</strong></p>
 <ul>
-<li>截距 = 0.651：14 岁平均使用水平显著不为零</li>
-<li>时间斜率 = 0.271：平均每年增加 0.271 个单位</li>
+<li>Intercept = 0.651: mean usage at age 14 is significantly different from zero</li>
+<li>Time slope = 0.271: average increase of 0.271 units per year</li>
 </ul></li>
-<li><p><strong>随机效应</strong></p>
+<li><p><strong>Random effects</strong></p>
 <ul>
-<li>截距方差 = 0.624：基线差异显著</li>
-<li>斜率方差 = 0.151：增长速度存在个体差异</li>
-<li>截距—斜率协方差 = -0.07：14 岁起点越高，之后增长越慢</li>
+<li>Intercept variance = 0.624: significant between-individual differences at baseline</li>
+<li>Slope variance = 0.151: individual differences in rate of growth are present</li>
+<li>Intercept–slope covariance = −0.07: higher initial use at age 14 is associated with slower subsequent growth</li>
 </ul></li>
-<li><p><strong>Level-2 预测变量</strong></p>
+<li><p><strong>Level-2 predictors</strong></p>
 <ul>
-<li>COA（酗酒者子女）显著预测更高的初始使用量（<span class="math inline">\(\beta = 0.743\)</span>）</li>
-<li>但对增长速度无显著影响</li>
+<li>COA (children of alcoholics) significantly predicts higher initial use (<span class="math inline">\(\beta = 0.743\)</span>)</li>
+<li>But does not significantly predict the rate of growth</li>
 </ul></li>
 </ul>
 </section>
-<section id="within-person-between-person-分解为什么必须拆开" class="level3" data-number="1.6.8">
-<h3 data-number="1.6.8" class="anchored" data-anchor-id="within-person-between-person-分解为什么必须拆开"><span class="header-section-number">1.6.8</span> 5.8 Within-Person / Between-Person 分解：为什么必须拆开</h3>
-<p>理解 WP/BP 分解是 MLM 和纵向分析的核心。若不拆开，模型估计出的”总效应”同时混入两种截然不同的过程，可能导致<strong>生态谬误（Ecological Fallacy）</strong>——用群体层面的关联错误推断个体层面的机制。</p>
+<section id="within-person-between-person-decomposition-why-separation-is-necessary" class="level3" data-number="1.6.8">
+<h3 data-number="1.6.8" class="anchored" data-anchor-id="within-person-between-person-decomposition-why-separation-is-necessary"><span class="header-section-number">1.6.8</span> 5.8 Within-Person / Between-Person Decomposition: Why Separation Is Necessary</h3>
+<p>Understanding the WP/BP decomposition is central to MLM and longitudinal analysis. Without this decomposition, the estimated “total effect” conflates two fundamentally different processes, potentially resulting in an <strong>Ecological Fallacy</strong>—incorrectly inferring individual-level mechanisms from group-level associations.</p>
 <ul>
-<li><strong>Between-Person（BP）差异</strong>：不同个体之间的稳定差异（特质性差异）</li>
-<li><strong>Within-Person（WP）差异</strong>：同一个体在不同时间点的波动（状态性变化）</li>
+<li><strong>Between-Person (BP) differences</strong>: stable differences between individuals (trait-level variation)</li>
+<li><strong>Within-Person (WP) differences</strong>: fluctuations within the same individual across time (state-level change)</li>
 </ul>
-<p>对于一个时变协变量 <span class="math inline">\(z_{it}\)</span>，其系数往往混合了：</p>
+<p>For a time-varying covariate <span class="math inline">\(z_{it}\)</span>, its coefficient typically conflates:</p>
 <ul>
-<li><strong>组内效应（within-person）</strong>：同一个人在”比自己平时更高/更低”的时候会怎样</li>
-<li><strong>组间效应（between-person）</strong>：长期平均更高的人总体上是否也更高</li>
+<li><strong>Within-person effect</strong>: how does <span class="math inline">\(y\)</span> change when a person’s <span class="math inline">\(z\)</span> is higher than their own usual level?</li>
+<li><strong>Between-person effect</strong>: do individuals with a consistently higher average <span class="math inline">\(z\)</span> also tend to have higher <span class="math inline">\(y\)</span> on average?</li>
 </ul>
-<p>这两个效应可能同方向，也可能反方向。经典例子：压力与负面情绪</p>
+<p>These two effects may operate in the same direction or in opposite directions. A classic example is stress and negative affect:</p>
 <ul>
-<li><strong>组间</strong>：长期高压力的人，平均负面情绪更高</li>
-<li><strong>组内</strong>：某人压力高于自己均值的那天，负面情绪是否也更高？</li>
+<li><strong>Between-person</strong>: individuals under chronically high stress have higher average negative affect</li>
+<li><strong>Within-person</strong>: on days when a person’s stress exceeds their own mean, is their negative affect also elevated?</li>
 </ul>
-<section id="person-mean-centering组内中心化" class="level4" data-number="1.6.8.1">
-<h4 data-number="1.6.8.1" class="anchored" data-anchor-id="person-mean-centering组内中心化"><span class="header-section-number">1.6.8.1</span> Person-Mean Centering（组内中心化）</h4>
-<p>把时变协变量 <span class="math inline">\(z_{it}\)</span> 分解为两个<strong>正交</strong>部分：</p>
+<section id="person-mean-centering-within-person-centering" class="level4" data-number="1.6.8.1">
+<h4 data-number="1.6.8.1" class="anchored" data-anchor-id="person-mean-centering-within-person-centering"><span class="header-section-number">1.6.8.1</span> Person-Mean Centering (Within-Person Centering)</h4>
+<p>The time-varying covariate <span class="math inline">\(z_{it}\)</span> is decomposed into two <strong>orthogonal</strong> components:</p>
 <p><span class="math display">\[
 z_{it} = \underbrace{\bar z_i}_{\text{BP}} + \underbrace{(z_{it} - \bar z_i)}_{\text{WP}}
 \]</span></p>
 <ul>
-<li><span class="math inline">\(\bar z_i\)</span>：个体均值，进入 Level 2，捕捉 <strong>Between-Person</strong> 变异（who 效应）</li>
-<li><span class="math inline">\(z_{it} - \bar z_i\)</span>：人内中心化值，进入 Level 1，捕捉 <strong>Within-Person</strong> 变异（when 效应）</li>
+<li><span class="math inline">\(\bar z_i\)</span>: individual mean, entered at Level 2 to capture <strong>Between-Person</strong> variation (the “who” effect)</li>
+<li><span class="math inline">\(z_{it} - \bar z_i\)</span>: person-mean-centered value, entered at Level 1 to capture <strong>Within-Person</strong> variation (the “when” effect)</li>
 </ul>
-<p>将两部分同时纳入 MLM，分别估计 WP 和 BP 效应：</p>
+<p>Both components are entered simultaneously into MLM to estimate the WP and BP effects separately:</p>
 <p><span class="math display">\[
 y_{ij} = \gamma_{00} + \underbrace{\gamma_{10}(z_{ij} - \bar z_j)}_{\text{WP effect}} + \underbrace{\gamma_{01}\bar z_j}_{\text{BP effect}} + u_{0j} + r_{ij}
 \]</span></p>
 <ul>
-<li><strong><span class="math inline">\(\gamma_{10}\)</span>（Within-Person Effect）</strong>：个体当前 <span class="math inline">\(z\)</span> 高于自身均值时，<span class="math inline">\(y\)</span> 如何变化</li>
-<li><strong><span class="math inline">\(\gamma_{01}\)</span>（Between-Person Effect）</strong>：平均 <span class="math inline">\(z\)</span> 较高的人，其 <span class="math inline">\(y\)</span> 的平均水平是否更高</li>
-<li><strong><span class="math inline">\(u_{0j}\)</span></strong>：随机截距（个体间基线差异）；<strong><span class="math inline">\(r_{ij}\)</span></strong>：残差</li>
+<li><strong><span class="math inline">\(\gamma_{10}\)</span> (Within-Person Effect)</strong>: how <span class="math inline">\(y\)</span> changes when an individual’s current <span class="math inline">\(z\)</span> is above their own mean</li>
+<li><strong><span class="math inline">\(\gamma_{01}\)</span> (Between-Person Effect)</strong>: whether individuals with a higher average <span class="math inline">\(z\)</span> also have a higher average <span class="math inline">\(y\)</span></li>
+<li><strong><span class="math inline">\(u_{0j}\)</span></strong>: random intercept (between-individual baseline differences); <strong><span class="math inline">\(r_{ij}\)</span></strong>: residual</li>
 </ul>
-<p><strong>好处：</strong></p>
+<p><strong>Benefits:</strong></p>
 <ul>
-<li>Level 1 的 <span class="math inline">\(\gamma_{10}\)</span> 是纯粹的组内动态效应，不受稳定个体差异污染</li>
-<li>若 <span class="math inline">\(\gamma_{10} \neq \gamma_{01}\)</span>，说明 WP/BP 过程不同，未拆开则参数严重偏倚</li>
-</ul>
-</section>
-<section id="具体应用案例" class="level4" data-number="1.6.8.2">
-<h4 data-number="1.6.8.2" class="anchored" data-anchor-id="具体应用案例"><span class="header-section-number">1.6.8.2</span> 具体应用案例</h4>
-<section id="案例一体育锻炼与心脏病发作simpsons-paradox" class="level5" data-number="1.6.8.2.1">
-<h5 data-number="1.6.8.2.1" class="anchored" data-anchor-id="案例一体育锻炼与心脏病发作simpsons-paradox"><span class="header-section-number">1.6.8.2.1</span> 案例一：体育锻炼与心脏病发作（Simpson’s Paradox）</h5>
-<ul>
-<li><strong>Within-Person</strong>：个体层面，剧烈运动的那一刻，心脏病发作的瞬时风险上升</li>
-<li><strong>Between-Person</strong>：群体层面，长期坚持运动者的基线心脏病风险远低于不运动者</li>
-<li><strong>结论</strong>：若不分解，可能错误推断”运动与心脏病无关”甚至”运动有害”</li>
+<li>The Level-1 <span class="math inline">\(\gamma_{10}\)</span> is a pure within-person dynamic effect, uncontaminated by stable individual differences</li>
+<li>If <span class="math inline">\(\gamma_{10} \neq \gamma_{01}\)</span>, the WP and BP processes differ, and failing to decompose them leads to severely biased parameter estimates</li>
 </ul>
 </section>
-<section id="案例二自尊与自我增强self-enhancement" class="level5" data-number="1.6.8.2.2">
-<h5 data-number="1.6.8.2.2" class="anchored" data-anchor-id="案例二自尊与自我增强self-enhancement"><span class="header-section-number">1.6.8.2.2</span> 案例二：自尊与自我增强（Self-Enhancement）</h5>
-<p>60 名学生在 14 种人格特质上的研究，将”特质重要性”人内中心化后：</p>
+<section id="specific-application-examples" class="level4" data-number="1.6.8.2">
+<h4 data-number="1.6.8.2" class="anchored" data-anchor-id="specific-application-examples"><span class="header-section-number">1.6.8.2</span> Specific Application Examples</h4>
+<section id="example-1-exercise-and-heart-attack-simpsons-paradox" class="level5" data-number="1.6.8.2.1">
+<h5 data-number="1.6.8.2.1" class="anchored" data-anchor-id="example-1-exercise-and-heart-attack-simpsons-paradox"><span class="header-section-number">1.6.8.2.1</span> Example 1: Exercise and Heart Attack (Simpson’s Paradox)</h5>
 <ul>
-<li><strong>Within-Person 效应</strong>：<span class="math inline">\(\gamma_{10} = 0.37\)</span>，即同一个学生认为越重要的特质，越倾向于在该特质上自我增强</li>
-<li><strong>应用意义</strong>：证明自我增强是随情境波动的心理机制，而非固定特质</li>
+<li><strong>Within-Person</strong>: at the individual level, the instantaneous risk of cardiac events is elevated during vigorous exercise</li>
+<li><strong>Between-Person</strong>: at the population level, individuals who exercise regularly have a substantially lower baseline cardiac risk than sedentary individuals</li>
+<li><strong>Conclusion</strong>: without decomposition, one might incorrectly infer that “exercise is unrelated to heart disease” or even “exercise is harmful”</li>
 </ul>
 </section>
-<section id="案例三gdp-与国民幸福感easterlin-paradox" class="level5" data-number="1.6.8.2.3">
-<h5 data-number="1.6.8.2.3" class="anchored" data-anchor-id="案例三gdp-与国民幸福感easterlin-paradox"><span class="header-section-number">1.6.8.2.3</span> 案例三：GDP 与国民幸福感（Easterlin Paradox）</h5>
+<section id="example-2-self-esteem-and-self-enhancement" class="level5" data-number="1.6.8.2.2">
+<h5 data-number="1.6.8.2.2" class="anchored" data-anchor-id="example-2-self-esteem-and-self-enhancement"><span class="header-section-number">1.6.8.2.2</span> Example 2: Self-Esteem and Self-Enhancement</h5>
+<p>A study of 60 students on 14 personality traits, with “trait importance” person-mean-centered:</p>
 <ul>
-<li><strong>Between-Country（BP）</strong>：富裕国家的平均幸福感通常高于贫穷国家</li>
-<li><strong>Within-Country（WP）</strong>：随着一国 GDP 逐年增长，国民幸福感并不一定随之增加（WP 效应可能为零）</li>
-<li><strong>应用意义</strong>：即”伊斯特林悖论”——单纯追求经济增长不一定提升国民幸福感</li>
+<li><strong>Within-Person effect</strong>: <span class="math inline">\(\gamma_{10} = 0.37\)</span>, meaning that within the same student, traits perceived as more important are associated with greater self-enhancement on that trait</li>
+<li><strong>Substantive implication</strong>: demonstrates that self-enhancement is a context-sensitive psychological mechanism rather than a fixed trait</li>
+</ul>
+</section>
+<section id="example-3-gdp-and-national-well-being-easterlin-paradox" class="level5" data-number="1.6.8.2.3">
+<h5 data-number="1.6.8.2.3" class="anchored" data-anchor-id="example-3-gdp-and-national-well-being-easterlin-paradox"><span class="header-section-number">1.6.8.2.3</span> Example 3: GDP and National Well-Being (Easterlin Paradox)</h5>
+<ul>
+<li><strong>Between-Country (BP)</strong>: wealthier countries typically report higher average well-being than poorer countries</li>
+<li><strong>Within-Country (WP)</strong>: as a country’s GDP grows from year to year, national well-being does not necessarily increase correspondingly (the WP effect may be near zero)</li>
+<li><strong>Substantive implication</strong>: this is the “Easterlin Paradox”—simply pursuing economic growth does not necessarily improve national well-being</li>
 </ul>
 <blockquote class="blockquote">
-<p><strong>一句话总结</strong>：Between-Person 关注”<strong>谁</strong>”更突出；Within-Person 关注”<strong>什么时候</strong>”更突出。纵向分析中始终建议使用人内中心化获得纯净的 WP 估计，同时纳入个体均值捕捉 BP 估计。</p>
+<p><strong>In summary</strong>: Between-Person addresses “<strong>who</strong>” scores higher; Within-Person addresses “<strong>when</strong>” one scores higher. In longitudinal analysis, person-mean centering is consistently recommended to obtain clean WP estimates while simultaneously including individual means to capture BP estimates.</p>
 </blockquote>
 <hr>
 </section>
 </section>
 </section>
 </section>
-<section id="纵向-sem-lgm潜在过程时间编码与测量模型" class="level2" data-number="1.7">
-<h2 data-number="1.7" class="anchored" data-anchor-id="纵向-sem-lgm潜在过程时间编码与测量模型"><span class="header-section-number">1.7</span> 6. 纵向 SEM / LGM：潜在过程、时间编码与测量模型</h2>
-<section id="lgm-的基本结构把增长参数变成潜变量" class="level3" data-number="1.7.1">
-<h3 data-number="1.7.1" class="anchored" data-anchor-id="lgm-的基本结构把增长参数变成潜变量"><span class="header-section-number">1.7.1</span> 6.1 LGM 的基本结构：把增长参数变成潜变量</h3>
-<p>在 LGM 中，重复测量通常放在宽格式数据里，每个时间点都是一个显变量。通过固定因子载荷来识别潜在增长因子。</p>
+<section id="longitudinal-sem-lgm-latent-processes-time-coding-and-measurement-models" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="longitudinal-sem-lgm-latent-processes-time-coding-and-measurement-models"><span class="header-section-number">1.7</span> 6. Longitudinal SEM / LGM: Latent Processes, Time Coding, and Measurement Models</h2>
+<section id="basic-structure-of-lgm-growth-parameters-as-latent-variables" class="level3" data-number="1.7.1">
+<h3 data-number="1.7.1" class="anchored" data-anchor-id="basic-structure-of-lgm-growth-parameters-as-latent-variables"><span class="header-section-number">1.7.1</span> 6.1 Basic Structure of LGM: Growth Parameters as Latent Variables</h3>
+<p>In LGM, repeated measurements are typically arranged in wide-format data, with each time point as a manifest variable. Latent growth factors are identified by fixing factor loadings according to the temporal design.</p>
 <ul>
-<li><strong>潜截距因子</strong>：所有时间点载荷固定为 1</li>
-<li><strong>潜斜率因子</strong>：载荷按时间分数固定，例如 <span class="math inline">\(0,1,2,3\)</span></li>
+<li><strong>Latent intercept factor</strong>: all time-point loadings fixed to 1</li>
+<li><strong>Latent slope factor</strong>: loadings fixed according to the time scores, e.g., <span class="math inline">\(0,1,2,3\)</span></li>
 </ul>
-<p>四波线性增长模型的载荷矩阵可写为：</p>
+<p>The factor loading matrix for a four-wave linear growth model is:</p>
 <p><span class="math display">\[
 \Lambda =
 \begin{bmatrix}
@@ -1183,7 +1188,7 @@ y_{ij} = \gamma_{00} + \underbrace{\gamma_{10}(z_{ij} - \bar z_j)}_{\text{WP eff
 1 &amp; 3
 \end{bmatrix}
 \]</span></p>
-<p>对应的潜增长因子可写成：</p>
+<p>The corresponding latent growth factors can be written as:</p>
 <p><span class="math display">\[
 \eta_i =
 \begin{bmatrix}
@@ -1191,179 +1196,179 @@ y_{ij} = \gamma_{00} + \underbrace{\gamma_{10}(z_{ij} - \bar z_j)}_{\text{WP eff
 \mu_1 + b_{1i}
 \end{bmatrix}
 \]</span></p>
-<p>因此：</p>
+<p>Therefore:</p>
 <p><span class="math display">\[
 \mathbf y_i = \Lambda \eta_i + \varepsilon_i
 \]</span></p>
-<p>LGM 关心的核心参数与 MLM 几乎一一对应：</p>
+<p>The core parameters of interest in LGM correspond almost one-to-one with those in MLM:</p>
 <ul>
-<li>截距均值</li>
-<li>斜率均值</li>
-<li>截距方差</li>
-<li>斜率方差</li>
-<li>截距—斜率协方差</li>
-<li>各时间点残差方差</li>
+<li>Intercept mean</li>
+<li>Slope mean</li>
+<li>Intercept variance</li>
+<li>Slope variance</li>
+<li>Intercept–slope covariance</li>
+<li>Residual variance at each time point</li>
 </ul>
-<section id="lavaan-代码示例" class="level4" data-number="1.7.1.1">
-<h4 data-number="1.7.1.1" class="anchored" data-anchor-id="lavaan-代码示例"><span class="header-section-number">1.7.1.1</span> lavaan 代码示例</h4>
+<section id="lavaan-code-example" class="level4" data-number="1.7.1.1">
+<h4 data-number="1.7.1.1" class="anchored" data-anchor-id="lavaan-code-example"><span class="header-section-number">1.7.1.1</span> lavaan Code Example</h4>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">'</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="st">  i =~ 1*y1 + 1*y2 + 1*y3 + 1*y4</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="st">  s =~ 0*y1 + 1*y2 + 2*y3 + 3*y4</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">growth</span>(model, <span class="at">data =</span> widedat)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">growth</span>(model, <span class="at">data =</span> widedat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
-<section id="lgm-是均值结构-协方差结构一起估" class="level3" data-number="1.7.2">
-<h3 data-number="1.7.2" class="anchored" data-anchor-id="lgm-是均值结构-协方差结构一起估"><span class="header-section-number">1.7.2</span> 6.2 LGM 是“均值结构 + 协方差结构”一起估</h3>
-<p>LGM 不只估“平均是不是在变”，还同时估：</p>
+<section id="lgm-simultaneously-estimates-mean-structure-and-covariance-structure" class="level3" data-number="1.7.2">
+<h3 data-number="1.7.2" class="anchored" data-anchor-id="lgm-simultaneously-estimates-mean-structure-and-covariance-structure"><span class="header-section-number">1.7.2</span> 6.2 LGM Simultaneously Estimates Mean Structure and Covariance Structure</h3>
+<p>LGM does not merely estimate “whether the average is changing”; it simultaneously estimates:</p>
 <ul>
-<li><strong>均值结构</strong>：总体平均增长趋势</li>
-<li><strong>协方差结构</strong>：个体差异如何分布</li>
+<li><strong>Mean structure</strong>: population-level average growth trajectory</li>
+<li><strong>Covariance structure</strong>: distribution of individual differences</li>
 </ul>
-<p>这也是为什么 LGM 通常不是饱和模型： 你给了它一个函数形态（例如线性增长），模型就会问：这个形态能否解释数据？</p>
-<p>若拟合指数（如 CFI、TLI、RMSEA、SRMR）不好，说明你给的增长形态太简单，不能解释真实的均值偏移与协方差结构。</p>
+<p>This is also why LGM is typically not a saturated model: you impose a functional form (e.g., linear growth), and the model then asks: can this form account for the data?</p>
+<p>If fit indices (e.g., CFI, TLI, RMSEA, SRMR) are poor, the imposed growth form is too simple to explain the true pattern of mean shifts and covariance structure.</p>
 </section>
-<section id="时间编码中心化与截距的含义" class="level3" data-number="1.7.3">
-<h3 data-number="1.7.3" class="anchored" data-anchor-id="时间编码中心化与截距的含义"><span class="header-section-number">1.7.3</span> 6.3 时间编码、中心化与截距的含义</h3>
-<p>时间编码不是技术细节，而是决定“截距到底代表哪一刻”。</p>
-<section id="在-lgm-中" class="level4" data-number="1.7.3.1">
-<h4 data-number="1.7.3.1" class="anchored" data-anchor-id="在-lgm-中"><span class="header-section-number">1.7.3.1</span> 在 LGM 中</h4>
+<section id="time-coding-centering-and-the-meaning-of-the-intercept" class="level3" data-number="1.7.3">
+<h3 data-number="1.7.3" class="anchored" data-anchor-id="time-coding-centering-and-the-meaning-of-the-intercept"><span class="header-section-number">1.7.3</span> 6.3 Time Coding, Centering, and the Meaning of the Intercept</h3>
+<p>Time coding is not a technical detail; it determines “what moment the intercept represents.”</p>
+<section id="in-lgm" class="level4" data-number="1.7.3.1">
+<h4 data-number="1.7.3.1" class="anchored" data-anchor-id="in-lgm"><span class="header-section-number">1.7.3.1</span> In LGM</h4>
 <ul>
-<li>若第一个时间点的斜率载荷设为 0 → 截距代表<strong>基线水平</strong></li>
-<li>若中间某个时间点载荷设为 0 → 截距代表<strong>发展中期水平</strong></li>
-</ul>
-</section>
-<section id="在-mlm-中" class="level4" data-number="1.7.3.2">
-<h4 data-number="1.7.3.2" class="anchored" data-anchor-id="在-mlm-中"><span class="header-section-number">1.7.3.2</span> 在 MLM 中</h4>
-<p>完全同理：</p>
-<ul>
-<li>把 <span class="math inline">\(x_{it}\)</span> 的零点放在哪里</li>
-<li><span class="math inline">\(\mu_0\)</span> 就代表哪里</li>
+<li>If the slope loading at the first time point is set to 0 → the intercept represents the <strong>baseline level</strong></li>
+<li>If the loading at some intermediate time point is set to 0 → the intercept represents the <strong>mid-development level</strong></li>
 </ul>
 </section>
-<section id="常见时间度量time-metric" class="level4" data-number="1.7.3.3">
-<h4 data-number="1.7.3.3" class="anchored" data-anchor-id="常见时间度量time-metric"><span class="header-section-number">1.7.3.3</span> 常见时间度量（Time Metric）</h4>
+<section id="in-mlm" class="level4" data-number="1.7.3.2">
+<h4 data-number="1.7.3.2" class="anchored" data-anchor-id="in-mlm"><span class="header-section-number">1.7.3.2</span> In MLM</h4>
+<p>The same logic applies:</p>
 <ul>
-<li><strong>wave number</strong>：简单，但截距往往只代表“第一波”</li>
-<li><strong>age</strong>：更贴近发展意义，但不同个体年龄区间可能不重叠</li>
-<li><strong>days since treatment / time since event</strong>：适合临床干预研究</li>
-<li><strong>years to death</strong>：适合终末期疾病研究</li>
+<li>wherever the zero point of <span class="math inline">\(x_{it}\)</span> is placed</li>
+<li>that is what <span class="math inline">\(\mu_0\)</span> represents</li>
 </ul>
 </section>
-<section id="零点移动会影响什么" class="level4" data-number="1.7.3.4">
-<h4 data-number="1.7.3.4" class="anchored" data-anchor-id="零点移动会影响什么"><span class="header-section-number">1.7.3.4</span> 零点移动会影响什么？</h4>
+<section id="common-time-metrics" class="level4" data-number="1.7.3.3">
+<h4 data-number="1.7.3.3" class="anchored" data-anchor-id="common-time-metrics"><span class="header-section-number">1.7.3.3</span> Common Time Metrics</h4>
 <ul>
-<li>不改变斜率的“方向与单位”</li>
-<li>但会改变：
+<li><strong>Wave number</strong>: simple, but the intercept typically represents only “the first wave”</li>
+<li><strong>Age</strong>: more developmentally meaningful, but different individuals may have non-overlapping age ranges</li>
+<li><strong>Days since treatment / time since event</strong>: appropriate for clinical intervention studies</li>
+<li><strong>Years to death</strong>: appropriate for studies of terminal illness</li>
+</ul>
+</section>
+<section id="what-changes-when-the-zero-point-is-shifted" class="level4" data-number="1.7.3.4">
+<h4 data-number="1.7.3.4" class="anchored" data-anchor-id="what-changes-when-the-zero-point-is-shifted"><span class="header-section-number">1.7.3.4</span> What Changes When the Zero Point Is Shifted?</h4>
 <ul>
-<li>截距均值</li>
-<li>截距方差</li>
-<li>截距—斜率协方差</li>
+<li>The direction and unit of the slope are not affected</li>
+<li>But the following change:
+<ul>
+<li>Intercept mean</li>
+<li>Intercept variance</li>
+<li>Intercept–slope covariance</li>
 </ul></li>
 </ul>
 </section>
 </section>
-<section id="潜基底模型latent-basis-model-lbm" class="level3" data-number="1.7.4">
-<h3 data-number="1.7.4" class="anchored" data-anchor-id="潜基底模型latent-basis-model-lbm"><span class="header-section-number">1.7.4</span> 6.4 潜基底模型（Latent Basis Model, LBM）</h3>
-<p>为了允许增长不是严格线性的，可以固定：</p>
+<section id="latent-basis-model-lbm" class="level3" data-number="1.7.4">
+<h3 data-number="1.7.4" class="anchored" data-anchor-id="latent-basis-model-lbm"><span class="header-section-number">1.7.4</span> 6.4 Latent Basis Model (LBM)</h3>
+<p>To allow for growth that is not strictly linear, one may fix:</p>
 <ul>
-<li>第一个时间点载荷 = 0</li>
-<li>最后一个时间点载荷 = 1</li>
-<li>中间时间点载荷由数据自由估计</li>
+<li>The loading at the first time point = 0</li>
+<li>The loading at the last time point = 1</li>
+<li>The loadings at intermediate time points to be freely estimated from the data</li>
 </ul>
-<p>这样，中间载荷就表示：</p>
+<p>The freely estimated intermediate loadings then represent:</p>
 <ul>
-<li>到该时间点为止，个体已经完成了总变化量的多少比例</li>
+<li>The proportion of the total change that has been completed by that time point</li>
 </ul>
-<p>它非常适合描述“前快后慢”或“前慢后快”的发展轨迹。</p>
+<p>This approach is well suited for describing developmental trajectories that are “fast early and slow late” or “slow early and fast late.”</p>
 </section>
-<section id="纵向测量等价性做增长模型前先确认量尺没变" class="level3" data-number="1.7.5">
-<h3 data-number="1.7.5" class="anchored" data-anchor-id="纵向测量等价性做增长模型前先确认量尺没变"><span class="header-section-number">1.7.5</span> 6.5 纵向测量等价性：做增长模型前，先确认“量尺没变”</h3>
-<p>如果你的研究对象是潜在构念（抑郁、动机、自尊等），那在比较时间变化之前，必须先检验跨时间点的测量等价性。</p>
-<section id="弱等价metric-invariance" class="level4" data-number="1.7.5.1">
-<h4 data-number="1.7.5.1" class="anchored" data-anchor-id="弱等价metric-invariance"><span class="header-section-number">1.7.5.1</span> 弱等价（Metric Invariance）</h4>
+<section id="longitudinal-measurement-invariance-verify-the-scale-has-not-shifted-before-fitting-a-growth-model" class="level3" data-number="1.7.5">
+<h3 data-number="1.7.5" class="anchored" data-anchor-id="longitudinal-measurement-invariance-verify-the-scale-has-not-shifted-before-fitting-a-growth-model"><span class="header-section-number">1.7.5</span> 6.5 Longitudinal Measurement Invariance: Verify the Scale Has Not Shifted Before Fitting a Growth Model</h3>
+<p>If the construct of interest is latent (e.g., depression, motivation, self-esteem), measurement invariance across time points must be established before comparing change over time.</p>
+<section id="metric-invariance-weak-invariance" class="level4" data-number="1.7.5.1">
+<h4 data-number="1.7.5.1" class="anchored" data-anchor-id="metric-invariance-weak-invariance"><span class="header-section-number">1.7.5.1</span> Metric Invariance (Weak Invariance)</h4>
 <ul>
-<li>因子载荷相等</li>
-<li>确保潜变量单位一致</li>
-</ul>
-</section>
-<section id="强等价scalar-invariance" class="level4" data-number="1.7.5.2">
-<h4 data-number="1.7.5.2" class="anchored" data-anchor-id="强等价scalar-invariance"><span class="header-section-number">1.7.5.2</span> 强等价（Scalar Invariance）</h4>
-<ul>
-<li>因子载荷 + 截距相等</li>
-<li>是比较潜变量均值变化的必要前提</li>
-</ul>
-<p>如果强等价性不成立，那么你观察到的“增长”可能只是：</p>
-<ul>
-<li>题目本身变了</li>
-<li>指标漂移了</li>
-<li>被试对量表的反应方式变了</li>
-</ul>
-<p>而不一定是潜在构念真的变了。</p>
-</section>
-</section>
-</section>
-<section id="建模决策到底该用哪一类纵向模型" class="level2" data-number="1.8">
-<h2 data-number="1.8" class="anchored" data-anchor-id="建模决策到底该用哪一类纵向模型"><span class="header-section-number">1.8</span> 9. 建模决策：到底该用哪一类纵向模型？</h2>
-<section id="更适合-mlm-的情况" class="level3" data-number="1.8.1">
-<h3 data-number="1.8.1" class="anchored" data-anchor-id="更适合-mlm-的情况"><span class="header-section-number">1.8.1</span> 更适合 MLM 的情况</h3>
-<ul>
-<li>时间点很多（例如 <span class="math inline">\(\ge 10\)</span> 次）</li>
-<li>时间间隔不规则</li>
-<li>数据非平衡严重</li>
-<li>需要多层嵌套（学生在班级、班级在学校）</li>
-<li>样本较小（如 <span class="math inline">\(N &lt; 100\)</span>），REML 往往更稳</li>
-</ul>
-<section id="更适合-lgm-纵向-sem-的情况" class="level4" data-number="1.8.1.1">
-<h4 data-number="1.8.1.1" class="anchored" data-anchor-id="更适合-lgm-纵向-sem-的情况"><span class="header-section-number">1.8.1.1</span> 更适合 LGM / 纵向 SEM 的情况</h4>
-<ul>
-<li>时间点较少（例如 3–8 次）且间隔规则</li>
-<li>研究对象是潜变量（抑郁、动机、能力等）</li>
-<li>每个时间点有多个指标</li>
-<li>需要显式校正测量误差</li>
-<li>需要检验纵向测量等价性</li>
-<li>需要评估整体模型拟合（CFI、RMSEA 等）</li>
-<li>时间分数本身不确定，希望让数据估计（如潜基底模型）</li>
+<li>Factor loadings are equal across time points</li>
+<li>Ensures that the unit of the latent variable is consistent</li>
 </ul>
 </section>
+<section id="scalar-invariance-strong-invariance" class="level4" data-number="1.7.5.2">
+<h4 data-number="1.7.5.2" class="anchored" data-anchor-id="scalar-invariance-strong-invariance"><span class="header-section-number">1.7.5.2</span> Scalar Invariance (Strong Invariance)</h4>
+<ul>
+<li>Factor loadings and indicator intercepts are equal across time points</li>
+<li>A necessary prerequisite for comparing latent variable means over time</li>
+</ul>
+<p>If scalar invariance does not hold, observed “growth” may reflect only:</p>
+<ul>
+<li>Changes in the items themselves</li>
+<li>Indicator drift</li>
+<li>Shifts in how respondents interpret the scale</li>
+</ul>
+<p>rather than genuine change in the latent construct.</p>
 </section>
 </section>
-<section id="一页总结整份笔记的主线" class="level2" data-number="1.9">
-<h2 data-number="1.9" class="anchored" data-anchor-id="一页总结整份笔记的主线"><span class="header-section-number">1.9</span> 10. 一页总结：整份笔记的主线</h2>
-<p>整份纵向建模笔记其实可以压缩成下面这条主线：</p>
+</section>
+<section id="modeling-decisions-which-type-of-longitudinal-model-should-be-used" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="modeling-decisions-which-type-of-longitudinal-model-should-be-used"><span class="header-section-number">1.8</span> 9. Modeling Decisions: Which Type of Longitudinal Model Should Be Used?</h2>
+<section id="when-mlm-is-more-appropriate" class="level3" data-number="1.8.1">
+<h3 data-number="1.8.1" class="anchored" data-anchor-id="when-mlm-is-more-appropriate"><span class="header-section-number">1.8.1</span> When MLM Is More Appropriate</h3>
+<ul>
+<li>Many time points (e.g., <span class="math inline">\(\ge 10\)</span> occasions)</li>
+<li>Irregular time intervals</li>
+<li>Severely unbalanced data</li>
+<li>Need for multiple levels of nesting (students within classrooms, classrooms within schools)</li>
+<li>Smaller samples (e.g., <span class="math inline">\(N &lt; 100\)</span>), where REML tends to be more stable</li>
+</ul>
+<section id="when-lgm-longitudinal-sem-is-more-appropriate" class="level4" data-number="1.8.1.1">
+<h4 data-number="1.8.1.1" class="anchored" data-anchor-id="when-lgm-longitudinal-sem-is-more-appropriate"><span class="header-section-number">1.8.1.1</span> When LGM / Longitudinal SEM Is More Appropriate</h4>
+<ul>
+<li>Fewer time points (e.g., 3–8 occasions) with regular intervals</li>
+<li>The construct of interest is latent (depression, motivation, ability, etc.)</li>
+<li>Multiple indicators per time point</li>
+<li>Need to explicitly correct for measurement error</li>
+<li>Need to test longitudinal measurement invariance</li>
+<li>Need to evaluate overall model fit (CFI, RMSEA, etc.)</li>
+<li>Uncertainty about the time scores, with a desire to let the data estimate them (e.g., latent basis model)</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="one-page-summary-the-core-thread-of-this-document" class="level2" data-number="1.9">
+<h2 data-number="1.9" class="anchored" data-anchor-id="one-page-summary-the-core-thread-of-this-document"><span class="header-section-number">1.9</span> 10. One-Page Summary: The Core Thread of This Document</h2>
+<p>The entire set of longitudinal modeling notes can be compressed into the following thread:</p>
 <ol type="1">
-<li><strong>OLS 不适用</strong>，因为纵向数据违背独立性</li>
-<li><strong>变化最早可用两波方法描述</strong>，但 change score 和 residualized change 回答的不是同一个问题</li>
-<li><strong>现代纵向模型的核心</strong>不是回避相关性，而是把相关性写进协方差结构</li>
-<li><strong>GEE / MLM / 纵向 SEM</strong> 分别对应群体平均、个体轨迹、潜在过程三种视角</li>
-<li><strong>MLM 与 LGM</strong> 在简单线性增长下常常数学等价，但 SEM 能进一步显式处理测量误差</li>
-<li><strong>CLPM / RI-CLPM / LCSM</strong> 则进一步处理“谁驱动谁”和“上一状态如何决定下一步变化”</li>
-<li>真正的模型选择标准永远是：<strong>研究问题 + 数据结构 + 估计目标</strong></li>
+<li><strong>OLS is inappropriate</strong> because longitudinal data violate the independence assumption</li>
+<li><strong>Change can first be described with two-wave methods</strong>, but change scores and residualized change scores do not answer the same question</li>
+<li><strong>The core of modern longitudinal modeling</strong> is not to avoid dependence but to write it into the covariance structure</li>
+<li><strong>GEE / MLM / Longitudinal SEM</strong> correspond to three perspectives: population-averaged, individual trajectory, and latent process</li>
+<li><strong>MLM and LGM</strong> are often mathematically equivalent under simple linear growth, but SEM can further explicitly address measurement error</li>
+<li><strong>CLPM / RI-CLPM / LCSM</strong> further address “who drives whom” and “how a prior state determines the next change”</li>
+<li>The true criterion for model selection is always: <strong>research question + data structure + estimation target</strong></li>
 </ol>
 <hr>
 </section>
-<section id="附本版统一符号速查表" class="level2" data-number="1.10">
-<h2 data-number="1.10" class="anchored" data-anchor-id="附本版统一符号速查表"><span class="header-section-number">1.10</span> 附：本版统一符号速查表</h2>
+<section id="appendix-unified-symbol-reference-table" class="level2" data-number="1.10">
+<h2 data-number="1.10" class="anchored" data-anchor-id="appendix-unified-symbol-reference-table"><span class="header-section-number">1.10</span> Appendix: Unified Symbol Reference Table</h2>
 <ul>
-<li><span class="math inline">\(y_{it}\)</span>：个体 <span class="math inline">\(i\)</span> 在时间 <span class="math inline">\(t\)</span> 的观测值</li>
-<li><span class="math inline">\(x_{it}\)</span>：时间分数 / 时间度量</li>
-<li><span class="math inline">\(w_i\)</span>：时间不变协变量（TIC）</li>
-<li><span class="math inline">\(z_{it}\)</span>：时变协变量（TVC）</li>
-<li><span class="math inline">\(\Delta y_{it}\)</span>：变化量</li>
-<li><span class="math inline">\(\mu_0\)</span>：总体平均截距</li>
-<li><span class="math inline">\(\mu_1\)</span>：总体平均斜率</li>
-<li><span class="math inline">\(b_{0i}\)</span>：随机截距偏差</li>
-<li><span class="math inline">\(b_{1i}\)</span>：随机斜率偏差</li>
-<li><span class="math inline">\(\tau_{00}\)</span>：随机截距方差</li>
-<li><span class="math inline">\(\tau_{11}\)</span>：随机斜率方差</li>
-<li><span class="math inline">\(\tau_{01}\)</span>：随机截距—随机斜率协方差</li>
-<li><span class="math inline">\(\varepsilon_{it}\)</span>：残差 / 测量误差</li>
-<li><span class="math inline">\(\mathbf D\)</span>：随机效应协方差矩阵（SEM 文献中常记作 <span class="math inline">\(\Psi\)</span>）</li>
-<li><span class="math inline">\(R_i\)</span>：残差协方差矩阵（SEM 文献中常记作 <span class="math inline">\(\Theta_i\)</span>）</li>
-<li><span class="math inline">\(\Lambda\)</span>：载荷矩阵 / 时间分数矩阵</li>
-<li><span class="math inline">\(\eta_i\)</span>：潜增长因子向量</li>
-<li><span class="math inline">\(\Psi\)</span>：潜增长因子协方差矩阵</li>
-<li><span class="math inline">\(\Theta_i\)</span>：指标残差协方差矩阵</li>
+<li><span class="math inline">\(y_{it}\)</span>: observed value for individual <span class="math inline">\(i\)</span> at time <span class="math inline">\(t\)</span></li>
+<li><span class="math inline">\(x_{it}\)</span>: time score / time metric</li>
+<li><span class="math inline">\(w_i\)</span>: time-invariant covariate (TIC)</li>
+<li><span class="math inline">\(z_{it}\)</span>: time-varying covariate (TVC)</li>
+<li><span class="math inline">\(\Delta y_{it}\)</span>: change score</li>
+<li><span class="math inline">\(\mu_0\)</span>: population mean intercept</li>
+<li><span class="math inline">\(\mu_1\)</span>: population mean slope</li>
+<li><span class="math inline">\(b_{0i}\)</span>: random intercept deviation</li>
+<li><span class="math inline">\(b_{1i}\)</span>: random slope deviation</li>
+<li><span class="math inline">\(\tau_{00}\)</span>: random intercept variance</li>
+<li><span class="math inline">\(\tau_{11}\)</span>: random slope variance</li>
+<li><span class="math inline">\(\tau_{01}\)</span>: random intercept–random slope covariance</li>
+<li><span class="math inline">\(\varepsilon_{it}\)</span>: residual / measurement error</li>
+<li><span class="math inline">\(\mathbf D\)</span>: random effects covariance matrix (denoted <span class="math inline">\(\Psi\)</span> in the SEM literature)</li>
+<li><span class="math inline">\(R_i\)</span>: residual covariance matrix (denoted <span class="math inline">\(\Theta_i\)</span> in the SEM literature)</li>
+<li><span class="math inline">\(\Lambda\)</span>: factor loading matrix / time score matrix</li>
+<li><span class="math inline">\(\eta_i\)</span>: latent growth factor vector</li>
+<li><span class="math inline">\(\Psi\)</span>: latent growth factor covariance matrix</li>
+<li><span class="math inline">\(\Theta_i\)</span>: indicator residual covariance matrix</li>
 </ul>
 
 
@@ -1396,12 +1401,12 @@ y_{ij} = \gamma_{00} + \underbrace{\gamma_{10}(z_{ij} - \bar z_j)}_{\text{WP eff
       // flash "checked"
       button.classList.add('code-copy-button-checked');
       var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "已复制");
+      button.setAttribute("title", "Copied!");
       let tooltip;
       if (window.bootstrap) {
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "已复制");
+        button.setAttribute("data-bs-title", "Copied!");
         tooltip = new bootstrap.Tooltip(button, 
           { trigger: "manual", 
             customClass: "code-copy-button-tooltip",
