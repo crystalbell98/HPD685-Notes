@@ -3,7 +3,6 @@ project:
   output-dir: docs
   render:
     - index.qmd
-    - ols.qmd
     - analysis.qmd
 
 website:
@@ -13,8 +12,6 @@ website:
     left:
       - href: index.qmd
         text: Longitudinal Modeling Notes
-      - href: ols.qmd
-        text: OLS Regression Notes
       - href: analysis.qmd
         text: R Code Examples
 

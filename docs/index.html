@@ -22,41 +22,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -161,10 +126,6 @@ window.Quarto = {
 <span class="menu-text">Longitudinal Modeling Notes</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./ols.html"> 
-<span class="menu-text">OLS Regression Notes</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./analysis.html"> 
 <span class="menu-text">R Code Examples</span></a>
   </li>  
@@ -189,105 +150,80 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#basic-indices-and-variables" id="toc-basic-indices-and-variables" class="nav-link" data-scroll-target="#basic-indices-and-variables"><span class="header-section-number">1.1.1</span> Basic Indices and Variables</a></li>
   <li><a href="#unified-linear-growth-notation" id="toc-unified-linear-growth-notation" class="nav-link" data-scroll-target="#unified-linear-growth-notation"><span class="header-section-number">1.1.2</span> Unified Linear Growth Notation</a></li>
-  <li><a href="#correspondence-with-sem-notation" id="toc-correspondence-with-sem-notation" class="nav-link" data-scroll-target="#correspondence-with-sem-notation"><span class="header-section-number">1.1.3</span> Correspondence with SEM Notation</a></li>
+  <li><a href="#level-2-predictors" id="toc-level-2-predictors" class="nav-link" data-scroll-target="#level-2-predictors"><span class="header-section-number">1.1.3</span> Level-2 Predictors</a></li>
   </ul></li>
   <li><a href="#methodological-rationale-for-longitudinal-research-why-longitudinal-data-cannot-be-analyzed-directly-with-ols" id="toc-methodological-rationale-for-longitudinal-research-why-longitudinal-data-cannot-be-analyzed-directly-with-ols" class="nav-link" data-scroll-target="#methodological-rationale-for-longitudinal-research-why-longitudinal-data-cannot-be-analyzed-directly-with-ols"><span class="header-section-number">1.2</span> Methodological Rationale for Longitudinal Research: Why Longitudinal Data Cannot Be Analyzed Directly with OLS</a>
   <ul class="collapse">
   <li><a href="#violation-of-the-independence-assumption" id="toc-violation-of-the-independence-assumption" class="nav-link" data-scroll-target="#violation-of-the-independence-assumption"><span class="header-section-number">1.2.1</span> Violation of the Independence Assumption</a></li>
-  <li><a href="#consequences-of-applying-ols-naively" id="toc-consequences-of-applying-ols-naively" class="nav-link" data-scroll-target="#consequences-of-applying-ols-naively"><span class="header-section-number">1.2.2</span> Consequences of Applying OLS Naively</a></li>
-  <li><a href="#what-longitudinal-modeling-actually-addresses" id="toc-what-longitudinal-modeling-actually-addresses" class="nav-link" data-scroll-target="#what-longitudinal-modeling-actually-addresses"><span class="header-section-number">1.2.3</span> What Longitudinal Modeling Actually Addresses</a></li>
+  <li><a href="#what-longitudinal-modeling-actually-addresses" id="toc-what-longitudinal-modeling-actually-addresses" class="nav-link" data-scroll-target="#what-longitudinal-modeling-actually-addresses"><span class="header-section-number">1.2.2</span> What Longitudinal Modeling Actually Addresses</a></li>
   </ul></li>
-  <li><a href="#classical-approaches-to-two-wave-change-change-score-vs.-residualized-change" id="toc-classical-approaches-to-two-wave-change-change-score-vs.-residualized-change" class="nav-link" data-scroll-target="#classical-approaches-to-two-wave-change-change-score-vs.-residualized-change"><span class="header-section-number">1.3</span> Classical Approaches to Two-Wave Change: Change Score vs.&nbsp;Residualized Change</a>
+  <li><a href="#a-unified-mathematical-perspective-explicitly-modeling-dependence" id="toc-a-unified-mathematical-perspective-explicitly-modeling-dependence" class="nav-link" data-scroll-target="#a-unified-mathematical-perspective-explicitly-modeling-dependence"><span class="header-section-number">1.3</span> A Unified Mathematical Perspective: Explicitly Modeling Dependence</a>
   <ul class="collapse">
-  <li><a href="#raw-change-score-gain-score" id="toc-raw-change-score-gain-score" class="nav-link" data-scroll-target="#raw-change-score-gain-score"><span class="header-section-number">1.3.1</span> Raw Change Score (Gain Score)</a></li>
-  <li><a href="#residualized-change-score-ancova" id="toc-residualized-change-score-ancova" class="nav-link" data-scroll-target="#residualized-change-score-ancova"><span class="header-section-number">1.3.2</span> Residualized Change Score (ANCOVA)</a></li>
-  <li><a href="#the-essential-distinction-between-the-two-change-scores" id="toc-the-essential-distinction-between-the-two-change-scores" class="nav-link" data-scroll-target="#the-essential-distinction-between-the-two-change-scores"><span class="header-section-number">1.3.3</span> The Essential Distinction Between the Two Change Scores</a></li>
-  <li><a href="#a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes" id="toc-a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes" class="nav-link" data-scroll-target="#a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes"><span class="header-section-number">1.3.4</span> A Concrete Example: Why Two Students with Equal Raw Gains Have Different Residualized Changes</a></li>
-  <li><a href="#lords-paradox-two-methods-opposite-conclusions-from-the-same-data" id="toc-lords-paradox-two-methods-opposite-conclusions-from-the-same-data" class="nav-link" data-scroll-target="#lords-paradox-two-methods-opposite-conclusions-from-the-same-data"><span class="header-section-number">1.3.5</span> Lord’s Paradox: Two Methods, Opposite Conclusions from the Same Data</a></li>
-  <li><a href="#when-to-use-which-approach" id="toc-when-to-use-which-approach" class="nav-link" data-scroll-target="#when-to-use-which-approach"><span class="header-section-number">1.3.6</span> When to Use Which Approach?</a>
+  <li><a href="#matrix-form-of-mlm-lmm" id="toc-matrix-form-of-mlm-lmm" class="nav-link" data-scroll-target="#matrix-form-of-mlm-lmm"><span class="header-section-number">1.3.1</span> Matrix Form of MLM / LMM</a></li>
+  <li><a href="#the-same-idea-at-the-scalar-level" id="toc-the-same-idea-at-the-scalar-level" class="nav-link" data-scroll-target="#the-same-idea-at-the-scalar-level"><span class="header-section-number">1.3.2</span> The Same Idea at the Scalar Level</a></li>
+  <li><a href="#matrix-form-of-longitudinal-sem-lgm" id="toc-matrix-form-of-longitudinal-sem-lgm" class="nav-link" data-scroll-target="#matrix-form-of-longitudinal-sem-lgm"><span class="header-section-number">1.3.3</span> Matrix Form of Longitudinal SEM / LGM</a></li>
+  <li><a href="#mlm-and-sem-are-mathematically-the-same" id="toc-mlm-and-sem-are-mathematically-the-same" class="nav-link" data-scroll-target="#mlm-and-sem-are-mathematically-the-same"><span class="header-section-number">1.3.4</span> MLM and SEM Are Mathematically the Same</a></li>
+  <li><a href="#translation-dictionary" id="toc-translation-dictionary" class="nav-link" data-scroll-target="#translation-dictionary"><span class="header-section-number">1.3.5</span> Translation Dictionary</a></li>
+  <li><a href="#concrete-correspondence-for-a-four-wave-linear-growth-model" id="toc-concrete-correspondence-for-a-four-wave-linear-growth-model" class="nav-link" data-scroll-target="#concrete-correspondence-for-a-four-wave-linear-growth-model"><span class="header-section-number">1.3.6</span> Concrete Correspondence for a Four-Wave Linear Growth Model</a></li>
+  <li><a href="#random-intercept-only-full-correspondence-with-the-null-model" id="toc-random-intercept-only-full-correspondence-with-the-null-model" class="nav-link" data-scroll-target="#random-intercept-only-full-correspondence-with-the-null-model"><span class="header-section-number">1.3.7</span> Random Intercept Only: Full Correspondence with the Null Model</a></li>
+  <li><a href="#when-does-the-equivalence-break-down" id="toc-when-does-the-equivalence-break-down" class="nav-link" data-scroll-target="#when-does-the-equivalence-break-down"><span class="header-section-number">1.3.8</span> When Does the Equivalence Break Down?</a></li>
+  </ul></li>
+  <li><a href="#mlm-lmm-conditional-model-for-individual-trajectories" id="toc-mlm-lmm-conditional-model-for-individual-trajectories" class="nav-link" data-scroll-target="#mlm-lmm-conditional-model-for-individual-trajectories"><span class="header-section-number">1.4</span> MLM / LMM: Conditional Model for Individual Trajectories</a>
   <ul class="collapse">
-  <li><a href="#randomized-controlled-trials-rcts" id="toc-randomized-controlled-trials-rcts" class="nav-link" data-scroll-target="#randomized-controlled-trials-rcts"><span class="header-section-number">1.3.6.1</span> Randomized Controlled Trials (RCTs)</a></li>
-  <li><a href="#observational-studies-non-random-group-assignment" id="toc-observational-studies-non-random-group-assignment" class="nav-link" data-scroll-target="#observational-studies-non-random-group-assignment"><span class="header-section-number">1.3.6.2</span> Observational Studies (Non-random Group Assignment)</a></li>
-  </ul></li>
-  <li><a href="#why-change-scores-can-be-misleading-measurement-level-reasons" id="toc-why-change-scores-can-be-misleading-measurement-level-reasons" class="nav-link" data-scroll-target="#why-change-scores-can-be-misleading-measurement-level-reasons"><span class="header-section-number">1.3.7</span> Why Change Scores Can Be Misleading: Measurement-Level Reasons</a></li>
-  <li><a href="#why-change-scores-can-be-misleading-causal-reasons" id="toc-why-change-scores-can-be-misleading-causal-reasons" class="nav-link" data-scroll-target="#why-change-scores-can-be-misleading-causal-reasons"><span class="header-section-number">1.3.8</span> Why Change Scores Can Be Misleading: Causal Reasons</a></li>
-  <li><a href="#what-questions-are-these-methods-best-suited-to-answer" id="toc-what-questions-are-these-methods-best-suited-to-answer" class="nav-link" data-scroll-target="#what-questions-are-these-methods-best-suited-to-answer"><span class="header-section-number">1.3.9</span> What Questions Are These Methods Best Suited to Answer?</a></li>
-  </ul></li>
-  <li><a href="#a-unified-mathematical-perspective-explicitly-modeling-dependence" id="toc-a-unified-mathematical-perspective-explicitly-modeling-dependence" class="nav-link" data-scroll-target="#a-unified-mathematical-perspective-explicitly-modeling-dependence"><span class="header-section-number">1.4</span> A Unified Mathematical Perspective: Explicitly Modeling Dependence</a>
+  <li><a href="#basic-framework-time-at-level-1-individuals-at-level-2" id="toc-basic-framework-time-at-level-1-individuals-at-level-2" class="nav-link" data-scroll-target="#basic-framework-time-at-level-1-individuals-at-level-2"><span class="header-section-number">1.4.1</span> Basic Framework: Time at Level 1, Individuals at Level 2</a></li>
+  <li><a href="#null-model-random-effects-anova-first-assessing-the-strength-of-dependence" id="toc-null-model-random-effects-anova-first-assessing-the-strength-of-dependence" class="nav-link" data-scroll-target="#null-model-random-effects-anova-first-assessing-the-strength-of-dependence"><span class="header-section-number">1.4.2</span> Null Model / Random-Effects ANOVA: First Assessing the Strength of Dependence</a>
   <ul class="collapse">
-  <li><a href="#matrix-form-of-mlm-lmm" id="toc-matrix-form-of-mlm-lmm" class="nav-link" data-scroll-target="#matrix-form-of-mlm-lmm"><span class="header-section-number">1.4.1</span> Matrix Form of MLM / LMM</a></li>
-  <li><a href="#the-same-idea-at-the-scalar-level" id="toc-the-same-idea-at-the-scalar-level" class="nav-link" data-scroll-target="#the-same-idea-at-the-scalar-level"><span class="header-section-number">1.4.2</span> The Same Idea at the Scalar Level</a></li>
-  <li><a href="#matrix-form-of-longitudinal-sem-lgm" id="toc-matrix-form-of-longitudinal-sem-lgm" class="nav-link" data-scroll-target="#matrix-form-of-longitudinal-sem-lgm"><span class="header-section-number">1.4.3</span> Matrix Form of Longitudinal SEM / LGM</a></li>
-  <li><a href="#from-conditional-to-marginal-representation-mlm-and-sem-are-mathematically-the-same" id="toc-from-conditional-to-marginal-representation-mlm-and-sem-are-mathematically-the-same" class="nav-link" data-scroll-target="#from-conditional-to-marginal-representation-mlm-and-sem-are-mathematically-the-same"><span class="header-section-number">1.4.4</span> From Conditional to Marginal Representation: MLM and SEM Are Mathematically the Same</a></li>
-  <li><a href="#translation-dictionary" id="toc-translation-dictionary" class="nav-link" data-scroll-target="#translation-dictionary"><span class="header-section-number">1.4.5</span> Translation Dictionary</a></li>
-  <li><a href="#concrete-correspondence-for-a-four-wave-linear-growth-model" id="toc-concrete-correspondence-for-a-four-wave-linear-growth-model" class="nav-link" data-scroll-target="#concrete-correspondence-for-a-four-wave-linear-growth-model"><span class="header-section-number">1.4.6</span> Concrete Correspondence for a Four-Wave Linear Growth Model</a></li>
-  <li><a href="#random-intercept-only-full-correspondence-with-the-null-model" id="toc-random-intercept-only-full-correspondence-with-the-null-model" class="nav-link" data-scroll-target="#random-intercept-only-full-correspondence-with-the-null-model"><span class="header-section-number">1.4.7</span> Random Intercept Only: Full Correspondence with the Null Model</a></li>
-  <li><a href="#level-2-predictors-in-both-frameworks" id="toc-level-2-predictors-in-both-frameworks" class="nav-link" data-scroll-target="#level-2-predictors-in-both-frameworks"><span class="header-section-number">1.4.8</span> Level-2 Predictors in Both Frameworks</a></li>
-  <li><a href="#when-does-the-equivalence-break-down" id="toc-when-does-the-equivalence-break-down" class="nav-link" data-scroll-target="#when-does-the-equivalence-break-down"><span class="header-section-number">1.4.9</span> When Does the Equivalence Break Down?</a></li>
+  <li><a href="#three-core-implications" id="toc-three-core-implications" class="nav-link" data-scroll-target="#three-core-implications"><span class="header-section-number">1.4.2.1</span> Three Core Implications</a></li>
+  <li><a href="#intraclass-correlation-coefficient-icc" id="toc-intraclass-correlation-coefficient-icc" class="nav-link" data-scroll-target="#intraclass-correlation-coefficient-icc"><span class="header-section-number">1.4.2.2</span> Intraclass Correlation Coefficient (ICC)</a></li>
+  <li><a href="#explicit-covariance-matrix-for-3-time-points" id="toc-explicit-covariance-matrix-for-3-time-points" class="nav-link" data-scroll-target="#explicit-covariance-matrix-for-3-time-points"><span class="header-section-number">1.4.2.3</span> Explicit Covariance Matrix (for 3 Time Points)</a></li>
+  <li><a href="#why-is-it-also-called-random-effects-anova" id="toc-why-is-it-also-called-random-effects-anova" class="nav-link" data-scroll-target="#why-is-it-also-called-random-effects-anova"><span class="header-section-number">1.4.2.4</span> Why Is It Also Called “Random-Effects ANOVA”?</a></li>
+  <li><a href="#limitations-of-the-icc" id="toc-limitations-of-the-icc" class="nav-link" data-scroll-target="#limitations-of-the-icc"><span class="header-section-number">1.4.2.5</span> Limitations of the ICC</a></li>
   </ul></li>
-  <li><a href="#three-major-frameworks-gee-mlmlmm-and-longitudinal-sem" id="toc-three-major-frameworks-gee-mlmlmm-and-longitudinal-sem" class="nav-link" data-scroll-target="#three-major-frameworks-gee-mlmlmm-and-longitudinal-sem"><span class="header-section-number">1.5</span> Three Major Frameworks: GEE, MLM/LMM, and Longitudinal SEM</a>
+  <li><a href="#random-intercept-and-random-slope-models" id="toc-random-intercept-and-random-slope-models" class="nav-link" data-scroll-target="#random-intercept-and-random-slope-models"><span class="header-section-number">1.4.3</span> Random Intercept and Random Slope Models</a>
   <ul class="collapse">
-  <li><a href="#gee-a-marginal-population-averaged-perspective" id="toc-gee-a-marginal-population-averaged-perspective" class="nav-link" data-scroll-target="#gee-a-marginal-population-averaged-perspective"><span class="header-section-number">1.5.1</span> GEE: A Marginal, Population-Averaged Perspective</a></li>
-  <li><a href="#mlm-lmm-a-conditional-individual-trajectory-perspective" id="toc-mlm-lmm-a-conditional-individual-trajectory-perspective" class="nav-link" data-scroll-target="#mlm-lmm-a-conditional-individual-trajectory-perspective"><span class="header-section-number">1.5.2</span> MLM / LMM: A Conditional Individual Trajectory Perspective</a></li>
-  <li><a href="#longitudinal-sem-a-latent-process-perspective" id="toc-longitudinal-sem-a-latent-process-perspective" class="nav-link" data-scroll-target="#longitudinal-sem-a-latent-process-perspective"><span class="header-section-number">1.5.3</span> Longitudinal SEM: A Latent Process Perspective</a></li>
-  <li><a href="#one-page-comparison" id="toc-one-page-comparison" class="nav-link" data-scroll-target="#one-page-comparison"><span class="header-section-number">1.5.4</span> One-Page Comparison</a></li>
+  <li><a href="#random-intercept-model" id="toc-random-intercept-model" class="nav-link" data-scroll-target="#random-intercept-model"><span class="header-section-number">1.4.3.1</span> Random Intercept Model</a></li>
+  <li><a href="#random-slope-model" id="toc-random-slope-model" class="nav-link" data-scroll-target="#random-slope-model"><span class="header-section-number">1.4.3.2</span> Random Slope Model</a></li>
+  <li><a href="#how-are-the-parameters-interpreted" id="toc-how-are-the-parameters-interpreted" class="nav-link" data-scroll-target="#how-are-the-parameters-interpreted"><span class="header-section-number">1.4.3.3</span> How Are the Parameters Interpreted?</a></li>
   </ul></li>
-  <li><a href="#mlm-lmm-conditional-model-for-individual-trajectories" id="toc-mlm-lmm-conditional-model-for-individual-trajectories" class="nav-link" data-scroll-target="#mlm-lmm-conditional-model-for-individual-trajectories"><span class="header-section-number">1.6</span> MLM / LMM: Conditional Model for Individual Trajectories</a>
+  </ul></li>
+  <li><a href="#one-page-summary-the-core-thread-of-this-document" id="toc-one-page-summary-the-core-thread-of-this-document" class="nav-link" data-scroll-target="#one-page-summary-the-core-thread-of-this-document"><span class="header-section-number">1.5</span> One-Page Summary: The Core Thread of This Document</a></li>
+  <li><a href="#design-matrix" id="toc-design-matrix" class="nav-link" data-scroll-target="#design-matrix"><span class="header-section-number">1.6</span> Design Matrix</a>
   <ul class="collapse">
-  <li><a href="#basic-framework-time-at-level-1-individuals-at-level-2" id="toc-basic-framework-time-at-level-1-individuals-at-level-2" class="nav-link" data-scroll-target="#basic-framework-time-at-level-1-individuals-at-level-2"><span class="header-section-number">1.6.1</span> Basic Framework: Time at Level 1, Individuals at Level 2</a></li>
-  <li><a href="#null-model-random-effects-anova-first-assessing-the-strength-of-dependence" id="toc-null-model-random-effects-anova-first-assessing-the-strength-of-dependence" class="nav-link" data-scroll-target="#null-model-random-effects-anova-first-assessing-the-strength-of-dependence"><span class="header-section-number">1.6.2</span> Null Model / Random-Effects ANOVA: First Assessing the Strength of Dependence</a>
+  <li><a href="#core-concept" id="toc-core-concept" class="nav-link" data-scroll-target="#core-concept"><span class="header-section-number">1.6.1</span> Core Concept</a></li>
+  <li><a href="#ols-matrix-solution" id="toc-ols-matrix-solution" class="nav-link" data-scroll-target="#ols-matrix-solution"><span class="header-section-number">1.6.2</span> OLS Matrix Solution</a></li>
+  <li><a href="#covariance-matrix-of-the-coefficient-estimates" id="toc-covariance-matrix-of-the-coefficient-estimates" class="nav-link" data-scroll-target="#covariance-matrix-of-the-coefficient-estimates"><span class="header-section-number">1.6.3</span> Covariance Matrix of the Coefficient Estimates</a></li>
+  <li><a href="#matrix-representation-of-textvarmathbfy-in-ols" id="toc-matrix-representation-of-textvarmathbfy-in-ols" class="nav-link" data-scroll-target="#matrix-representation-of-textvarmathbfy-in-ols"><span class="header-section-number">1.6.4</span> Matrix Representation of <span class="math inline">\(\text{Var}(\mathbf{y})\)</span> in OLS</a>
   <ul class="collapse">
-  <li><a href="#three-core-implications" id="toc-three-core-implications" class="nav-link" data-scroll-target="#three-core-implications"><span class="header-section-number">1.6.2.1</span> Three Core Implications</a></li>
-  <li><a href="#intraclass-correlation-coefficient-icc" id="toc-intraclass-correlation-coefficient-icc" class="nav-link" data-scroll-target="#intraclass-correlation-coefficient-icc"><span class="header-section-number">1.6.2.2</span> Intraclass Correlation Coefficient (ICC)</a></li>
-  <li><a href="#explicit-covariance-matrix-for-3-time-points" id="toc-explicit-covariance-matrix-for-3-time-points" class="nav-link" data-scroll-target="#explicit-covariance-matrix-for-3-time-points"><span class="header-section-number">1.6.2.3</span> Explicit Covariance Matrix (for 3 Time Points)</a></li>
-  <li><a href="#why-is-it-also-called-random-effects-anova" id="toc-why-is-it-also-called-random-effects-anova" class="nav-link" data-scroll-target="#why-is-it-also-called-random-effects-anova"><span class="header-section-number">1.6.2.4</span> Why Is It Also Called “Random-Effects ANOVA”?</a></li>
-  <li><a href="#limitations-of-the-icc" id="toc-limitations-of-the-icc" class="nav-link" data-scroll-target="#limitations-of-the-icc"><span class="header-section-number">1.6.2.5</span> Limitations of the ICC</a></li>
+  <li><a href="#correspondence-to-mlm-lsem" id="toc-correspondence-to-mlm-lsem" class="nav-link" data-scroll-target="#correspondence-to-mlm-lsem"><span class="header-section-number">1.6.4.1</span> Correspondence to MLM / LSEM</a></li>
+  <li><a href="#extensions-when-assumptions-are-violated" id="toc-extensions-when-assumptions-are-violated" class="nav-link" data-scroll-target="#extensions-when-assumptions-are-violated"><span class="header-section-number">1.6.4.2</span> Extensions When Assumptions Are Violated</a></li>
   </ul></li>
-  <li><a href="#random-intercept-and-random-slope-models" id="toc-random-intercept-and-random-slope-models" class="nav-link" data-scroll-target="#random-intercept-and-random-slope-models"><span class="header-section-number">1.6.3</span> Random Intercept and Random Slope Models</a>
+  </ul></li>
+  <li><a href="#within-person-between-person-decomposition-why-separation-is-necessary" id="toc-within-person-between-person-decomposition-why-separation-is-necessary" class="nav-link" data-scroll-target="#within-person-between-person-decomposition-why-separation-is-necessary"><span class="header-section-number">1.7</span> Within-Person / Between-Person Decomposition: Why Separation Is Necessary</a>
   <ul class="collapse">
-  <li><a href="#random-intercept-model" id="toc-random-intercept-model" class="nav-link" data-scroll-target="#random-intercept-model"><span class="header-section-number">1.6.3.1</span> Random Intercept Model</a></li>
-  <li><a href="#random-slope-model" id="toc-random-slope-model" class="nav-link" data-scroll-target="#random-slope-model"><span class="header-section-number">1.6.3.2</span> Random Slope Model</a></li>
-  </ul></li>
-  <li><a href="#how-are-the-parameters-interpreted" id="toc-how-are-the-parameters-interpreted" class="nav-link" data-scroll-target="#how-are-the-parameters-interpreted"><span class="header-section-number">1.6.4</span> How Are the Parameters Interpreted?</a></li>
-  <li><a href="#four-key-quantities-to-examine-when-reading-mlm-results" id="toc-four-key-quantities-to-examine-when-reading-mlm-results" class="nav-link" data-scroll-target="#four-key-quantities-to-examine-when-reading-mlm-results"><span class="header-section-number">1.6.5</span> Four Key Quantities to Examine When Reading MLM Results</a></li>
-  <li><a href="#r-lmer-code-example-gpa-setting" id="toc-r-lmer-code-example-gpa-setting" class="nav-link" data-scroll-target="#r-lmer-code-example-gpa-setting"><span class="header-section-number">1.6.6</span> R / lmer Code Example (GPA Setting)</a></li>
-  <li><a href="#applied-example-adolescent-alcohol-use-trajectories" id="toc-applied-example-adolescent-alcohol-use-trajectories" class="nav-link" data-scroll-target="#applied-example-adolescent-alcohol-use-trajectories"><span class="header-section-number">1.6.7</span> Applied Example: Adolescent Alcohol Use Trajectories</a></li>
-  <li><a href="#within-person-between-person-decomposition-why-separation-is-necessary" id="toc-within-person-between-person-decomposition-why-separation-is-necessary" class="nav-link" data-scroll-target="#within-person-between-person-decomposition-why-separation-is-necessary"><span class="header-section-number">1.6.8</span> Within-Person / Between-Person Decomposition: Why Separation Is Necessary</a>
+  <li><a href="#person-mean-centering-within-person-centering" id="toc-person-mean-centering-within-person-centering" class="nav-link" data-scroll-target="#person-mean-centering-within-person-centering"><span class="header-section-number">1.7.1</span> Person-Mean Centering (Within-Person Centering)</a></li>
+  <li><a href="#specific-application-examples" id="toc-specific-application-examples" class="nav-link" data-scroll-target="#specific-application-examples"><span class="header-section-number">1.7.2</span> Specific Application Examples</a>
   <ul class="collapse">
-  <li><a href="#person-mean-centering-within-person-centering" id="toc-person-mean-centering-within-person-centering" class="nav-link" data-scroll-target="#person-mean-centering-within-person-centering"><span class="header-section-number">1.6.8.1</span> Person-Mean Centering (Within-Person Centering)</a></li>
-  <li><a href="#specific-application-examples" id="toc-specific-application-examples" class="nav-link" data-scroll-target="#specific-application-examples"><span class="header-section-number">1.6.8.2</span> Specific Application Examples</a></li>
+  <li><a href="#example-1-exercise-and-heart-attack-simpsons-paradox" id="toc-example-1-exercise-and-heart-attack-simpsons-paradox" class="nav-link" data-scroll-target="#example-1-exercise-and-heart-attack-simpsons-paradox"><span class="header-section-number">1.7.2.1</span> Example 1: Exercise and Heart Attack (Simpson’s Paradox)</a></li>
+  <li><a href="#example-2-self-esteem-and-self-enhancement" id="toc-example-2-self-esteem-and-self-enhancement" class="nav-link" data-scroll-target="#example-2-self-esteem-and-self-enhancement"><span class="header-section-number">1.7.2.2</span> Example 2: Self-Esteem and Self-Enhancement</a></li>
+  <li><a href="#example-3-gdp-and-national-well-being-easterlin-paradox" id="toc-example-3-gdp-and-national-well-being-easterlin-paradox" class="nav-link" data-scroll-target="#example-3-gdp-and-national-well-being-easterlin-paradox"><span class="header-section-number">1.7.2.3</span> Example 3: GDP and National Well-Being (Easterlin Paradox)</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#longitudinal-sem-lgm-latent-processes-time-coding-and-measurement-models" id="toc-longitudinal-sem-lgm-latent-processes-time-coding-and-measurement-models" class="nav-link" data-scroll-target="#longitudinal-sem-lgm-latent-processes-time-coding-and-measurement-models"><span class="header-section-number">1.7</span> Longitudinal SEM / LGM: Latent Processes, Time Coding, and Measurement Models</a>
+  <li><a href="#classical-approaches-to-two-wave-change-change-score-vs.-residualized-change" id="toc-classical-approaches-to-two-wave-change-change-score-vs.-residualized-change" class="nav-link" data-scroll-target="#classical-approaches-to-two-wave-change-change-score-vs.-residualized-change"><span class="header-section-number">1.8</span> Classical Approaches to Two-Wave Change: Change Score vs.&nbsp;Residualized Change</a>
   <ul class="collapse">
-  <li><a href="#basic-structure-of-lgm-growth-parameters-as-latent-variables" id="toc-basic-structure-of-lgm-growth-parameters-as-latent-variables" class="nav-link" data-scroll-target="#basic-structure-of-lgm-growth-parameters-as-latent-variables"><span class="header-section-number">1.7.1</span> Basic Structure of LGM: Growth Parameters as Latent Variables</a>
+  <li><a href="#raw-change-score-gain-score" id="toc-raw-change-score-gain-score" class="nav-link" data-scroll-target="#raw-change-score-gain-score"><span class="header-section-number">1.8.1</span> Raw Change Score (Gain Score)</a></li>
+  <li><a href="#residualized-change-score-ancova" id="toc-residualized-change-score-ancova" class="nav-link" data-scroll-target="#residualized-change-score-ancova"><span class="header-section-number">1.8.2</span> Residualized Change Score (ANCOVA)</a></li>
+  <li><a href="#the-essential-distinction-between-the-two-change-scores" id="toc-the-essential-distinction-between-the-two-change-scores" class="nav-link" data-scroll-target="#the-essential-distinction-between-the-two-change-scores"><span class="header-section-number">1.8.3</span> The Essential Distinction Between the Two Change Scores</a></li>
+  <li><a href="#a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes" id="toc-a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes" class="nav-link" data-scroll-target="#a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes"><span class="header-section-number">1.8.4</span> A Concrete Example: Why Two Students with Equal Raw Gains Have Different Residualized Changes</a></li>
+  <li><a href="#lords-paradox-two-methods-opposite-conclusions-from-the-same-data" id="toc-lords-paradox-two-methods-opposite-conclusions-from-the-same-data" class="nav-link" data-scroll-target="#lords-paradox-two-methods-opposite-conclusions-from-the-same-data"><span class="header-section-number">1.8.5</span> Lord’s Paradox: Two Methods, Opposite Conclusions from the Same Data</a></li>
+  <li><a href="#when-to-use-which-approach" id="toc-when-to-use-which-approach" class="nav-link" data-scroll-target="#when-to-use-which-approach"><span class="header-section-number">1.8.6</span> When to Use Which Approach?</a>
   <ul class="collapse">
-  <li><a href="#lavaan-code-example" id="toc-lavaan-code-example" class="nav-link" data-scroll-target="#lavaan-code-example"><span class="header-section-number">1.7.1.1</span> lavaan Code Example</a></li>
+  <li><a href="#randomized-controlled-trials-rcts" id="toc-randomized-controlled-trials-rcts" class="nav-link" data-scroll-target="#randomized-controlled-trials-rcts"><span class="header-section-number">1.8.6.1</span> Randomized Controlled Trials (RCTs)</a></li>
+  <li><a href="#observational-studies-non-random-group-assignment" id="toc-observational-studies-non-random-group-assignment" class="nav-link" data-scroll-target="#observational-studies-non-random-group-assignment"><span class="header-section-number">1.8.6.2</span> Observational Studies (Non-random Group Assignment)</a></li>
   </ul></li>
-  <li><a href="#lgm-simultaneously-estimates-mean-structure-and-covariance-structure" id="toc-lgm-simultaneously-estimates-mean-structure-and-covariance-structure" class="nav-link" data-scroll-target="#lgm-simultaneously-estimates-mean-structure-and-covariance-structure"><span class="header-section-number">1.7.2</span> LGM Simultaneously Estimates Mean Structure and Covariance Structure</a></li>
-  <li><a href="#time-coding-centering-and-the-meaning-of-the-intercept" id="toc-time-coding-centering-and-the-meaning-of-the-intercept" class="nav-link" data-scroll-target="#time-coding-centering-and-the-meaning-of-the-intercept"><span class="header-section-number">1.7.3</span> Time Coding, Centering, and the Meaning of the Intercept</a>
-  <ul class="collapse">
-  <li><a href="#in-lgm" id="toc-in-lgm" class="nav-link" data-scroll-target="#in-lgm"><span class="header-section-number">1.7.3.1</span> In LGM</a></li>
-  <li><a href="#in-mlm" id="toc-in-mlm" class="nav-link" data-scroll-target="#in-mlm"><span class="header-section-number">1.7.3.2</span> In MLM</a></li>
-  <li><a href="#common-time-metrics" id="toc-common-time-metrics" class="nav-link" data-scroll-target="#common-time-metrics"><span class="header-section-number">1.7.3.3</span> Common Time Metrics</a></li>
-  <li><a href="#what-changes-when-the-zero-point-is-shifted" id="toc-what-changes-when-the-zero-point-is-shifted" class="nav-link" data-scroll-target="#what-changes-when-the-zero-point-is-shifted"><span class="header-section-number">1.7.3.4</span> What Changes When the Zero Point Is Shifted?</a></li>
+  <li><a href="#why-change-scores-can-be-misleading-measurement-level-reasons" id="toc-why-change-scores-can-be-misleading-measurement-level-reasons" class="nav-link" data-scroll-target="#why-change-scores-can-be-misleading-measurement-level-reasons"><span class="header-section-number">1.8.7</span> Why Change Scores Can Be Misleading: Measurement-Level Reasons</a></li>
+  <li><a href="#why-change-scores-can-be-misleading-causal-reasons" id="toc-why-change-scores-can-be-misleading-causal-reasons" class="nav-link" data-scroll-target="#why-change-scores-can-be-misleading-causal-reasons"><span class="header-section-number">1.8.8</span> Why Change Scores Can Be Misleading: Causal Reasons</a></li>
+  <li><a href="#what-questions-are-these-methods-best-suited-to-answer" id="toc-what-questions-are-these-methods-best-suited-to-answer" class="nav-link" data-scroll-target="#what-questions-are-these-methods-best-suited-to-answer"><span class="header-section-number">1.8.9</span> What Questions Are These Methods Best Suited to Answer?</a></li>
   </ul></li>
-  <li><a href="#latent-basis-model-lbm" id="toc-latent-basis-model-lbm" class="nav-link" data-scroll-target="#latent-basis-model-lbm"><span class="header-section-number">1.7.4</span> Latent Basis Model (LBM)</a></li>
-  <li><a href="#longitudinal-measurement-invariance-verify-the-scale-has-not-shifted-before-fitting-a-growth-model" id="toc-longitudinal-measurement-invariance-verify-the-scale-has-not-shifted-before-fitting-a-growth-model" class="nav-link" data-scroll-target="#longitudinal-measurement-invariance-verify-the-scale-has-not-shifted-before-fitting-a-growth-model"><span class="header-section-number">1.7.5</span> Longitudinal Measurement Invariance: Verify the Scale Has Not Shifted Before Fitting a Growth Model</a>
-  <ul class="collapse">
-  <li><a href="#metric-invariance-weak-invariance" id="toc-metric-invariance-weak-invariance" class="nav-link" data-scroll-target="#metric-invariance-weak-invariance"><span class="header-section-number">1.7.5.1</span> Metric Invariance (Weak Invariance)</a></li>
-  <li><a href="#scalar-invariance-strong-invariance" id="toc-scalar-invariance-strong-invariance" class="nav-link" data-scroll-target="#scalar-invariance-strong-invariance"><span class="header-section-number">1.7.5.2</span> Scalar Invariance (Strong Invariance)</a></li>
-  </ul></li>
-  </ul></li>
-  <li><a href="#modeling-decisions-which-type-of-longitudinal-model-should-be-used" id="toc-modeling-decisions-which-type-of-longitudinal-model-should-be-used" class="nav-link" data-scroll-target="#modeling-decisions-which-type-of-longitudinal-model-should-be-used"><span class="header-section-number">1.8</span> Modeling Decisions: Which Type of Longitudinal Model Should Be Used?</a>
-  <ul class="collapse">
-  <li><a href="#when-mlm-is-more-appropriate" id="toc-when-mlm-is-more-appropriate" class="nav-link" data-scroll-target="#when-mlm-is-more-appropriate"><span class="header-section-number">1.8.1</span> When MLM Is More Appropriate</a>
-  <ul class="collapse">
-  <li><a href="#when-lgm-longitudinal-sem-is-more-appropriate" id="toc-when-lgm-longitudinal-sem-is-more-appropriate" class="nav-link" data-scroll-target="#when-lgm-longitudinal-sem-is-more-appropriate"><span class="header-section-number">1.8.1.1</span> When LGM / Longitudinal SEM Is More Appropriate</a></li>
-  </ul></li>
-  </ul></li>
-  <li><a href="#one-page-summary-the-core-thread-of-this-document" id="toc-one-page-summary-the-core-thread-of-this-document" class="nav-link" data-scroll-target="#one-page-summary-the-core-thread-of-this-document"><span class="header-section-number">1.9</span> One-Page Summary: The Core Thread of This Document</a></li>
-  <li><a href="#appendix-unified-symbol-reference-table" id="toc-appendix-unified-symbol-reference-table" class="nav-link" data-scroll-target="#appendix-unified-symbol-reference-table"><span class="header-section-number">1.10</span> Appendix: Unified Symbol Reference Table</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -337,9 +273,10 @@ window.Quarto = {
 <li><span class="math inline">\(y_{it}\)</span>: observed outcome for individual <span class="math inline">\(i\)</span> at time point <span class="math inline">\(t\)</span></li>
 <li><span class="math inline">\(\mathbf y_i = (y_{i1}, \dots, y_{iT_i})'\)</span>: full longitudinal observation vector for individual <span class="math inline">\(i\)</span></li>
 <li><span class="math inline">\(x_{it}\)</span>: time score / time metric (e.g., <span class="math inline">\(0,1,2,3\)</span>; can also be age, days since treatment, etc.)</li>
-<li><span class="math inline">\(w_i\)</span>: time-invariant covariate (TIC)</li>
-<li><span class="math inline">\(z_{it}\)</span>: time-varying covariate (TVC)</li>
-<li><span class="math inline">\(\Delta y_{it} = y_{it} - y_{i,t-1}\)</span>: change from <span class="math inline">\(t-1\)</span> to <span class="math inline">\(t\)</span></li>
+<li><span class="math inline">\(\mathbf D\)</span>: random effects covariance matrix (= <span class="math inline">\(\Psi\)</span> ,latent growth factor covariance matrix in the SEM literature)</li>
+<li><span class="math inline">\(R_i\)</span>: residual covariance matrix (= <span class="math inline">\(\Theta_i\)</span> indicator residual covariance matrix in the SEM literature)</li>
+<li><span class="math inline">\(\Lambda\)</span>: factor loading matrix / time score matrix</li>
+<li><span class="math inline">\(\eta_i\)</span>: latent growth factor vector</li>
 </ul>
 </section>
 <section id="unified-linear-growth-notation" class="level3" data-number="1.1.2">
@@ -376,19 +313,36 @@ b_{1i}
 <li><span class="math inline">\(\tau_{01}\)</span>: covariance between the random intercept and random slope</li>
 </ul>
 </section>
-<section id="correspondence-with-sem-notation" class="level3" data-number="1.1.3">
-<h3 data-number="1.1.3" class="anchored" data-anchor-id="correspondence-with-sem-notation"><span class="header-section-number">1.1.3</span> Correspondence with SEM Notation</h3>
-<p>In the longitudinal SEM / LGM literature, the covariance matrix of the random growth factors is commonly denoted <span class="math inline">\(\Psi\)</span>, and the residual covariance matrix is denoted <span class="math inline">\(\Theta\)</span>. Throughout this document, the correspondence is understood as:</p>
-<ul>
-<li>Random effects covariance matrix in MLM/LMM: <span class="math inline">\(\mathbf D\)</span></li>
-<li>Latent growth factor covariance matrix in SEM/LGM: <span class="math inline">\(\Psi\)</span></li>
-</ul>
-<p>Under a simple linear growth model, the two refer to the same quantity and differ only in notation:</p>
+<section id="level-2-predictors" class="level3" data-number="1.1.3">
+<h3 data-number="1.1.3" class="anchored" data-anchor-id="level-2-predictors"><span class="header-section-number">1.1.3</span> Level-2 Predictors</h3>
+<p>Let <span class="math inline">\(w_i\)</span> be a time-invariant covariate.</p>
+<p>In MLM, it can predict both the intercept and the slope:</p>
 <p><span class="math display">\[
-\mathbf D \equiv \Psi
+y_{it}
+=
+(\mu_0 + \beta_0 w_i)
++
+(\mu_1 + \beta_1 w_i)x_{it}
++
+b_{0i}
++
+b_{1i}x_{it}
++
+\varepsilon_{it}
 \]</span></p>
-<p>Similarly, the Level-1 residual structure <span class="math inline">\(\mathbf R_i\)</span> in MLM/LMM corresponds to the indicator residual structure <span class="math inline">\(\Theta_i\)</span> in SEM.</p>
-<hr>
+<p>In the SEM framework, the longitudinal growth model is written as:</p>
+<p><span class="math display">\[
+\mathbf y_i = \Lambda_i \eta_i + \varepsilon_i,
+\qquad
+\eta_i = \alpha + \zeta_i
+\]</span></p>
+<p>the same level-2 effect is written as:</p>
+<p><span class="math display">\[
+\eta_{0i} = \mu_0 + \beta_0 w_i + b_{0i}
+\]</span></p>
+<p><span class="math display">\[
+\eta_{1i} = \mu_1 + \beta_1 w_i + b_{1i}
+\]</span></p>
 </section>
 </section>
 <section id="methodological-rationale-for-longitudinal-research-why-longitudinal-data-cannot-be-analyzed-directly-with-ols" class="level2" data-number="1.2">
@@ -401,199 +355,17 @@ b_{1i}
 \]</span></p>
 <p>Longitudinal data violate this assumption by design: observations from the same individual at different time points are influenced by the same genetic, personality, environmental, and historical factors, and thus exhibit systematic dependence.</p>
 </section>
-<section id="consequences-of-applying-ols-naively" class="level3" data-number="1.2.2">
-<h3 data-number="1.2.2" class="anchored" data-anchor-id="consequences-of-applying-ols-naively"><span class="header-section-number">1.2.2</span> Consequences of Applying OLS Naively</h3>
-<ul>
-<li><strong>Positive autocorrelation</strong>: standard errors are systematically underestimated, inflating <span class="math inline">\(t\)</span> / <span class="math inline">\(F\)</span> statistics and increasing Type I error rates</li>
-<li><strong>Heterogeneity misattributed to noise</strong>: genuine stable differences between individuals are incorrectly absorbed into random error</li>
-<li><strong>Confounding of within-person change and between-person differences</strong>: it becomes impossible to distinguish “who started higher” from “who grew faster”</li>
-<li><strong>Poor handling of missing data</strong>: OLS is ill-suited for unbalanced data structures and is prone to sample bias and information loss</li>
-</ul>
-</section>
-<section id="what-longitudinal-modeling-actually-addresses" class="level3" data-number="1.2.3">
-<h3 data-number="1.2.3" class="anchored" data-anchor-id="what-longitudinal-modeling-actually-addresses"><span class="header-section-number">1.2.3</span> What Longitudinal Modeling Actually Addresses</h3>
+<section id="what-longitudinal-modeling-actually-addresses" class="level3" data-number="1.2.2">
+<h3 data-number="1.2.2" class="anchored" data-anchor-id="what-longitudinal-modeling-actually-addresses"><span class="header-section-number">1.2.2</span> What Longitudinal Modeling Actually Addresses</h3>
 <p>Longitudinal models do not eliminate dependence; they <strong>parameterize</strong> it: the failure of the independence assumption is transformed into a question of how the covariance matrix is modeled.</p>
 <hr>
 </section>
 </section>
-<section id="classical-approaches-to-two-wave-change-change-score-vs.-residualized-change" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="classical-approaches-to-two-wave-change-change-score-vs.-residualized-change"><span class="header-section-number">1.3</span> Classical Approaches to Two-Wave Change: Change Score vs.&nbsp;Residualized Change</h2>
-<p>This section integrates content from the original notes on <strong>raw change scores, residualized change scores, Lord’s Paradox, and the measurement and causal limitations of change scores</strong>.</p>
-<section id="raw-change-score-gain-score" class="level3" data-number="1.3.1">
-<h3 data-number="1.3.1" class="anchored" data-anchor-id="raw-change-score-gain-score"><span class="header-section-number">1.3.1</span> Raw Change Score (Gain Score)</h3>
-<p>The most direct definition of change is:</p>
-<p><span class="math display">\[
-\Delta y_i = y_{i2} - y_{i1}
-\]</span></p>
-<p>If the change score is used as the outcome variable and regressed on a baseline predictor <span class="math inline">\(w_i\)</span>, the model is:</p>
-<p><span class="math display">\[
-\Delta y_i = \beta_0 + \beta_1 w_i + e_i
-\]</span></p>
-<p><strong>The question this answers:</strong></p>
-<ul>
-<li>Whose outcome changed the most?</li>
-<li>Which individuals experienced the largest <strong>absolute change</strong>?</li>
-</ul>
-<p><strong>Advantages:</strong></p>
-<ul>
-<li>Intuitive</li>
-<li>Directly reflects individual-level pre–post change in randomized controlled trials (RCTs)</li>
-</ul>
-<p><strong>Limitations:</strong></p>
-<ul>
-<li>Influenced by baseline level</li>
-<li>When two measurements are highly correlated, the reliability of the change score may actually be lower than that of the raw scores (“reliability paradox”)</li>
-</ul>
-</section>
-<section id="residualized-change-score-ancova" class="level3" data-number="1.3.2">
-<h3 data-number="1.3.2" class="anchored" data-anchor-id="residualized-change-score-ancova"><span class="header-section-number">1.3.2</span> Residualized Change Score (ANCOVA)</h3>
-<p>An alternative approach is to predict the posttest from the pretest, and treat the portion “unexplained by the initial state” as change.</p>
-<p>The model is written as:</p>
-<p><span class="math display">\[
-y_{i2} = \beta_0 + \rho y_{i1} + \beta_1 w_i + e_i
-\]</span></p>
-<p>If one is interested only in “deviation from a given baseline,” one may first run the regression:</p>
-<p><span class="math display">\[
-\hat y_{i2} = \hat\beta_0 + \hat\rho y_{i1},
-\qquad
-r_i = y_{i2} - \hat y_{i2}
-\]</span></p>
-<p>Here, <span class="math inline">\(r_i\)</span> is the residualized change.</p>
-<p><strong>The question this answers:</strong></p>
-<ul>
-<li>Among individuals with the same baseline level, whose posttest performance <strong>exceeded the average expectation</strong>?</li>
-<li>Whose change represents a “deviation from expectation” rather than simply “how much they changed in absolute terms”?</li>
-</ul>
-</section>
-<section id="the-essential-distinction-between-the-two-change-scores" class="level3" data-number="1.3.3">
-<h3 data-number="1.3.3" class="anchored" data-anchor-id="the-essential-distinction-between-the-two-change-scores"><span class="header-section-number">1.3.3</span> The Essential Distinction Between the Two Change Scores</h3>
-<p>The two approaches can be summarized in a single sentence:</p>
-<ul>
-<li><strong>change score</strong> = <strong>absolute change</strong></li>
-<li><strong>residualized change</strong> = <strong>baseline-adjusted deviation from expected posttest</strong></li>
-</ul>
-<p>That is:</p>
-<ul>
-<li><span class="math inline">\(\Delta y_i = 0\)</span> means “no absolute change”</li>
-<li><span class="math inline">\(r_i = 0\)</span> does not mean “no change”; it means “this person’s change is exactly equal to the average expected change for individuals with the same baseline”</li>
-</ul>
-</section>
-<section id="a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes" class="level3" data-number="1.3.4">
-<h3 data-number="1.3.4" class="anchored" data-anchor-id="a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes"><span class="header-section-number">1.3.4</span> A Concrete Example: Why Two Students with Equal Raw Gains Have Different Residualized Changes</h3>
-<p>Suppose the class-level pretest–posttest regression line is:</p>
-<p><span class="math display">\[
-\hat y_{\text{post}} = 20 + 0.7\, y_{\text{pre}}
-\]</span></p>
-<p>The slope <span class="math inline">\(0.7 &lt; 1\)</span> reflects regression to the mean.</p>
-<ul>
-<li><strong>Student A</strong>: pre = 40, post = 50; predicted = 48; raw change = <span class="math inline">\(+10\)</span>; residualized change = <span class="math inline">\(+2\)</span></li>
-<li><strong>Student B</strong>: pre = 80, post = 90; predicted = 76; raw change = <span class="math inline">\(+10\)</span>; residualized change = <span class="math inline">\(+14\)</span></li>
-<li><strong>Student C</strong>: pre = 70, post = 69 predicted = 69 raw change = <span class="math inline">\(-1\)</span> residualized change = <span class="math inline">\(0\)</span></li>
-</ul>
-<p>Interpretation:</p>
-<ul>
-<li>A and B show identical absolute gains of <span class="math inline">\(+10\)</span></li>
-<li>But B improved far more relative to the average expectation for individuals with the same baseline</li>
-<li>C declined by <span class="math inline">\(1\)</span> point in absolute terms, but this is exactly the average change expected for individuals with the same baseline; hence residualized change = 0</li>
-</ul>
-</section>
-<section id="lords-paradox-two-methods-opposite-conclusions-from-the-same-data" class="level3" data-number="1.3.5">
-<h3 data-number="1.3.5" class="anchored" data-anchor-id="lords-paradox-two-methods-opposite-conclusions-from-the-same-data"><span class="header-section-number">1.3.5</span> Lord’s Paradox: Two Methods, Opposite Conclusions from the Same Data</h3>
-<p>Lord (1967) noted that, applied to the same dataset, the change score approach and ANCOVA can yield diametrically opposite conclusions.</p>
-<p>The classic example involves the effect of a university dining hall’s meal plan on the weights of male and female students. At both baseline and follow-up, the overall weight distributions of males and females appear identical.</p>
-<ul>
-<li><strong>Change score conclusion</strong>: average change is zero for both sexes, therefore “no sex difference”</li>
-<li><strong>ANCOVA conclusion</strong>: after controlling for baseline, males with the same initial weight are expected to have a higher posttest weight than females, therefore “the meal plan has a significant positive effect for males”</li>
-</ul>
-<p><strong>The underlying reason:</strong></p>
-<ul>
-<li>The change score approach implicitly fixes the coefficient on the pretest at 1</li>
-<li>ANCOVA allows this coefficient <span class="math inline">\(\rho\)</span> to be estimated from the data (typically <span class="math inline">\(&lt; 1\)</span>), and thus “adjusts” for initial differences</li>
-</ul>
-<p>In non-randomized observational studies, the two approaches do not target the same estimand, so it is not surprising that they conflict.</p>
-</section>
-<section id="when-to-use-which-approach" class="level3" data-number="1.3.6">
-<h3 data-number="1.3.6" class="anchored" data-anchor-id="when-to-use-which-approach"><span class="header-section-number">1.3.6</span> When to Use Which Approach?</h3>
-<section id="randomized-controlled-trials-rcts" class="level4" data-number="1.3.6.1">
-<h4 data-number="1.3.6.1" class="anchored" data-anchor-id="randomized-controlled-trials-rcts"><span class="header-section-number">1.3.6.1</span> Randomized Controlled Trials (RCTs)</h4>
-<p>The two approaches tend to converge:</p>
-<ul>
-<li>Random assignment makes baseline values statistically equivalent across groups</li>
-<li>Regression to the mean cancels out across groups</li>
-<li>ANCOVA typically achieves greater statistical power</li>
-</ul>
-</section>
-<section id="observational-studies-non-random-group-assignment" class="level4" data-number="1.3.6.2">
-<h4 data-number="1.3.6.2" class="anchored" data-anchor-id="observational-studies-non-random-group-assignment"><span class="header-section-number">1.3.6.2</span> Observational Studies (Non-random Group Assignment)</h4>
-<p>Caution is required:</p>
-<ul>
-<li>If you are interested in <strong>total effects / absolute change</strong> → change score is more appropriate</li>
-<li>If you are interested in <strong>relative change after accounting for starting point</strong> → ANCOVA / residualized change is more appropriate</li>
-</ul>
-<p>However, the prerequisite is: you must believe that “controlling for baseline” is consistent with your causal structure; otherwise, regression-to-the-mean (RTM) bias is easily introduced.</p>
-</section>
-</section>
-<section id="why-change-scores-can-be-misleading-measurement-level-reasons" class="level3" data-number="1.3.7">
-<h3 data-number="1.3.7" class="anchored" data-anchor-id="why-change-scores-can-be-misleading-measurement-level-reasons"><span class="header-section-number">1.3.7</span> Why Change Scores Can Be Misleading: Measurement-Level Reasons</h3>
-<p>Suppose the two measurements are:</p>
-<p><span class="math display">\[
-y_{i1} = T_{i1} + e_{i1},
-\qquad
-y_{i2} = T_{i2} + e_{i2}
-\]</span></p>
-<p>Then the change score is:</p>
-<p><span class="math display">\[
-\Delta y_i = y_{i2} - y_{i1}
-= (T_{i2} - T_{i1}) + (e_{i2} - e_{i1})
-\]</span></p>
-<p>If the two errors are independent, then:</p>
-<p><span class="math display">\[
-\text{Var}(e_{i2} - e_{i1}) = \text{Var}(e_{i2}) + \text{Var}(e_{i1})
-\]</span></p>
-<p>That is, measurement errors in the difference <strong>accumulate directly</strong>, so change scores are typically less stable than single-occasion measurements.</p>
-<p>In addition, change scores exhibit a mechanical negative correlation with the baseline:</p>
-<p><span class="math display">\[
-\text{Cov}(\Delta y_i, y_{i1})
-=
-\text{Cov}(y_{i2} - y_{i1}, y_{i1})
-=
-\text{Cov}(y_{i2}, y_{i1}) - \text{Var}(y_{i1})
-\]</span></p>
-<p>As long as the cross-time correlation is less than 1, this covariance tends to be negative:</p>
-<ul>
-<li>Individuals with a higher baseline are more likely to appear to have gained less</li>
-<li>Individuals with a lower baseline are more likely to appear to have gained more</li>
-</ul>
-<p>This does not necessarily reflect genuine psychological or behavioral mechanisms.</p>
-</section>
-<section id="why-change-scores-can-be-misleading-causal-reasons" class="level3" data-number="1.3.8">
-<h3 data-number="1.3.8" class="anchored" data-anchor-id="why-change-scores-can-be-misleading-causal-reasons"><span class="header-section-number">1.3.8</span> Why Change Scores Can Be Misleading: Causal Reasons</h3>
-<p>In non-randomized data, regressing a change score as the outcome on some baseline exposure often does not correspond to a well-defined causal effect.</p>
-<p>This is particularly problematic when the baseline outcome simultaneously serves as a:</p>
-<ul>
-<li>confounder, or</li>
-<li>mediator</li>
-</ul>
-<p>In such cases, the regression coefficient for the change score may even be in the opposite direction from the true total effect / direct effect.</p>
-<p><strong>Conclusion</strong>: change scores are not inherently unusable, but in non-randomized causal problems they frequently do not correspond to the effect one intends to estimate.</p>
-</section>
-<section id="what-questions-are-these-methods-best-suited-to-answer" class="level3" data-number="1.3.9">
-<h3 data-number="1.3.9" class="anchored" data-anchor-id="what-questions-are-these-methods-best-suited-to-answer"><span class="header-section-number">1.3.9</span> What Questions Are These Methods Best Suited to Answer?</h3>
-<ul>
-<li>“How much did it change?” → both change score and ANCOVA are appropriate</li>
-<li>“What is the shape of the change trajectory?” → two-wave methods are insufficient</li>
-<li>“Do different individuals change at different rates?” → MLM / LGM is required</li>
-<li>“How does a prior state drive subsequent change?” → CLPM or LCSM is required</li>
-</ul>
-<p>This is also why the distinction between “absolute change vs.&nbsp;conditional change” will be revisited in the subsequent discussions of CLPM, LGM, and LCSM.</p>
-<hr>
-</section>
-</section>
-<section id="a-unified-mathematical-perspective-explicitly-modeling-dependence" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="a-unified-mathematical-perspective-explicitly-modeling-dependence"><span class="header-section-number">1.4</span> A Unified Mathematical Perspective: Explicitly Modeling Dependence</h2>
+<section id="a-unified-mathematical-perspective-explicitly-modeling-dependence" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="a-unified-mathematical-perspective-explicitly-modeling-dependence"><span class="header-section-number">1.3</span> A Unified Mathematical Perspective: Explicitly Modeling Dependence</h2>
 <p>This section integrates content from the original notes on <strong>the matrix representation of LMM, the implied covariance structure in SEM, and the translation dictionary and equivalence between MLM and SEM/LGM</strong>.</p>
-<section id="matrix-form-of-mlm-lmm" class="level3" data-number="1.4.1">
-<h3 data-number="1.4.1" class="anchored" data-anchor-id="matrix-form-of-mlm-lmm"><span class="header-section-number">1.4.1</span> Matrix Form of MLM / LMM</h3>
+<section id="matrix-form-of-mlm-lmm" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="matrix-form-of-mlm-lmm"><span class="header-section-number">1.3.1</span> Matrix Form of MLM / LMM</h3>
 <p>For individual <span class="math inline">\(i\)</span>, the LMM is written as:</p>
 <p><span class="math display">\[
 \mathbf y_i = X_i\beta + Z_i\mathbf b_i + \boldsymbol\varepsilon_i
@@ -614,8 +386,8 @@ V_i = \text{Cov}(\mathbf y_i) = Z_i\mathbf D Z_i' + R_i
 </ul>
 <p>This is how LMM “addresses dependence” at the matrix level: rather than requiring dependence to disappear, it explicitly specifies its sources.</p>
 </section>
-<section id="the-same-idea-at-the-scalar-level" class="level3" data-number="1.4.2">
-<h3 data-number="1.4.2" class="anchored" data-anchor-id="the-same-idea-at-the-scalar-level"><span class="header-section-number">1.4.2</span> The Same Idea at the Scalar Level</h3>
+<section id="the-same-idea-at-the-scalar-level" class="level3" data-number="1.3.2">
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="the-same-idea-at-the-scalar-level"><span class="header-section-number">1.3.2</span> The Same Idea at the Scalar Level</h3>
 <p>For the linear growth model:</p>
 <p><span class="math display">\[
 y_{it} = \mu_0 + \mu_1x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
@@ -649,8 +421,8 @@ y_{it} = \mu_0 + \mu_1x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
 \]</span></p>
 <p>This indicates that errors at nearby time points are more similar, with the correlation weakening as the time interval increases.</p>
 </section>
-<section id="matrix-form-of-longitudinal-sem-lgm" class="level3" data-number="1.4.3">
-<h3 data-number="1.4.3" class="anchored" data-anchor-id="matrix-form-of-longitudinal-sem-lgm"><span class="header-section-number">1.4.3</span> Matrix Form of Longitudinal SEM / LGM</h3>
+<section id="matrix-form-of-longitudinal-sem-lgm" class="level3" data-number="1.3.3">
+<h3 data-number="1.3.3" class="anchored" data-anchor-id="matrix-form-of-longitudinal-sem-lgm"><span class="header-section-number">1.3.3</span> Matrix Form of Longitudinal SEM / LGM</h3>
 <p>In the SEM framework, the longitudinal growth model is written as:</p>
 <p><span class="math display">\[
 \mathbf y_i = \Lambda_i \eta_i + \varepsilon_i,
@@ -686,8 +458,8 @@ E(\mathbf y_i) = \Lambda_i \alpha
 <li><span class="math inline">\(\theta_{ts}\)</span>: residual covariance, used to represent residual dependence of the same indicator across time</li>
 </ul>
 </section>
-<section id="from-conditional-to-marginal-representation-mlm-and-sem-are-mathematically-the-same" class="level3" data-number="1.4.4">
-<h3 data-number="1.4.4" class="anchored" data-anchor-id="from-conditional-to-marginal-representation-mlm-and-sem-are-mathematically-the-same"><span class="header-section-number">1.4.4</span> From Conditional to Marginal Representation: MLM and SEM Are Mathematically the Same</h3>
+<section id="mlm-and-sem-are-mathematically-the-same" class="level3" data-number="1.3.4">
+<h3 data-number="1.3.4" class="anchored" data-anchor-id="mlm-and-sem-are-mathematically-the-same"><span class="header-section-number">1.3.4</span> MLM and SEM Are Mathematically the Same</h3>
 <p>After integrating out the random effects, the marginal distribution of the LMM is:</p>
 <p><span class="math display">\[
 E(\mathbf y_i) = X_i\beta
@@ -704,8 +476,8 @@ E(\mathbf y_i) = \Lambda_i\alpha
 \]</span></p>
 <p>The two forms are isomorphic.</p>
 </section>
-<section id="translation-dictionary" class="level3" data-number="1.4.5">
-<h3 data-number="1.4.5" class="anchored" data-anchor-id="translation-dictionary"><span class="header-section-number">1.4.5</span> Translation Dictionary</h3>
+<section id="translation-dictionary" class="level3" data-number="1.3.5">
+<h3 data-number="1.3.5" class="anchored" data-anchor-id="translation-dictionary"><span class="header-section-number">1.3.5</span> Translation Dictionary</h3>
 <ul>
 <li><span class="math inline">\(Z_i\)</span> (MLM random-effects design matrix) <span class="math inline">\(\leftrightarrow\)</span> <span class="math inline">\(\Lambda_i\)</span> (SEM factor loading matrix)</li>
 <li><span class="math inline">\(\mathbf b_i\)</span> (random intercept / slope) <span class="math inline">\(\leftrightarrow\)</span> <span class="math inline">\(\zeta_i\)</span> (individual deviation of the latent growth factor)</li>
@@ -718,8 +490,8 @@ E(\mathbf y_i) = \Lambda_i\alpha
 <p><strong>The row vector <span class="math inline">\([1, x_{it}]\)</span> in MLM corresponds to a row of the factor loading matrix <span class="math inline">\(\Lambda_i\)</span> in SEM.</strong></p>
 </blockquote>
 </section>
-<section id="concrete-correspondence-for-a-four-wave-linear-growth-model" class="level3" data-number="1.4.6">
-<h3 data-number="1.4.6" class="anchored" data-anchor-id="concrete-correspondence-for-a-four-wave-linear-growth-model"><span class="header-section-number">1.4.6</span> Concrete Correspondence for a Four-Wave Linear Growth Model</h3>
+<section id="concrete-correspondence-for-a-four-wave-linear-growth-model" class="level3" data-number="1.3.6">
+<h3 data-number="1.3.6" class="anchored" data-anchor-id="concrete-correspondence-for-a-four-wave-linear-growth-model"><span class="header-section-number">1.3.6</span> Concrete Correspondence for a Four-Wave Linear Growth Model</h3>
 <p>For four equally spaced time points <span class="math inline">\(t = 0,1,2,3\)</span>:</p>
 <p><span class="math display">\[
 Z_i = \Lambda_i =
@@ -750,8 +522,8 @@ y_{it} = \mu_0 + \mu_1 t + b_{0i} + b_{1i}t + \varepsilon_{it}
 \]</span></p>
 <p>As long as the time coding and error structure are consistent, these are two representations of the same growth model.</p>
 </section>
-<section id="random-intercept-only-full-correspondence-with-the-null-model" class="level3" data-number="1.4.7">
-<h3 data-number="1.4.7" class="anchored" data-anchor-id="random-intercept-only-full-correspondence-with-the-null-model"><span class="header-section-number">1.4.7</span> Random Intercept Only: Full Correspondence with the Null Model</h3>
+<section id="random-intercept-only-full-correspondence-with-the-null-model" class="level3" data-number="1.3.7">
+<h3 data-number="1.3.7" class="anchored" data-anchor-id="random-intercept-only-full-correspondence-with-the-null-model"><span class="header-section-number">1.3.7</span> Random Intercept Only: Full Correspondence with the Null Model</h3>
 <p>When only a random intercept is included:</p>
 <p><span class="math display">\[
 \mathbf D = [\tau_{00}]
@@ -775,39 +547,8 @@ y_{it} = \mu_0 + \mu_1 t + b_{0i} + b_{1i}t + \varepsilon_{it}
 \]</span></p>
 <p>This is exactly equivalent to the random-intercept MLM / null model.</p>
 </section>
-<section id="level-2-predictors-in-both-frameworks" class="level3" data-number="1.4.8">
-<h3 data-number="1.4.8" class="anchored" data-anchor-id="level-2-predictors-in-both-frameworks"><span class="header-section-number">1.4.8</span> Level-2 Predictors in Both Frameworks</h3>
-<p>Let <span class="math inline">\(w_i\)</span> be a time-invariant covariate.</p>
-<p>In MLM, it can predict both the intercept and the slope:</p>
-<p><span class="math display">\[
-y_{it}
-=
-(\mu_0 + \beta_0 w_i)
-+
-(\mu_1 + \beta_1 w_i)x_{it}
-+
-b_{0i}
-+
-b_{1i}x_{it}
-+
-\varepsilon_{it}
-\]</span></p>
-<p>In SEM, the same effect is written as:</p>
-<p><span class="math display">\[
-\eta_{0i} = \mu_0 + \beta_0 w_i + b_{0i}
-\]</span></p>
-<p><span class="math display">\[
-\eta_{1i} = \mu_1 + \beta_1 w_i + b_{1i}
-\]</span></p>
-<p>That is:</p>
-<ul>
-<li><strong>Cross-level interaction in MLM</strong></li>
-<li><strong>“Predicting the latent slope factor” in SEM</strong></li>
-</ul>
-<p>are mathematically the same thing.</p>
-</section>
-<section id="when-does-the-equivalence-break-down" class="level3" data-number="1.4.9">
-<h3 data-number="1.4.9" class="anchored" data-anchor-id="when-does-the-equivalence-break-down"><span class="header-section-number">1.4.9</span> When Does the Equivalence Break Down?</h3>
+<section id="when-does-the-equivalence-break-down" class="level3" data-number="1.3.8">
+<h3 data-number="1.3.8" class="anchored" data-anchor-id="when-does-the-equivalence-break-down"><span class="header-section-number">1.3.8</span> When Does the Equivalence Break Down?</h3>
 <p>This equivalence holds under certain prerequisites:</p>
 <ul>
 <li>Linear Gaussian model</li>
@@ -831,90 +572,10 @@ b_{1i}x_{it}
 <hr>
 </section>
 </section>
-<section id="three-major-frameworks-gee-mlmlmm-and-longitudinal-sem" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="three-major-frameworks-gee-mlmlmm-and-longitudinal-sem"><span class="header-section-number">1.5</span> Three Major Frameworks: GEE, MLM/LMM, and Longitudinal SEM</h2>
-<section id="gee-a-marginal-population-averaged-perspective" class="level3" data-number="1.5.1">
-<h3 data-number="1.5.1" class="anchored" data-anchor-id="gee-a-marginal-population-averaged-perspective"><span class="header-section-number">1.5.1</span> GEE: A Marginal, Population-Averaged Perspective</h3>
-<p>GEE focuses on:</p>
-<ul>
-<li>How the <strong>population-averaged response</strong> changes when a covariate changes by one unit</li>
-</ul>
-<p>It approximates within-cluster dependence by specifying a “working correlation matrix” <span class="math inline">\(R(\alpha)\)</span>, and uses a <strong>sandwich variance estimator</strong> to correct the standard errors.</p>
-<p><strong>Advantages:</strong></p>
-<ul>
-<li>Even if the working correlation matrix is misspecified, the parameter estimates remain consistent as long as the mean model is correctly specified</li>
-<li>Particularly well-suited for public health and policy evaluation contexts where the interest lies in population-level average trends</li>
-</ul>
-<p><strong>Limitations:</strong></p>
-<ul>
-<li>Less effective at characterizing sources of individual variation</li>
-<li>Missing data typically requires MCAR; handling missingness under MAR often requires multiple imputation (MI)</li>
-</ul>
-</section>
-<section id="mlm-lmm-a-conditional-individual-trajectory-perspective" class="level3" data-number="1.5.2">
-<h3 data-number="1.5.2" class="anchored" data-anchor-id="mlm-lmm-a-conditional-individual-trajectory-perspective"><span class="header-section-number">1.5.2</span> MLM / LMM: A Conditional Individual Trajectory Perspective</h3>
-<p>MLM / LMM focuses on:</p>
-<ul>
-<li>How a given individual’s trajectory changes, conditional on that individual’s random effects</li>
-<li>How much individuals differ in their starting points and rates of change</li>
-</ul>
-<p><strong>In nonlinear models, the coefficients from LMM and GEE typically differ:</strong></p>
-<p>For example, in logistic regression, the fixed-effect estimates from LMM are generally larger than the marginal effects from GEE, because:</p>
-<ul>
-<li>LMM more closely approximates a “pure effect after controlling for individual heterogeneity”</li>
-<li>The GEE effect is attenuated by between-individual heterogeneity</li>
-</ul>
-</section>
-<section id="longitudinal-sem-a-latent-process-perspective" class="level3" data-number="1.5.3">
-<h3 data-number="1.5.3" class="anchored" data-anchor-id="longitudinal-sem-a-latent-process-perspective"><span class="header-section-number">1.5.3</span> Longitudinal SEM: A Latent Process Perspective</h3>
-<p>The key advantage of longitudinal SEM is that it:</p>
-<ul>
-<li>Can define a latent construct using multiple indicators</li>
-<li>Explicitly separates “true change” from “measurement error” in growth modeling</li>
-<li>Readily accommodates complex pathways involving mediation, moderation, and parallel process growth</li>
-</ul>
-<p>This is its principal advantage over LMM alone.</p>
-</section>
-<section id="one-page-comparison" class="level3" data-number="1.5.4">
-<h3 data-number="1.5.4" class="anchored" data-anchor-id="one-page-comparison"><span class="header-section-number">1.5.4</span> One-Page Comparison</h3>
-<ul>
-<li><p><strong>Level of interpretation</strong></p>
-<ul>
-<li>GEE = population-averaged trend</li>
-<li>MLM/LMM = individual conditional trajectory</li>
-<li>Longitudinal SEM = latent process trajectory</li>
-</ul></li>
-<li><p><strong>Data format</strong></p>
-<ul>
-<li>GEE / MLM = long format is typically preferred</li>
-<li>Longitudinal SEM / LGM = wide format is typically preferred</li>
-</ul></li>
-<li><p><strong>Statistical basis</strong></p>
-<ul>
-<li>GEE = quasi-likelihood / marginal model</li>
-<li>MLM = maximum likelihood (ML / REML)</li>
-<li>Longitudinal SEM = covariance structure analysis</li>
-</ul></li>
-<li><p><strong>Missing data mechanism</strong></p>
-<ul>
-<li>GEE = relies more heavily on MCAR (or requires MI)</li>
-<li>MLM = can be estimated directly under MAR</li>
-<li>Longitudinal SEM = can use FIML under MAR</li>
-</ul></li>
-<li><p><strong>Measurement error</strong></p>
-<ul>
-<li>GEE = not explicitly addressed</li>
-<li>MLM = treated as part of the residual</li>
-<li>Longitudinal SEM = can be explicitly modeled to “purify” the latent variable</li>
-</ul></li>
-</ul>
-<hr>
-</section>
-</section>
-<section id="mlm-lmm-conditional-model-for-individual-trajectories" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="mlm-lmm-conditional-model-for-individual-trajectories"><span class="header-section-number">1.6</span> MLM / LMM: Conditional Model for Individual Trajectories</h2>
-<section id="basic-framework-time-at-level-1-individuals-at-level-2" class="level3" data-number="1.6.1">
-<h3 data-number="1.6.1" class="anchored" data-anchor-id="basic-framework-time-at-level-1-individuals-at-level-2"><span class="header-section-number">1.6.1</span> Basic Framework: Time at Level 1, Individuals at Level 2</h3>
+<section id="mlm-lmm-conditional-model-for-individual-trajectories" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="mlm-lmm-conditional-model-for-individual-trajectories"><span class="header-section-number">1.4</span> MLM / LMM: Conditional Model for Individual Trajectories</h2>
+<section id="basic-framework-time-at-level-1-individuals-at-level-2" class="level3" data-number="1.4.1">
+<h3 data-number="1.4.1" class="anchored" data-anchor-id="basic-framework-time-at-level-1-individuals-at-level-2"><span class="header-section-number">1.4.1</span> Basic Framework: Time at Level 1, Individuals at Level 2</h3>
 <p>The fundamental idea of longitudinal MLM is:</p>
 <ul>
 <li><strong>Level 1</strong>: within-individual observations varying over time</li>
@@ -930,8 +591,8 @@ y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
 <li>Each person also has their own rate of growth: <span class="math inline">\(\mu_1 + b_{1i}\)</span></li>
 </ul>
 </section>
-<section id="null-model-random-effects-anova-first-assessing-the-strength-of-dependence" class="level3" data-number="1.6.2">
-<h3 data-number="1.6.2" class="anchored" data-anchor-id="null-model-random-effects-anova-first-assessing-the-strength-of-dependence"><span class="header-section-number">1.6.2</span> Null Model / Random-Effects ANOVA: First Assessing the Strength of Dependence</h3>
+<section id="null-model-random-effects-anova-first-assessing-the-strength-of-dependence" class="level3" data-number="1.4.2">
+<h3 data-number="1.4.2" class="anchored" data-anchor-id="null-model-random-effects-anova-first-assessing-the-strength-of-dependence"><span class="header-section-number">1.4.2</span> Null Model / Random-Effects ANOVA: First Assessing the Strength of Dependence</h3>
 <p>The simplest unconditional model is:</p>
 <p><span class="math display">\[
 y_{it} = \mu_0 + b_{0i} + \varepsilon_{it}
@@ -942,8 +603,8 @@ b_{0i} \sim N(0, \tau_{00}),
 \qquad
 \varepsilon_{it} \sim N(0, \sigma^2)
 \]</span></p>
-<section id="three-core-implications" class="level4" data-number="1.6.2.1">
-<h4 data-number="1.6.2.1" class="anchored" data-anchor-id="three-core-implications"><span class="header-section-number">1.6.2.1</span> Three Core Implications</h4>
+<section id="three-core-implications" class="level4" data-number="1.4.2.1">
+<h4 data-number="1.4.2.1" class="anchored" data-anchor-id="three-core-implications"><span class="header-section-number">1.4.2.1</span> Three Core Implications</h4>
 <ol type="1">
 <li><strong>Expected value</strong></li>
 </ol>
@@ -965,8 +626,8 @@ E(y_{it}) = \mu_0
 \]</span></p>
 <p>As long as <span class="math inline">\(\tau_{00} &gt; 0\)</span>, repeated measurements from the same individual are not independent.</p>
 </section>
-<section id="intraclass-correlation-coefficient-icc" class="level4" data-number="1.6.2.2">
-<h4 data-number="1.6.2.2" class="anchored" data-anchor-id="intraclass-correlation-coefficient-icc"><span class="header-section-number">1.6.2.2</span> Intraclass Correlation Coefficient (ICC)</h4>
+<section id="intraclass-correlation-coefficient-icc" class="level4" data-number="1.4.2.2">
+<h4 data-number="1.4.2.2" class="anchored" data-anchor-id="intraclass-correlation-coefficient-icc"><span class="header-section-number">1.4.2.2</span> Intraclass Correlation Coefficient (ICC)</h4>
 <p><span class="math display">\[
 \text{ICC} = \frac{\tau_{00}}{\tau_{00} + \sigma^2}
 \]</span></p>
@@ -976,8 +637,8 @@ E(y_{it}) = \mu_0
 <li>Higher ICC means OLS is less appropriate</li>
 </ul>
 </section>
-<section id="explicit-covariance-matrix-for-3-time-points" class="level4" data-number="1.6.2.3">
-<h4 data-number="1.6.2.3" class="anchored" data-anchor-id="explicit-covariance-matrix-for-3-time-points"><span class="header-section-number">1.6.2.3</span> Explicit Covariance Matrix (for 3 Time Points)</h4>
+<section id="explicit-covariance-matrix-for-3-time-points" class="level4" data-number="1.4.2.3">
+<h4 data-number="1.4.2.3" class="anchored" data-anchor-id="explicit-covariance-matrix-for-3-time-points"><span class="header-section-number">1.4.2.3</span> Explicit Covariance Matrix (for 3 Time Points)</h4>
 <p><span class="math display">\[
 V_i =
 \begin{bmatrix}
@@ -992,8 +653,8 @@ V_i =
 </ul>
 <p>This is why OLS fails: OLS implicitly assumes <span class="math inline">\(V_i = \sigma^2 I\)</span>, i.e., all off-diagonal entries are zero.</p>
 </section>
-<section id="why-is-it-also-called-random-effects-anova" class="level4" data-number="1.6.2.4">
-<h4 data-number="1.6.2.4" class="anchored" data-anchor-id="why-is-it-also-called-random-effects-anova"><span class="header-section-number">1.6.2.4</span> Why Is It Also Called “Random-Effects ANOVA”?</h4>
+<section id="why-is-it-also-called-random-effects-anova" class="level4" data-number="1.4.2.4">
+<h4 data-number="1.4.2.4" class="anchored" data-anchor-id="why-is-it-also-called-random-effects-anova"><span class="header-section-number">1.4.2.4</span> Why Is It Also Called “Random-Effects ANOVA”?</h4>
 <p>In general clustered data, this model can also be written as a “random-effects ANOVA”:</p>
 <ul>
 <li>Traditional ANOVA treats group membership as a fixed factor</li>
@@ -1001,8 +662,8 @@ V_i =
 </ul>
 <p>In the longitudinal setting, the cluster is the “individual,” so the same logic applies directly.</p>
 </section>
-<section id="limitations-of-the-icc" class="level4" data-number="1.6.2.5">
-<h4 data-number="1.6.2.5" class="anchored" data-anchor-id="limitations-of-the-icc"><span class="header-section-number">1.6.2.5</span> Limitations of the ICC</h4>
+<section id="limitations-of-the-icc" class="level4" data-number="1.4.2.5">
+<h4 data-number="1.4.2.5" class="anchored" data-anchor-id="limitations-of-the-icc"><span class="header-section-number">1.4.2.5</span> Limitations of the ICC</h4>
 <p>The ICC is not reliable in all situations:</p>
 <ul>
 <li><strong>Binary outcomes</strong>: in models such as logistic regression, there is no simple, unified Level-1 variance term, so the ICC is no longer straightforwardly defined</li>
@@ -1011,18 +672,18 @@ V_i =
 </ul>
 </section>
 </section>
-<section id="random-intercept-and-random-slope-models" class="level3" data-number="1.6.3">
-<h3 data-number="1.6.3" class="anchored" data-anchor-id="random-intercept-and-random-slope-models"><span class="header-section-number">1.6.3</span> Random Intercept and Random Slope Models</h3>
-<section id="random-intercept-model" class="level4" data-number="1.6.3.1">
-<h4 data-number="1.6.3.1" class="anchored" data-anchor-id="random-intercept-model"><span class="header-section-number">1.6.3.1</span> Random Intercept Model</h4>
+<section id="random-intercept-and-random-slope-models" class="level3" data-number="1.4.3">
+<h3 data-number="1.4.3" class="anchored" data-anchor-id="random-intercept-and-random-slope-models"><span class="header-section-number">1.4.3</span> Random Intercept and Random Slope Models</h3>
+<section id="random-intercept-model" class="level4" data-number="1.4.3.1">
+<h4 data-number="1.4.3.1" class="anchored" data-anchor-id="random-intercept-model"><span class="header-section-number">1.4.3.1</span> Random Intercept Model</h4>
 <p>If only starting points are allowed to vary while the rate of change is fixed:</p>
 <p><span class="math display">\[
 y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + \varepsilon_{it}
 \]</span></p>
 <p>This indicates that each person has a different baseline, but the time effect is fixed.</p>
 </section>
-<section id="random-slope-model" class="level4" data-number="1.6.3.2">
-<h4 data-number="1.6.3.2" class="anchored" data-anchor-id="random-slope-model"><span class="header-section-number">1.6.3.2</span> Random Slope Model</h4>
+<section id="random-slope-model" class="level4" data-number="1.4.3.2">
+<h4 data-number="1.4.3.2" class="anchored" data-anchor-id="random-slope-model"><span class="header-section-number">1.4.3.2</span> Random Slope Model</h4>
 <p>If individuals differ not only in their starting points but also in their rates of change:</p>
 <p><span class="math display">\[
 y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
@@ -1033,9 +694,8 @@ y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
 <li><span class="math inline">\(b_{1i}\)</span>: accounts for “who changes faster”</li>
 </ul>
 </section>
-</section>
-<section id="how-are-the-parameters-interpreted" class="level3" data-number="1.6.4">
-<h3 data-number="1.6.4" class="anchored" data-anchor-id="how-are-the-parameters-interpreted"><span class="header-section-number">1.6.4</span> How Are the Parameters Interpreted?</h3>
+<section id="how-are-the-parameters-interpreted" class="level4" data-number="1.4.3.3">
+<h4 data-number="1.4.3.3" class="anchored" data-anchor-id="how-are-the-parameters-interpreted"><span class="header-section-number">1.4.3.3</span> How Are the Parameters Interpreted?</h4>
 <ul>
 <li><strong><span class="math inline">\(\mu_0\)</span></strong>: population mean level at time zero</li>
 <li><strong><span class="math inline">\(\mu_1\)</span></strong>: population mean rate of change</li>
@@ -1048,54 +708,121 @@ y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
 <li><strong>Positive correlation</strong>: individuals who start higher subsequently grow faster (Matthew effect)</li>
 <li><strong>Negative correlation</strong>: individuals who start higher subsequently grow more slowly (ceiling / plateau effect)</li>
 </ul>
+<hr>
 </section>
-<section id="four-key-quantities-to-examine-when-reading-mlm-results" class="level3" data-number="1.6.5">
-<h3 data-number="1.6.5" class="anchored" data-anchor-id="four-key-quantities-to-examine-when-reading-mlm-results"><span class="header-section-number">1.6.5</span> Four Key Quantities to Examine When Reading MLM Results</h3>
+</section>
+</section>
+<section id="one-page-summary-the-core-thread-of-this-document" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="one-page-summary-the-core-thread-of-this-document"><span class="header-section-number">1.5</span> One-Page Summary: The Core Thread of This Document</h2>
+<p>The entire set of longitudinal modeling notes can be compressed into the following thread:</p>
+<ol type="1">
+<li><strong>OLS is inappropriate</strong> because longitudinal data violate the independence assumption</li>
+<li><strong>The core of modern longitudinal modeling</strong> is not to avoid dependence but to write it into the covariance structure</li>
+<li><strong>GEE / MLM / Longitudinal SEM</strong> correspond to three perspectives: population-averaged, individual trajectory, and latent process</li>
+<li><strong>MLM and LGM</strong> are often mathematically equivalent under simple linear growth, but SEM can further explicitly address measurement error</li>
+</ol>
+<hr>
+</section>
+<section id="design-matrix" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="design-matrix"><span class="header-section-number">1.6</span> Design Matrix</h2>
+<section id="core-concept" class="level3" data-number="1.6.1">
+<h3 data-number="1.6.1" class="anchored" data-anchor-id="core-concept"><span class="header-section-number">1.6.1</span> Core Concept</h3>
+<p>Multiple regression is expressed compactly in matrix form as: <span class="math inline">\(Y' = X\hat{\beta}\)</span></p>
 <ul>
-<li><strong>Fixed time effect</strong>: average growth / decline trend</li>
-<li><strong>Random intercept variance</strong>: between-individual differences in starting point</li>
-<li><strong>Random slope variance</strong>: between-individual differences in rate of change</li>
-<li><strong>Intercept–slope covariance</strong>: whether individuals who start higher subsequently accelerate or decelerate</li>
+<li><strong><span class="math inline">\(Y'\)</span></strong>: a column vector of predicted values</li>
+<li><strong><span class="math inline">\(X\)</span> (Design Matrix)</strong>: a matrix containing a column of ones (for the intercept) and columns of observed values for all predictors</li>
+<li><strong><span class="math inline">\(\hat{\beta}\)</span></strong>: a vector of estimated regression coefficients</li>
 </ul>
+<p><strong>Expanded form with a single predictor (5 observations):</strong></p>
+<p><span class="math display">\[
+Y'_i = \hat{\beta}_0 + \hat{\beta}_1 X_{1i} \;\equiv\; \hat{\beta}_0(1) + \hat{\beta}_1 X_{1i}
+\]</span></p>
+<p><span class="math display">\[
+\begin{bmatrix} Y'_1 \\ Y'_2 \\ Y'_3 \\ Y'_4 \\ Y'_5 \end{bmatrix} = \begin{bmatrix} 1 &amp; X_{11} \\ 1 &amp; X_{12} \\ 1 &amp; X_{13} \\ 1 &amp; X_{14} \\ 1 &amp; X_{15} \end{bmatrix} \begin{bmatrix} \hat{\beta}_0 \\ \hat{\beta}_1 \end{bmatrix} = \begin{bmatrix} \hat{\beta}_0 + \hat{\beta}_1 X_{11} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{12} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{13} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{14} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{15} \end{bmatrix}
+\]</span></p>
+<p><strong>Expanded form with two predictors:</strong></p>
+<p><span class="math display">\[
+Y'_i = \hat{\beta}_0 + \hat{\beta}_1 X_{1i} + \hat{\beta}_2 X_{2i}
+\]</span></p>
+<p><span class="math display">\[
+\begin{bmatrix} Y'_1 \\ Y'_2 \\ Y'_3 \\ Y'_4 \\ Y'_5 \end{bmatrix} = \begin{bmatrix} 1 &amp; X_{11} &amp; X_{21} \\ 1 &amp; X_{12} &amp; X_{22} \\ 1 &amp; X_{13} &amp; X_{23} \\ 1 &amp; X_{14} &amp; X_{24} \\ 1 &amp; X_{15} &amp; X_{25} \end{bmatrix} \begin{bmatrix} \hat{\beta}_0 \\ \hat{\beta}_1 \\ \hat{\beta}_2 \end{bmatrix} = \begin{bmatrix} \hat{\beta}_0 + \hat{\beta}_1 X_{11} + \hat{\beta}_2 X_{21} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{12} + \hat{\beta}_2 X_{22} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{13} + \hat{\beta}_2 X_{23} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{14} + \hat{\beta}_2 X_{24} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{15} + \hat{\beta}_2 X_{25} \end{bmatrix}
+\]</span></p>
 </section>
-<section id="r-lmer-code-example-gpa-setting" class="level3" data-number="1.6.6">
-<h3 data-number="1.6.6" class="anchored" data-anchor-id="r-lmer-code-example-gpa-setting"><span class="header-section-number">1.6.6</span> R / lmer Code Example (GPA Setting)</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Random intercept model: each student has a different starting point, slope is fixed</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gpa <span class="sc">~</span> time <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> student), <span class="at">data =</span> longdat)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Random intercept + random slope + sex interaction: starting point and growth rate both vary by individual</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(gpa <span class="sc">~</span> time <span class="sc">*</span> sex <span class="sc">+</span> (time <span class="sc">|</span> student), <span class="at">data =</span> longdat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Interpretation:</p>
+<section id="ols-matrix-solution" class="level3" data-number="1.6.2">
+<h3 data-number="1.6.2" class="anchored" data-anchor-id="ols-matrix-solution"><span class="header-section-number">1.6.2</span> OLS Matrix Solution</h3>
+<p>The coefficient vector is obtained in one step via matrix algebra: construct the design matrix <span class="math inline">\(X\)</span>, compute its transpose <span class="math inline">\(X'\)</span>, form the product <span class="math inline">\(X'X\)</span>, invert it, and multiply by <span class="math inline">\(X'Y\)</span>:</p>
+<p><span class="math display">\[
+\hat{\beta} = (X'X)^{-1}X'Y
+\]</span></p>
+<blockquote class="blockquote">
+<p>As long as <span class="math inline">\(X'X\)</span> is invertible (no perfect multicollinearity), this formula yields the exact solution directly, with no iteration.</p>
+</blockquote>
+</section>
+<section id="covariance-matrix-of-the-coefficient-estimates" class="level3" data-number="1.6.3">
+<h3 data-number="1.6.3" class="anchored" data-anchor-id="covariance-matrix-of-the-coefficient-estimates"><span class="header-section-number">1.6.3</span> Covariance Matrix of the Coefficient Estimates</h3>
+<p>The covariance matrix of the vector <span class="math inline">\(\hat{\beta}\)</span>:</p>
+<p><span class="math display">\[
+\text{cov}(\hat{\beta}) = \sigma^2 (X'X)^{-1}
+\]</span></p>
+<p>where the residual variance <span class="math inline">\(\sigma^2\)</span> is estimated from the residual vector <span class="math inline">\(\epsilon\)</span>:</p>
+<p><span class="math display">\[
+\sigma^2 = \frac{\epsilon'\epsilon}{n - s}
+\]</span></p>
 <ul>
-<li><code>(1 | student)</code>: allows only the intercept to vary across individuals</li>
-<li><code>(time | student)</code>: both the intercept and the time slope vary across individuals</li>
+<li><strong><span class="math inline">\(\epsilon\)</span></strong>: the residual vector (<span class="math inline">\(= Y - X\hat{\beta}\)</span>)</li>
+<li><strong><span class="math inline">\(s\)</span></strong>: the number of regression coefficients estimated in the model (including the intercept)</li>
+<li><strong><span class="math inline">\(n - s\)</span></strong>: the residual degrees of freedom</li>
 </ul>
-<p>In LGM terms, “having a variable predict the intercept and slope” corresponds in MLM to “main effect + time interaction + random intercept / random slope.”</p>
+<p>The diagonal elements of the covariance matrix are the variances of the individual coefficient estimates; their square roots are the <strong>standard errors (SE)</strong> of the respective coefficients. This matrix can be extracted in software via the <code>vcov()</code> function to verify the SE values reported in the output.</p>
 </section>
-<section id="applied-example-adolescent-alcohol-use-trajectories" class="level3" data-number="1.6.7">
-<h3 data-number="1.6.7" class="anchored" data-anchor-id="applied-example-adolescent-alcohol-use-trajectories"><span class="header-section-number">1.6.7</span> Applied Example: Adolescent Alcohol Use Trajectories</h3>
-<p>Alcohol use frequency was measured at ages 14, 15, and 16. After fitting a random slope model:</p>
+<section id="matrix-representation-of-textvarmathbfy-in-ols" class="level3" data-number="1.6.4">
+<h3 data-number="1.6.4" class="anchored" data-anchor-id="matrix-representation-of-textvarmathbfy-in-ols"><span class="header-section-number">1.6.4</span> Matrix Representation of <span class="math inline">\(\text{Var}(\mathbf{y})\)</span> in OLS</h3>
+<p>The OLS data-generating model is <span class="math inline">\(\mathbf{y} = X\beta + \boldsymbol{\epsilon}\)</span>, where <span class="math inline">\(X\beta\)</span> is fixed (non-random), so:</p>
+<p><span class="math display">\[
+\text{Var}(\mathbf{y}) = \text{Var}(\boldsymbol{\epsilon}) = \sigma^2 \mathbf{I}_n
+\]</span></p>
+<p>Expanded as an <span class="math inline">\(n \times n\)</span> matrix:</p>
+<p><span class="math display">\[
+\text{Var}(\mathbf{y}) = \begin{bmatrix} \sigma^2 &amp; 0 &amp; \cdots &amp; 0 \\ 0 &amp; \sigma^2 &amp; \cdots &amp; 0 \\ \vdots &amp; &amp; \ddots &amp; \vdots \\ 0 &amp; 0 &amp; \cdots &amp; \sigma^2 \end{bmatrix}
+\]</span></p>
+<p><strong>The diagonal elements are the variance of each observation (all equal); the off-diagonal elements are all zero, indicating mutual independence across observations.</strong></p>
+<p>This is precisely the two core assumptions of OLS expressed in the language of covariance matrices: <strong>Homoscedasticity + Independence</strong>.</p>
+<section id="correspondence-to-mlm-lsem" class="level4" data-number="1.6.4.1">
+<h4 data-number="1.6.4.1" class="anchored" data-anchor-id="correspondence-to-mlm-lsem"><span class="header-section-number">1.6.4.1</span> Correspondence to MLM / LSEM</h4>
 <ul>
-<li><p><strong>Fixed effects</strong></p>
-<ul>
-<li>Intercept = 0.651: mean usage at age 14 is significantly different from zero</li>
-<li>Time slope = 0.271: average increase of 0.271 units per year</li>
-</ul></li>
-<li><p><strong>Random effects</strong></p>
-<ul>
-<li>Intercept variance = 0.624: significant between-individual differences at baseline</li>
-<li>Slope variance = 0.151: individual differences in rate of growth are present</li>
-<li>Intercept–slope covariance = −0.07: higher initial use at age 14 is associated with slower subsequent growth</li>
-</ul></li>
-<li><p><strong>Level-2 predictors</strong></p>
-<ul>
-<li>COA (children of alcoholics) significantly predicts higher initial use (<span class="math inline">\(\beta = 0.743\)</span>)</li>
-<li>But does not significantly predict the rate of growth</li>
-</ul></li>
+<li><strong>OLS</strong>: <span class="math inline">\(\text{Var}(\mathbf{y}) = \sigma^2 \mathbf{I}_n\)</span> — no random effects; residuals are independent and identically distributed</li>
+<li><strong>MLM</strong>: <span class="math inline">\(V_i = Z_i G Z_i' + R_i\)</span> — random effects plus within-individual residual structure</li>
+<li><strong>LSEM</strong>: <span class="math inline">\(\Sigma(\theta) = \Lambda\Psi\Lambda' + \Theta\)</span> — latent factors plus indicator residuals</li>
 </ul>
+<p>OLS is the <strong>most constrained special case</strong> of the three: setting <span class="math inline">\(Z_i = \mathbf{0}\)</span> (no random effects) and <span class="math inline">\(R_i = \sigma^2 \mathbf{I}\)</span> (homogeneous independent residuals) reduces the MLM formula immediately to the OLS form <span class="math inline">\(\sigma^2\mathbf{I}\)</span>; likewise, setting <span class="math inline">\(\Lambda = \mathbf{0}\)</span> and <span class="math inline">\(\Theta = \sigma^2\mathbf{I}\)</span> reduces the LSEM to OLS.</p>
 </section>
-<section id="within-person-between-person-decomposition-why-separation-is-necessary" class="level3" data-number="1.6.8">
-<h3 data-number="1.6.8" class="anchored" data-anchor-id="within-person-between-person-decomposition-why-separation-is-necessary"><span class="header-section-number">1.6.8</span> Within-Person / Between-Person Decomposition: Why Separation Is Necessary</h3>
+<section id="extensions-when-assumptions-are-violated" class="level4" data-number="1.6.4.2">
+<h4 data-number="1.6.4.2" class="anchored" data-anchor-id="extensions-when-assumptions-are-violated"><span class="header-section-number">1.6.4.2</span> Extensions When Assumptions Are Violated</h4>
+<ul>
+<li><strong>Heteroscedasticity</strong>: off-diagonal elements remain zero (independence holds), but diagonal elements differ:</li>
+</ul>
+<p><span class="math display">\[
+\text{Var}(\mathbf{y}) = \begin{bmatrix} \sigma_1^2 &amp; &amp; \\ &amp; \ddots &amp; \\ &amp; &amp; \sigma_n^2 \end{bmatrix} = \Omega
+\]</span></p>
+<ul>
+<li><strong>Autocorrelation (e.g., AR(1))</strong>: diagonal elements are equal, but off-diagonal elements are non-zero:</li>
+</ul>
+<p><span class="math display">\[
+\text{Var}(\mathbf{y}) = \sigma^2 \begin{bmatrix} 1 &amp; \rho &amp; \rho^2 &amp; \cdots \\ \rho &amp; 1 &amp; \rho &amp; \cdots \\ \rho^2 &amp; \rho &amp; 1 &amp; \cdots \\ \vdots &amp; &amp; &amp; \ddots \end{bmatrix}
+\]</span></p>
+<ul>
+<li><strong>General case (GLS)</strong>: <span class="math inline">\(\text{Var}(\mathbf{y}) = \sigma^2\Omega\)</span>; the OLS formula becomes the Generalized Least Squares (GLS) estimator:</li>
+</ul>
+<p><span class="math display">\[
+\hat{\beta}_{\text{GLS}} = (X'\Omega^{-1}X)^{-1}X'\Omega^{-1}Y
+\]</span></p>
+<p>When <span class="math inline">\(\Omega = \mathbf{I}\)</span>, this reduces back to the OLS estimator <span class="math inline">\(\hat{\beta} = (X'X)^{-1}X'Y\)</span>.</p>
+<hr>
+</section>
+</section>
+</section>
+<section id="within-person-between-person-decomposition-why-separation-is-necessary" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="within-person-between-person-decomposition-why-separation-is-necessary"><span class="header-section-number">1.7</span> Within-Person / Between-Person Decomposition: Why Separation Is Necessary</h2>
 <p>Understanding the WP/BP decomposition is central to MLM and longitudinal analysis. Without this decomposition, the estimated “total effect” conflates two fundamentally different processes, potentially resulting in an <strong>Ecological Fallacy</strong>—incorrectly inferring individual-level mechanisms from group-level associations.</p>
 <ul>
 <li><strong>Between-Person (BP) differences</strong>: stable differences between individuals (trait-level variation)</li>
@@ -1111,8 +838,8 @@ y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
 <li><strong>Between-person</strong>: individuals under chronically high stress have higher average negative affect</li>
 <li><strong>Within-person</strong>: on days when a person’s stress exceeds their own mean, is their negative affect also elevated?</li>
 </ul>
-<section id="person-mean-centering-within-person-centering" class="level4" data-number="1.6.8.1">
-<h4 data-number="1.6.8.1" class="anchored" data-anchor-id="person-mean-centering-within-person-centering"><span class="header-section-number">1.6.8.1</span> Person-Mean Centering (Within-Person Centering)</h4>
+<section id="person-mean-centering-within-person-centering" class="level3" data-number="1.7.1">
+<h3 data-number="1.7.1" class="anchored" data-anchor-id="person-mean-centering-within-person-centering"><span class="header-section-number">1.7.1</span> Person-Mean Centering (Within-Person Centering)</h3>
 <p>The time-varying covariate <span class="math inline">\(z_{it}\)</span> is decomposed into two <strong>orthogonal</strong> components:</p>
 <p><span class="math display">\[
 z_{it} = \underbrace{\bar z_i}_{\text{BP}} + \underbrace{(z_{it} - \bar z_i)}_{\text{WP}}
@@ -1136,26 +863,26 @@ y_{ij} = \gamma_{00} + \underbrace{\gamma_{10}(z_{ij} - \bar z_j)}_{\text{WP eff
 <li>If <span class="math inline">\(\gamma_{10} \neq \gamma_{01}\)</span>, the WP and BP processes differ, and failing to decompose them leads to severely biased parameter estimates</li>
 </ul>
 </section>
-<section id="specific-application-examples" class="level4" data-number="1.6.8.2">
-<h4 data-number="1.6.8.2" class="anchored" data-anchor-id="specific-application-examples"><span class="header-section-number">1.6.8.2</span> Specific Application Examples</h4>
-<section id="example-1-exercise-and-heart-attack-simpsons-paradox" class="level5" data-number="1.6.8.2.1">
-<h5 data-number="1.6.8.2.1" class="anchored" data-anchor-id="example-1-exercise-and-heart-attack-simpsons-paradox"><span class="header-section-number">1.6.8.2.1</span> Example 1: Exercise and Heart Attack (Simpson’s Paradox)</h5>
+<section id="specific-application-examples" class="level3" data-number="1.7.2">
+<h3 data-number="1.7.2" class="anchored" data-anchor-id="specific-application-examples"><span class="header-section-number">1.7.2</span> Specific Application Examples</h3>
+<section id="example-1-exercise-and-heart-attack-simpsons-paradox" class="level4" data-number="1.7.2.1">
+<h4 data-number="1.7.2.1" class="anchored" data-anchor-id="example-1-exercise-and-heart-attack-simpsons-paradox"><span class="header-section-number">1.7.2.1</span> Example 1: Exercise and Heart Attack (Simpson’s Paradox)</h4>
 <ul>
 <li><strong>Within-Person</strong>: at the individual level, the instantaneous risk of cardiac events is elevated during vigorous exercise</li>
 <li><strong>Between-Person</strong>: at the population level, individuals who exercise regularly have a substantially lower baseline cardiac risk than sedentary individuals</li>
 <li><strong>Conclusion</strong>: without decomposition, one might incorrectly infer that “exercise is unrelated to heart disease” or even “exercise is harmful”</li>
 </ul>
 </section>
-<section id="example-2-self-esteem-and-self-enhancement" class="level5" data-number="1.6.8.2.2">
-<h5 data-number="1.6.8.2.2" class="anchored" data-anchor-id="example-2-self-esteem-and-self-enhancement"><span class="header-section-number">1.6.8.2.2</span> Example 2: Self-Esteem and Self-Enhancement</h5>
+<section id="example-2-self-esteem-and-self-enhancement" class="level4" data-number="1.7.2.2">
+<h4 data-number="1.7.2.2" class="anchored" data-anchor-id="example-2-self-esteem-and-self-enhancement"><span class="header-section-number">1.7.2.2</span> Example 2: Self-Esteem and Self-Enhancement</h4>
 <p>A study of 60 students on 14 personality traits, with “trait importance” person-mean-centered:</p>
 <ul>
 <li><strong>Within-Person effect</strong>: <span class="math inline">\(\gamma_{10} = 0.37\)</span>, meaning that within the same student, traits perceived as more important are associated with greater self-enhancement on that trait</li>
 <li><strong>Substantive implication</strong>: demonstrates that self-enhancement is a context-sensitive psychological mechanism rather than a fixed trait</li>
 </ul>
 </section>
-<section id="example-3-gdp-and-national-well-being-easterlin-paradox" class="level5" data-number="1.6.8.2.3">
-<h5 data-number="1.6.8.2.3" class="anchored" data-anchor-id="example-3-gdp-and-national-well-being-easterlin-paradox"><span class="header-section-number">1.6.8.2.3</span> Example 3: GDP and National Well-Being (Easterlin Paradox)</h5>
+<section id="example-3-gdp-and-national-well-being-easterlin-paradox" class="level4" data-number="1.7.2.3">
+<h4 data-number="1.7.2.3" class="anchored" data-anchor-id="example-3-gdp-and-national-well-being-easterlin-paradox"><span class="header-section-number">1.7.2.3</span> Example 3: GDP and National Well-Being (Easterlin Paradox)</h4>
 <ul>
 <li><strong>Between-Country (BP)</strong>: wealthier countries typically report higher average well-being than poorer countries</li>
 <li><strong>Within-Country (WP)</strong>: as a country’s GDP grows from year to year, national well-being does not necessarily increase correspondingly (the WP effect may be near zero)</li>
@@ -1168,210 +895,183 @@ y_{ij} = \gamma_{00} + \underbrace{\gamma_{10}(z_{ij} - \bar z_j)}_{\text{WP eff
 </section>
 </section>
 </section>
-</section>
-<section id="longitudinal-sem-lgm-latent-processes-time-coding-and-measurement-models" class="level2" data-number="1.7">
-<h2 data-number="1.7" class="anchored" data-anchor-id="longitudinal-sem-lgm-latent-processes-time-coding-and-measurement-models"><span class="header-section-number">1.7</span> Longitudinal SEM / LGM: Latent Processes, Time Coding, and Measurement Models</h2>
-<section id="basic-structure-of-lgm-growth-parameters-as-latent-variables" class="level3" data-number="1.7.1">
-<h3 data-number="1.7.1" class="anchored" data-anchor-id="basic-structure-of-lgm-growth-parameters-as-latent-variables"><span class="header-section-number">1.7.1</span> Basic Structure of LGM: Growth Parameters as Latent Variables</h3>
-<p>In LGM, repeated measurements are typically arranged in wide-format data, with each time point as a manifest variable. Latent growth factors are identified by fixing factor loadings according to the temporal design.</p>
-<ul>
-<li><strong>Latent intercept factor</strong>: all time-point loadings fixed to 1</li>
-<li><strong>Latent slope factor</strong>: loadings fixed according to the time scores, e.g., <span class="math inline">\(0,1,2,3\)</span></li>
-</ul>
-<p>The factor loading matrix for a four-wave linear growth model is:</p>
+<section id="classical-approaches-to-two-wave-change-change-score-vs.-residualized-change" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="classical-approaches-to-two-wave-change-change-score-vs.-residualized-change"><span class="header-section-number">1.8</span> Classical Approaches to Two-Wave Change: Change Score vs.&nbsp;Residualized Change</h2>
+<p>This section integrates content from the original notes on <strong>raw change scores, residualized change scores, Lord’s Paradox, and the measurement and causal limitations of change scores</strong>.</p>
+<section id="raw-change-score-gain-score" class="level3" data-number="1.8.1">
+<h3 data-number="1.8.1" class="anchored" data-anchor-id="raw-change-score-gain-score"><span class="header-section-number">1.8.1</span> Raw Change Score (Gain Score)</h3>
+<p>The most direct definition of change is:</p>
 <p><span class="math display">\[
-\Lambda =
-\begin{bmatrix}
-1 &amp; 0\\
-1 &amp; 1\\
-1 &amp; 2\\
-1 &amp; 3
-\end{bmatrix}
+\Delta y_i = y_{i2} - y_{i1}
 \]</span></p>
-<p>The corresponding latent growth factors can be written as:</p>
+<p>If the change score is used as the outcome variable and regressed on a baseline predictor <span class="math inline">\(w_i\)</span>, the model is:</p>
 <p><span class="math display">\[
-\eta_i =
-\begin{bmatrix}
-\mu_0 + b_{0i}\\
-\mu_1 + b_{1i}
-\end{bmatrix}
+\Delta y_i = \beta_0 + \beta_1 w_i + e_i
 \]</span></p>
-<p>Therefore:</p>
+<p><strong>The question this answers:</strong></p>
+<ul>
+<li>Whose outcome changed the most?</li>
+<li>Which individuals experienced the largest <strong>absolute change</strong>?</li>
+</ul>
+<p><strong>Advantages:</strong></p>
+<ul>
+<li>Intuitive</li>
+<li>Directly reflects individual-level pre–post change in randomized controlled trials (RCTs)</li>
+</ul>
+<p><strong>Limitations:</strong></p>
+<ul>
+<li>Influenced by baseline level</li>
+<li>When two measurements are highly correlated, the reliability of the change score may actually be lower than that of the raw scores (“reliability paradox”)</li>
+</ul>
+</section>
+<section id="residualized-change-score-ancova" class="level3" data-number="1.8.2">
+<h3 data-number="1.8.2" class="anchored" data-anchor-id="residualized-change-score-ancova"><span class="header-section-number">1.8.2</span> Residualized Change Score (ANCOVA)</h3>
+<p>An alternative approach is to predict the posttest from the pretest, and treat the portion “unexplained by the initial state” as change.</p>
+<p>The model is written as:</p>
 <p><span class="math display">\[
-\mathbf y_i = \Lambda \eta_i + \varepsilon_i
+y_{i2} = \beta_0 + \rho y_{i1} + \beta_1 w_i + e_i
 \]</span></p>
-<p>The core parameters of interest in LGM correspond almost one-to-one with those in MLM:</p>
+<p>If one is interested only in “deviation from a given baseline,” one may first run the regression:</p>
+<p><span class="math display">\[
+\hat y_{i2} = \hat\beta_0 + \hat\rho y_{i1},
+\qquad
+r_i = y_{i2} - \hat y_{i2}
+\]</span></p>
+<p>Here, <span class="math inline">\(r_i\)</span> is the residualized change.</p>
+<p><strong>The question this answers:</strong></p>
 <ul>
-<li>Intercept mean</li>
-<li>Slope mean</li>
-<li>Intercept variance</li>
-<li>Slope variance</li>
-<li>Intercept–slope covariance</li>
-<li>Residual variance at each time point</li>
-</ul>
-<section id="lavaan-code-example" class="level4" data-number="1.7.1.1">
-<h4 data-number="1.7.1.1" class="anchored" data-anchor-id="lavaan-code-example"><span class="header-section-number">1.7.1.1</span> lavaan Code Example</h4>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">'</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="st">  i =~ 1*y1 + 1*y2 + 1*y3 + 1*y4</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="st">  s =~ 0*y1 + 1*y2 + 2*y3 + 3*y4</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">growth</span>(model, <span class="at">data =</span> widedat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-</section>
-<section id="lgm-simultaneously-estimates-mean-structure-and-covariance-structure" class="level3" data-number="1.7.2">
-<h3 data-number="1.7.2" class="anchored" data-anchor-id="lgm-simultaneously-estimates-mean-structure-and-covariance-structure"><span class="header-section-number">1.7.2</span> LGM Simultaneously Estimates Mean Structure and Covariance Structure</h3>
-<p>LGM does not merely estimate “whether the average is changing”; it simultaneously estimates:</p>
-<ul>
-<li><strong>Mean structure</strong>: population-level average growth trajectory</li>
-<li><strong>Covariance structure</strong>: distribution of individual differences</li>
-</ul>
-<p>This is also why LGM is typically not a saturated model: you impose a functional form (e.g., linear growth), and the model then asks: can this form account for the data?</p>
-<p>If fit indices (e.g., CFI, TLI, RMSEA, SRMR) are poor, the imposed growth form is too simple to explain the true pattern of mean shifts and covariance structure.</p>
-</section>
-<section id="time-coding-centering-and-the-meaning-of-the-intercept" class="level3" data-number="1.7.3">
-<h3 data-number="1.7.3" class="anchored" data-anchor-id="time-coding-centering-and-the-meaning-of-the-intercept"><span class="header-section-number">1.7.3</span> Time Coding, Centering, and the Meaning of the Intercept</h3>
-<p>Time coding is not a technical detail; it determines “what moment the intercept represents.”</p>
-<section id="in-lgm" class="level4" data-number="1.7.3.1">
-<h4 data-number="1.7.3.1" class="anchored" data-anchor-id="in-lgm"><span class="header-section-number">1.7.3.1</span> In LGM</h4>
-<ul>
-<li>If the slope loading at the first time point is set to 0 → the intercept represents the <strong>baseline level</strong></li>
-<li>If the loading at some intermediate time point is set to 0 → the intercept represents the <strong>mid-development level</strong></li>
+<li>Among individuals with the same baseline level, whose posttest performance <strong>exceeded the average expectation</strong>?</li>
+<li>Whose change represents a “deviation from expectation” rather than simply “how much they changed in absolute terms”?</li>
 </ul>
 </section>
-<section id="in-mlm" class="level4" data-number="1.7.3.2">
-<h4 data-number="1.7.3.2" class="anchored" data-anchor-id="in-mlm"><span class="header-section-number">1.7.3.2</span> In MLM</h4>
-<p>The same logic applies:</p>
+<section id="the-essential-distinction-between-the-two-change-scores" class="level3" data-number="1.8.3">
+<h3 data-number="1.8.3" class="anchored" data-anchor-id="the-essential-distinction-between-the-two-change-scores"><span class="header-section-number">1.8.3</span> The Essential Distinction Between the Two Change Scores</h3>
+<p>The two approaches can be summarized in a single sentence:</p>
 <ul>
-<li>wherever the zero point of <span class="math inline">\(x_{it}\)</span> is placed</li>
-<li>that is what <span class="math inline">\(\mu_0\)</span> represents</li>
+<li><strong>change score</strong> = <strong>absolute change</strong></li>
+<li><strong>residualized change</strong> = <strong>baseline-adjusted deviation from expected posttest</strong></li>
+</ul>
+<p>That is:</p>
+<ul>
+<li><span class="math inline">\(\Delta y_i = 0\)</span> means “no absolute change”</li>
+<li><span class="math inline">\(r_i = 0\)</span> does not mean “no change”; it means “this person’s change is exactly equal to the average expected change for individuals with the same baseline”</li>
 </ul>
 </section>
-<section id="common-time-metrics" class="level4" data-number="1.7.3.3">
-<h4 data-number="1.7.3.3" class="anchored" data-anchor-id="common-time-metrics"><span class="header-section-number">1.7.3.3</span> Common Time Metrics</h4>
+<section id="a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes" class="level3" data-number="1.8.4">
+<h3 data-number="1.8.4" class="anchored" data-anchor-id="a-concrete-example-why-two-students-with-equal-raw-gains-have-different-residualized-changes"><span class="header-section-number">1.8.4</span> A Concrete Example: Why Two Students with Equal Raw Gains Have Different Residualized Changes</h3>
+<p>Suppose the class-level pretest–posttest regression line is:</p>
+<p><span class="math display">\[
+\hat y_{\text{post}} = 20 + 0.7\, y_{\text{pre}}
+\]</span></p>
+<p>The slope <span class="math inline">\(0.7 &lt; 1\)</span> reflects regression to the mean.</p>
 <ul>
-<li><strong>Wave number</strong>: simple, but the intercept typically represents only “the first wave”</li>
-<li><strong>Age</strong>: more developmentally meaningful, but different individuals may have non-overlapping age ranges</li>
-<li><strong>Days since treatment / time since event</strong>: appropriate for clinical intervention studies</li>
-<li><strong>Years to death</strong>: appropriate for studies of terminal illness</li>
+<li><strong>Student A</strong>: pre = 40, post = 50; predicted = 48; raw change = <span class="math inline">\(+10\)</span>; residualized change = <span class="math inline">\(+2\)</span></li>
+<li><strong>Student B</strong>: pre = 80, post = 90; predicted = 76; raw change = <span class="math inline">\(+10\)</span>; residualized change = <span class="math inline">\(+14\)</span></li>
+<li><strong>Student C</strong>: pre = 70, post = 69 predicted = 69 raw change = <span class="math inline">\(-1\)</span> residualized change = <span class="math inline">\(0\)</span></li>
+</ul>
+<p>Interpretation:</p>
+<ul>
+<li>A and B show identical absolute gains of <span class="math inline">\(+10\)</span></li>
+<li>But B improved far more relative to the average expectation for individuals with the same baseline</li>
+<li>C declined by <span class="math inline">\(1\)</span> point in absolute terms, but this is exactly the average change expected for individuals with the same baseline; hence residualized change = 0</li>
 </ul>
 </section>
-<section id="what-changes-when-the-zero-point-is-shifted" class="level4" data-number="1.7.3.4">
-<h4 data-number="1.7.3.4" class="anchored" data-anchor-id="what-changes-when-the-zero-point-is-shifted"><span class="header-section-number">1.7.3.4</span> What Changes When the Zero Point Is Shifted?</h4>
+<section id="lords-paradox-two-methods-opposite-conclusions-from-the-same-data" class="level3" data-number="1.8.5">
+<h3 data-number="1.8.5" class="anchored" data-anchor-id="lords-paradox-two-methods-opposite-conclusions-from-the-same-data"><span class="header-section-number">1.8.5</span> Lord’s Paradox: Two Methods, Opposite Conclusions from the Same Data</h3>
+<p>Lord (1967) noted that, applied to the same dataset, the change score approach and ANCOVA can yield diametrically opposite conclusions.</p>
+<p>The classic example involves the effect of a university dining hall’s meal plan on the weights of male and female students. At both baseline and follow-up, the overall weight distributions of males and females appear identical.</p>
 <ul>
-<li>The direction and unit of the slope are not affected</li>
-<li>But the following change:
+<li><strong>Change score conclusion</strong>: average change is zero for both sexes, therefore “no sex difference”</li>
+<li><strong>ANCOVA conclusion</strong>: after controlling for baseline, males with the same initial weight are expected to have a higher posttest weight than females, therefore “the meal plan has a significant positive effect for males”</li>
+</ul>
+<p><strong>The underlying reason:</strong></p>
 <ul>
-<li>Intercept mean</li>
-<li>Intercept variance</li>
-<li>Intercept–slope covariance</li>
-</ul></li>
+<li>The change score approach implicitly fixes the coefficient on the pretest at 1</li>
+<li>ANCOVA allows this coefficient <span class="math inline">\(\rho\)</span> to be estimated from the data (typically <span class="math inline">\(&lt; 1\)</span>), and thus “adjusts” for initial differences</li>
+</ul>
+<p>In non-randomized observational studies, the two approaches do not target the same estimand, so it is not surprising that they conflict.</p>
+</section>
+<section id="when-to-use-which-approach" class="level3" data-number="1.8.6">
+<h3 data-number="1.8.6" class="anchored" data-anchor-id="when-to-use-which-approach"><span class="header-section-number">1.8.6</span> When to Use Which Approach?</h3>
+<section id="randomized-controlled-trials-rcts" class="level4" data-number="1.8.6.1">
+<h4 data-number="1.8.6.1" class="anchored" data-anchor-id="randomized-controlled-trials-rcts"><span class="header-section-number">1.8.6.1</span> Randomized Controlled Trials (RCTs)</h4>
+<p>The two approaches tend to converge:</p>
+<ul>
+<li>Random assignment makes baseline values statistically equivalent across groups</li>
+<li>Regression to the mean cancels out across groups</li>
+<li>ANCOVA typically achieves greater statistical power</li>
 </ul>
 </section>
-</section>
-<section id="latent-basis-model-lbm" class="level3" data-number="1.7.4">
-<h3 data-number="1.7.4" class="anchored" data-anchor-id="latent-basis-model-lbm"><span class="header-section-number">1.7.4</span> Latent Basis Model (LBM)</h3>
-<p>To allow for growth that is not strictly linear, one may fix:</p>
+<section id="observational-studies-non-random-group-assignment" class="level4" data-number="1.8.6.2">
+<h4 data-number="1.8.6.2" class="anchored" data-anchor-id="observational-studies-non-random-group-assignment"><span class="header-section-number">1.8.6.2</span> Observational Studies (Non-random Group Assignment)</h4>
+<p>Caution is required:</p>
 <ul>
-<li>The loading at the first time point = 0</li>
-<li>The loading at the last time point = 1</li>
-<li>The loadings at intermediate time points to be freely estimated from the data</li>
+<li>If you are interested in <strong>total effects / absolute change</strong> → change score is more appropriate</li>
+<li>If you are interested in <strong>relative change after accounting for starting point</strong> → ANCOVA / residualized change is more appropriate</li>
 </ul>
-<p>The freely estimated intermediate loadings then represent:</p>
+<p>However, the prerequisite is: you must believe that “controlling for baseline” is consistent with your causal structure; otherwise, regression-to-the-mean (RTM) bias is easily introduced.</p>
+</section>
+</section>
+<section id="why-change-scores-can-be-misleading-measurement-level-reasons" class="level3" data-number="1.8.7">
+<h3 data-number="1.8.7" class="anchored" data-anchor-id="why-change-scores-can-be-misleading-measurement-level-reasons"><span class="header-section-number">1.8.7</span> Why Change Scores Can Be Misleading: Measurement-Level Reasons</h3>
+<p>Suppose the two measurements are:</p>
+<p><span class="math display">\[
+y_{i1} = T_{i1} + e_{i1},
+\qquad
+y_{i2} = T_{i2} + e_{i2}
+\]</span></p>
+<p>Then the change score is:</p>
+<p><span class="math display">\[
+\Delta y_i = y_{i2} - y_{i1}
+= (T_{i2} - T_{i1}) + (e_{i2} - e_{i1})
+\]</span></p>
+<p>If the two errors are independent, then:</p>
+<p><span class="math display">\[
+\text{Var}(e_{i2} - e_{i1}) = \text{Var}(e_{i2}) + \text{Var}(e_{i1})
+\]</span></p>
+<p>That is, measurement errors in the difference <strong>accumulate directly</strong>, so change scores are typically less stable than single-occasion measurements.</p>
+<p>In addition, change scores exhibit a mechanical negative correlation with the baseline:</p>
+<p><span class="math display">\[
+\text{Cov}(\Delta y_i, y_{i1})
+=
+\text{Cov}(y_{i2} - y_{i1}, y_{i1})
+=
+\text{Cov}(y_{i2}, y_{i1}) - \text{Var}(y_{i1})
+\]</span></p>
+<p>assume that the fluctuations (variances) of the two measurements are the same, i.e., Var(<span class="math inline">\(y_{i1}\)</span>) = Var(<span class="math inline">\(y_{i2}\)</span>) = σ². Then:</p>
 <ul>
-<li>The proportion of the total change that has been completed by that time point</li>
+<li>Correlation coefficient formula: <span class="math inline">\(ρ = Cov(y_{i1}, y_{i2}) / (σ · σ)\)</span></li>
+<li>Substitute into the formula: <span class="math inline">\(Cov(Δy_i, y_{i1}) = ρ σ² - σ² = σ² (ρ - 1)\)</span></li>
+<li>As long as ρ &lt; 1 (as long as the <em>two measurements are not completely deterministic</em> ), then (ρ - 1) is necessarily negative.</li>
+<li>This means that Change Score (change value) and Baseline (initial value) inherently have a negative correlation.</li>
+<li>Individuals with a higher baseline are more likely to appear to have gained less</li>
+<li>Individuals with a lower baseline are more likely to appear to have gained more</li>
 </ul>
-<p>This approach is well suited for describing developmental trajectories that are “fast early and slow late” or “slow early and fast late.”</p>
+<p>This does not necessarily reflect genuine psychological or behavioral mechanisms.</p>
 </section>
-<section id="longitudinal-measurement-invariance-verify-the-scale-has-not-shifted-before-fitting-a-growth-model" class="level3" data-number="1.7.5">
-<h3 data-number="1.7.5" class="anchored" data-anchor-id="longitudinal-measurement-invariance-verify-the-scale-has-not-shifted-before-fitting-a-growth-model"><span class="header-section-number">1.7.5</span> Longitudinal Measurement Invariance: Verify the Scale Has Not Shifted Before Fitting a Growth Model</h3>
-<p>If the construct of interest is latent (e.g., depression, motivation, self-esteem), measurement invariance across time points must be established before comparing change over time.</p>
-<section id="metric-invariance-weak-invariance" class="level4" data-number="1.7.5.1">
-<h4 data-number="1.7.5.1" class="anchored" data-anchor-id="metric-invariance-weak-invariance"><span class="header-section-number">1.7.5.1</span> Metric Invariance (Weak Invariance)</h4>
+<section id="why-change-scores-can-be-misleading-causal-reasons" class="level3" data-number="1.8.8">
+<h3 data-number="1.8.8" class="anchored" data-anchor-id="why-change-scores-can-be-misleading-causal-reasons"><span class="header-section-number">1.8.8</span> Why Change Scores Can Be Misleading: Causal Reasons</h3>
+<p>In non-randomized data, regressing a change score as the outcome on some baseline exposure often does not correspond to a well-defined causal effect.</p>
+<p>This is particularly problematic when the baseline outcome simultaneously serves as a:</p>
 <ul>
-<li>Factor loadings are equal across time points</li>
-<li>Ensures that the unit of the latent variable is consistent</li>
+<li>confounder, or</li>
+<li>mediator</li>
 </ul>
+<p>In such cases, the regression coefficient for the change score may even be in the opposite direction from the true total effect / direct effect.</p>
+<p><strong>Conclusion</strong>: change scores are not inherently unusable, but in non-randomized causal problems they frequently do not correspond to the effect one intends to estimate.</p>
 </section>
-<section id="scalar-invariance-strong-invariance" class="level4" data-number="1.7.5.2">
-<h4 data-number="1.7.5.2" class="anchored" data-anchor-id="scalar-invariance-strong-invariance"><span class="header-section-number">1.7.5.2</span> Scalar Invariance (Strong Invariance)</h4>
+<section id="what-questions-are-these-methods-best-suited-to-answer" class="level3" data-number="1.8.9">
+<h3 data-number="1.8.9" class="anchored" data-anchor-id="what-questions-are-these-methods-best-suited-to-answer"><span class="header-section-number">1.8.9</span> What Questions Are These Methods Best Suited to Answer?</h3>
 <ul>
-<li>Factor loadings and indicator intercepts are equal across time points</li>
-<li>A necessary prerequisite for comparing latent variable means over time</li>
+<li>“How much did it change?” → both change score and ANCOVA are appropriate</li>
+<li>“What is the shape of the change trajectory?” → two-wave methods are insufficient</li>
+<li>“Do different individuals change at different rates?” → MLM / LGM is required</li>
+<li>“How does a prior state drive subsequent change?” → LGM is required</li>
 </ul>
-<p>If scalar invariance does not hold, observed “growth” may reflect only:</p>
-<ul>
-<li>Changes in the items themselves</li>
-<li>Indicator drift</li>
-<li>Shifts in how respondents interpret the scale</li>
-</ul>
-<p>rather than genuine change in the latent construct.</p>
-</section>
-</section>
-</section>
-<section id="modeling-decisions-which-type-of-longitudinal-model-should-be-used" class="level2" data-number="1.8">
-<h2 data-number="1.8" class="anchored" data-anchor-id="modeling-decisions-which-type-of-longitudinal-model-should-be-used"><span class="header-section-number">1.8</span> Modeling Decisions: Which Type of Longitudinal Model Should Be Used?</h2>
-<section id="when-mlm-is-more-appropriate" class="level3" data-number="1.8.1">
-<h3 data-number="1.8.1" class="anchored" data-anchor-id="when-mlm-is-more-appropriate"><span class="header-section-number">1.8.1</span> When MLM Is More Appropriate</h3>
-<ul>
-<li>Many time points (e.g., <span class="math inline">\(\ge 10\)</span> occasions)</li>
-<li>Irregular time intervals</li>
-<li>Severely unbalanced data</li>
-<li>Need for multiple levels of nesting (students within classrooms, classrooms within schools)</li>
-<li>Smaller samples (e.g., <span class="math inline">\(N &lt; 100\)</span>), where REML tends to be more stable</li>
-</ul>
-<section id="when-lgm-longitudinal-sem-is-more-appropriate" class="level4" data-number="1.8.1.1">
-<h4 data-number="1.8.1.1" class="anchored" data-anchor-id="when-lgm-longitudinal-sem-is-more-appropriate"><span class="header-section-number">1.8.1.1</span> When LGM / Longitudinal SEM Is More Appropriate</h4>
-<ul>
-<li>Fewer time points (e.g., 3–8 occasions) with regular intervals</li>
-<li>The construct of interest is latent (depression, motivation, ability, etc.)</li>
-<li>Multiple indicators per time point</li>
-<li>Need to explicitly correct for measurement error</li>
-<li>Need to test longitudinal measurement invariance</li>
-<li>Need to evaluate overall model fit (CFI, RMSEA, etc.)</li>
-<li>Uncertainty about the time scores, with a desire to let the data estimate them (e.g., latent basis model)</li>
-</ul>
-</section>
-</section>
-</section>
-<section id="one-page-summary-the-core-thread-of-this-document" class="level2" data-number="1.9">
-<h2 data-number="1.9" class="anchored" data-anchor-id="one-page-summary-the-core-thread-of-this-document"><span class="header-section-number">1.9</span> One-Page Summary: The Core Thread of This Document</h2>
-<p>The entire set of longitudinal modeling notes can be compressed into the following thread:</p>
-<ol type="1">
-<li><strong>OLS is inappropriate</strong> because longitudinal data violate the independence assumption</li>
-<li><strong>Change can first be described with two-wave methods</strong>, but change scores and residualized change scores do not answer the same question</li>
-<li><strong>The core of modern longitudinal modeling</strong> is not to avoid dependence but to write it into the covariance structure</li>
-<li><strong>GEE / MLM / Longitudinal SEM</strong> correspond to three perspectives: population-averaged, individual trajectory, and latent process</li>
-<li><strong>MLM and LGM</strong> are often mathematically equivalent under simple linear growth, but SEM can further explicitly address measurement error</li>
-<li><strong>CLPM / RI-CLPM / LCSM</strong> further address “who drives whom” and “how a prior state determines the next change”</li>
-<li>The true criterion for model selection is always: <strong>research question + data structure + estimation target</strong></li>
-</ol>
-<hr>
-</section>
-<section id="appendix-unified-symbol-reference-table" class="level2" data-number="1.10">
-<h2 data-number="1.10" class="anchored" data-anchor-id="appendix-unified-symbol-reference-table"><span class="header-section-number">1.10</span> Appendix: Unified Symbol Reference Table</h2>
-<ul>
-<li><span class="math inline">\(y_{it}\)</span>: observed value for individual <span class="math inline">\(i\)</span> at time <span class="math inline">\(t\)</span></li>
-<li><span class="math inline">\(x_{it}\)</span>: time score / time metric</li>
-<li><span class="math inline">\(w_i\)</span>: time-invariant covariate (TIC)</li>
-<li><span class="math inline">\(z_{it}\)</span>: time-varying covariate (TVC)</li>
-<li><span class="math inline">\(\Delta y_{it}\)</span>: change score</li>
-<li><span class="math inline">\(\mu_0\)</span>: population mean intercept</li>
-<li><span class="math inline">\(\mu_1\)</span>: population mean slope</li>
-<li><span class="math inline">\(b_{0i}\)</span>: random intercept deviation</li>
-<li><span class="math inline">\(b_{1i}\)</span>: random slope deviation</li>
-<li><span class="math inline">\(\tau_{00}\)</span>: random intercept variance</li>
-<li><span class="math inline">\(\tau_{11}\)</span>: random slope variance</li>
-<li><span class="math inline">\(\tau_{01}\)</span>: random intercept–random slope covariance</li>
-<li><span class="math inline">\(\varepsilon_{it}\)</span>: residual / measurement error</li>
-<li><span class="math inline">\(\mathbf D\)</span>: random effects covariance matrix (denoted <span class="math inline">\(\Psi\)</span> in the SEM literature)</li>
-<li><span class="math inline">\(R_i\)</span>: residual covariance matrix (denoted <span class="math inline">\(\Theta_i\)</span> in the SEM literature)</li>
-<li><span class="math inline">\(\Lambda\)</span>: factor loading matrix / time score matrix</li>
-<li><span class="math inline">\(\eta_i\)</span>: latent growth factor vector</li>
-<li><span class="math inline">\(\Psi\)</span>: latent growth factor covariance matrix</li>
-<li><span class="math inline">\(\Theta_i\)</span>: indicator residual covariance matrix</li>
-</ul>
+<p>This is also why the distinction between “absolute change vs.&nbsp;conditional change” will be revisited in the subsequent discussions of CLPM, LGM, and LCSM.</p>
 
 
+</section>
 </section>
 </section>
 
