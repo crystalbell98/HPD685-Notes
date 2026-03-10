@@ -16,26 +16,29 @@ execute:
 
 This document provides two fully-worked applied examples drawn from course datasets:
 
-1. **Part I — MLM Growth Model with Moderation** (`antisocial.csv`): A multilevel linear growth model of children's antisocial behavior across ages 8–14, testing whether sex and home cognitive environment moderate the trajectory of change.
+1.  **Part I — MLM Growth Model with Moderation** (`antisocial.csv`): A multilevel linear growth model of children's antisocial behavior across ages 8–14, testing whether sex and home cognitive environment moderate the trajectory of change.
 
-2. **Part II — Longitudinal Measurement Invariance** (`selfconcept.dat`): A step-by-step configural → weak → strong → partial scalar invariance sequence for a four-indicator self-concept scale measured at ages 8, 10, and 12.
+2.  **Part II — Longitudinal Measurement Invariance** (`selfconcept.dat`): A step-by-step configural → weak → strong → partial scalar invariance sequence for a four-indicator self-concept scale measured at ages 8, 10, and 12.
 
----
+------------------------------------------------------------------------
 
 # Part I: MLM — Antisocial Behavior Growth Model with Moderation
 
 ## Background
 
-**Dataset**: `antisocial.csv` (N = 405 children from the NLSY)
+**Dataset**: `antisocial.csv` (N = 405 children from the NLSY, National Longitudinal Surveys of Youth)
+
 **Outcome**: Antisocial behavior (composite score, higher = more antisocial)
+
 **Time structure**: Four assessments recorded at ages that vary by individual (ages 6–14), converted to a centered age variable
+
 **Level-2 predictors**: `male` (0 = girl, 1 = boy); `homecog` (home cognitive support, standardized)
 
 **Research Questions**:
 
-- Q1: Is there a significant mean growth trend in antisocial behavior across childhood?
-- Q2: Does the trajectory differ by sex (level and rate of change)?
-- Q3: Does the home cognitive environment predict both initial level and rate of change?
+-   Q1: Is there a significant mean growth trend in antisocial behavior across childhood?
+-   Q2: Does the trajectory differ by sex (level and rate of change)?
+-   Q3: Does the home cognitive environment predict both initial level and rate of change?
 
 ## Setup and Data Preparation
 
@@ -64,6 +67,7 @@ antisocial_long <- reshape(
   antisocial,
   varying   = c("age_86","age_88","age_90","age_92",
                 "anti_86","anti_88","anti_90","anti_92"),
+  # Continuous measure of child's antisocial behavior reported by the mother in 1986, 1988, 1990, 1992
   direction = "long",
   idvar     = "id",
   sep       = "_"
@@ -123,9 +127,9 @@ summary(m0)
 icc(m0)
 ```
 
-**Interpretation**: The ICC indicates what proportion of total variance in antisocial behavior is attributable to stable between-person differences. An ICC > 0.10 provides strong justification for MLM; ordinary regression would produce biased standard errors by ignoring this clustering.
+**Interpretation**: The ICC indicates what proportion of total variance in antisocial behavior is attributable to stable between-person differences. An ICC \> 0.10 provides strong justification for MLM; ordinary regression would produce biased standard errors by ignoring this clustering.
 
----
+------------------------------------------------------------------------
 
 ## Step 2 — Unconditional Growth Model
 
@@ -137,8 +141,16 @@ $$y_{it} = (\gamma_{00} + u_{0i}) + (\gamma_{10} + u_{1i})\cdot\text{age}_{it} +
 #| label: growth-model
 m1 <- lmer(anti ~ age + (1 + age | id), data = antisocial_long)
 summary(m1)
-confint(m1, method = "Wald")
+confint(m1)
 ```
+
+**Interpretation**:
+
+-   **Fixed intercept** ($\gamma_{00}$): 1.62891, Average antisocial behavior score at age 6 (centered age = 0).
+-   **Fixed slope** ($\gamma_{10}$): 0.07425, Average annual rate of change across childhood. A positive value indicates behavior increases over time on average.
+-   **Random intercept variance** ($\tau_{00}$): 1.01338, variance among the intercepts, between-person differences in starting level, also corresponding to the **.sig01** (Random Intercept Std.Dev.)
+-   **Random slope variance** ($\tau_{11}$): 0.02295, variance among the slopes, Children differ meaningfully in their rate of change — some increase faster, others plateau or decline, **.sig03** (Random Slope Std.Dev.)
+-   **Intercept–slope covariance** ($\tau_{01}$): 0.48, positive though not significant (C.I. from -0.02 to 1.00), higher starters accelerate further. **.sig02 (Correlation)**
 
 ```{r}
 #| label: growth-plot
@@ -154,15 +166,9 @@ ggplot(antisocial_long, aes(age, predict(m1))) +
   theme_minimal()
 ```
 
-**Interpretation**:
 
-- **Fixed intercept** ($\gamma_{00}$): Average antisocial behavior score at age 6 (centered age = 0).
-- **Fixed slope** ($\gamma_{10}$): Average annual rate of change across childhood. A positive value indicates behavior increases over time on average.
-- **Random intercept variance** ($\tau_{00}$): Substantial between-person differences in starting level.
-- **Random slope variance** ($\tau_{11}$): Children differ meaningfully in their rate of change — some increase faster, others plateau or decline.
-- **Intercept–slope covariance** ($\tau_{01}$): If negative, children who start higher tend to grow more slowly (ceiling effect); if positive, higher starters accelerate further.
 
----
+------------------------------------------------------------------------
 
 ## Step 3 — Moderation by Sex
 
@@ -170,7 +176,7 @@ ggplot(antisocial_long, aes(age, predict(m1))) +
 
 We add `male` as a level-2 predictor of both the random intercept and random slope, yielding a cross-level interaction: `age × male`.
 
-$$y_{it} = \gamma_{00} + \gamma_{01}\text{male}_i + (\gamma_{10} + \gamma_{11}\text{male}_i)\cdot\text{age}_{it} + u_{0i} + u_{1i}\text{age}_{it} + \varepsilon_{it}$$
+$$y_{it} = (\gamma_{00} + u_{0i}) + \gamma_{01}\text{male}_i + (\gamma_{10} + u_{1i} +  \gamma_{11}\text{male}_i)\cdot\text{age}_{it} + \varepsilon_{it}$$
 
 ```{r}
 #| label: sex-moderation
@@ -250,11 +256,11 @@ gridExtra::grid.arrange(p_girls, p_boys, ncol = 2)
 
 **Interpretation**:
 
-- **$\gamma_{01}$ (male on intercept)**: If positive and significant, boys start with higher antisocial behavior at age 6 than girls.
-- **$\gamma_{11}$ (age × male)**: If positive and significant, boys increase at a faster rate than girls over time. Simple slopes decompose this interaction into sex-specific slopes with standard errors.
-- **Practical significance**: Even if both trajectories are increasing, the *difference in slopes* indicates differential developmental risk.
+-   $\gamma_{01}$ (male on intercept): If positive and significant, boys start with higher antisocial behavior at age 6 than girls.
+-   $\gamma_{11}$ (age × male): If positive and significant, boys increase at a faster rate than girls over time. Simple slopes decompose this interaction into sex-specific slopes with standard errors.
+-   **Practical significance**: Even if both trajectories are increasing, the *difference in slopes* indicates differential developmental risk.
 
----
+------------------------------------------------------------------------
 
 ## Step 4 — Moderation by Home Cognitive Environment
 
@@ -302,11 +308,11 @@ interact_plot(
 
 **Interpretation**:
 
-- **$\gamma_{01}$ (homecog on intercept)**: If negative and significant, children from more cognitively stimulating homes start lower on antisocial behavior.
-- **$\gamma_{11}$ (age × homecog)**: If negative and significant, a richer home cognitive environment buffers against the age-related *increase* in antisocial behavior — children from enriched environments show attenuated growth.
-- **Simple slopes** at −1 SD, mean, +1 SD allow readers to see the growth trajectory separately for low, average, and high home cognitive support.
+-   $\gamma_{01}$ (homecog on intercept): If negative and significant, children from more cognitively stimulating homes start lower on antisocial behavior.
+-   $\gamma_{11}$ (age × homecog): If negative and significant, a richer home cognitive environment buffers against the age-related *increase* in antisocial behavior — children from enriched environments show attenuated growth.
+-   **Simple slopes** at −1 SD, mean, +1 SD allow readers to see the growth trajectory separately for low, average, and high home cognitive support.
 
----
+------------------------------------------------------------------------
 
 ## Step 5 — Multiple-Group Model (Sex as Grouping Factor)
 
@@ -352,21 +358,21 @@ anova(m2b, m4)
 
 **Interpretation**: If the LRT is significant ($p < .05$), the data provide evidence that boys and girls differ not only in their mean trajectories (captured by the interaction terms) but also in the *variability* of their trajectories — i.e., the between-person spread around the sex-specific mean growth curve differs by sex.
 
----
+------------------------------------------------------------------------
 
 ## Model Comparison Summary
 
 | Model | Fixed Effects | Random Effects | $\sigma^2$ |
-|-------|--------------|----------------|-----------|
+|----------------|-------------------|----------------------|----------------|
 | M0: Null | Intercept only | Random intercept | Homogeneous |
 | M1: Unconditional growth | Intercept + Age | Intercept + Slope | Homogeneous |
-| M2: Sex moderation | + Male + Age×Male | Intercept + Slope | Homogeneous |
-| M3: HomeCog moderation | + HomeCog + Age×HomeCog | Intercept + Slope | Homogeneous |
+| M2: Sex moderation | \+ Male + Age×Male | Intercept + Slope | Homogeneous |
+| M3: HomeCog moderation | \+ HomeCog + Age×HomeCog | Intercept + Slope | Homogeneous |
 | M4: Multiple-group | Intercept + Age×Male | Sex-specific | By sex |
 
----
+------------------------------------------------------------------------
 
----
+------------------------------------------------------------------------
 
 # Part II: LSEM — Longitudinal Measurement Invariance Testing
 
@@ -374,22 +380,21 @@ anova(m2b, m4)
 
 Before interpreting whether a psychological construct *changes* over time, we must first verify that the construct is measured equivalently at each time point. This is the question of **longitudinal measurement invariance**: does the scale measure the same thing, in the same units, with the same origin, at each wave?
 
-**Dataset**: `selfconcept.dat` — 228 children, self-concept measured at ages 8, 10, and 12
-**Indicators** (4 per wave):
+**Dataset**: `selfconcept.dat` — 228 children, self-concept measured at ages 8, 10, and 12 **Indicators** (4 per wave):
 
-- `flgd` — feeling good about oneself
-- `worth` — sense of personal worth
-- `satis` — satisfaction with oneself
-- `nogd` — not feeling no good (reversed)
+-   `flgd` — feeling good about oneself
+-   `worth` — sense of personal worth
+-   `satis` — satisfaction with oneself
+-   `nogd` — not feeling no good (reversed)
 
 **Model sequence** (nested, increasingly constrained):
 
-| Step | Model | Added Constraint | Comparison |
-|------|-------|-----------------|------------|
-| 1 | Configural | Loadings free across time | — (baseline) |
-| 2 | Weak (Metric) | Equal loadings across time | vs. Configural |
-| 3 | Strong (Scalar) | Equal loadings + intercepts | vs. Weak |
-| 4 | Partial Scalar | Free misfit intercepts | vs. Strong & Weak |
+| Step | Model           | Added Constraint            | Comparison        |
+|------|-----------------|-----------------------------|-------------------|
+| 1    | Configural      | Loadings free across time   | — (baseline)      |
+| 2    | Weak (Metric)   | Equal loadings across time  | vs. Configural    |
+| 3    | Strong (Scalar) | Equal loadings + intercepts | vs. Weak          |
+| 4    | Partial Scalar  | Free misfit intercepts      | vs. Strong & Weak |
 
 ## Setup and Data Preparation
 
@@ -426,9 +431,9 @@ The configural model establishes that the same factor structure holds at each ti
 
 Unique features of longitudinal CFA:
 
-- **Correlated residuals** across time for the same item (e.g., `flgd08 ~~ flgd10`) to account for item-specific stability beyond the latent factor.
-- **Latent factor means** at Time 1 fixed to 0 (identification); Times 2 and 3 estimated.
-- **Latent factor variances** at Time 1 fixed to 1 (scale-setting); Times 2 and 3 estimated.
+-   **Correlated residuals** across time for the same item (e.g., `flgd08 ~~ flgd10`) to account for item-specific stability beyond the latent factor.
+-   **Latent factor means** at Time 1 fixed to 0 (identification); Times 2 and 3 estimated.
+-   **Latent factor variances** at Time 1 fixed to 1 (scale-setting); Times 2 and 3 estimated.
 
 ```{r}
 #| label: configural
@@ -465,9 +470,9 @@ fit_config <- sem(config_mod,
 summary(fit_config, fit.measures = TRUE, estimates = TRUE)
 ```
 
-**Interpretation**: The configural model serves as the *unconstrained baseline*. If fit is acceptable (CFI > .95, RMSEA < .06, SRMR < .08), we proceed to add constraints. Note the pattern of loadings: all four items should load substantially (> .40) on their respective time-point factors.
+**Interpretation**: The configural model serves as the *unconstrained baseline*. If fit is acceptable (CFI \> .95, RMSEA \< .06, SRMR \< .08), we proceed to add constraints. Note the pattern of loadings: all four items should load substantially (\> .40) on their respective time-point factors.
 
----
+------------------------------------------------------------------------
 
 ## Step 2 — Weak (Metric) Invariance: Equal Factor Loadings
 
@@ -508,9 +513,9 @@ summary(fit_weak, fit.measures = TRUE)
 lavTestLRT(fit_weak, fit_config)
 ```
 
-**Interpretation**: A non-significant $\chi^2$ difference ($p > .05$) and negligible $\Delta$CFI (< .01) indicate that constraining loadings to equality does not significantly worsen model fit — **weak invariance holds**. This means the scale's metric (unit of measurement) is stable over time.
+**Interpretation**: A non-significant $\chi^2$ difference ($p > .05$) and negligible $\Delta$CFI (\< .01) indicate that constraining loadings to equality does not significantly worsen model fit — **weak invariance holds**. This means the scale's metric (unit of measurement) is stable over time.
 
----
+------------------------------------------------------------------------
 
 ## Step 3 — Strong (Scalar) Invariance: Equal Loadings + Intercepts
 
@@ -563,7 +568,7 @@ mi$uni[order(-mi$uni$X2), ][1:10, ]
 
 **Interpretation**: If the LRT is significant, scalar invariance does not fully hold. Modification indices highlight which specific intercept constraints are most problematic. Large M.I.s for a particular item's intercept at one time point suggest that item has a different response tendency at that occasion, independent of the latent construct level.
 
----
+------------------------------------------------------------------------
 
 ## Step 4 — Partial Scalar Invariance
 
@@ -617,10 +622,10 @@ lavTestLRT(fit_partial, fit_weak)
 
 **Interpretation of the two tests**:
 
-- **Partial vs. Strong**: Should be significant — freeing the two intercepts meaningfully improves fit.
-- **Partial vs. Weak**: Should be non-significant — the partial model fits equivalently to weak invariance, confirming that the freed intercepts account for the misfit in the strong model.
+-   **Partial vs. Strong**: Should be significant — freeing the two intercepts meaningfully improves fit.
+-   **Partial vs. Weak**: Should be non-significant — the partial model fits equivalently to weak invariance, confirming that the freed intercepts account for the misfit in the strong model.
 
----
+------------------------------------------------------------------------
 
 ## Model Comparison Summary
 
@@ -647,15 +652,15 @@ do.call(rbind, list(
 
 **Reading the table**:
 
-- **CFI > .95** and **RMSEA < .06** indicate acceptable absolute fit at each step.
-- Moving from Configural → Weak: $\Delta$CFI < .01 and non-significant $\Delta\chi^2$ → **weak invariance supported**.
-- Moving from Weak → Strong: significant $\Delta\chi^2$ → **full scalar invariance rejected**.
-- Moving from Strong → Partial: significant $\Delta\chi^2$ improvement → **partial scalar invariance accepted**.
-- **Partial scalar** fit comparable to **Weak**: confirms two freed intercepts were the only source of non-invariance.
+-   **CFI \> .95** and **RMSEA \< .06** indicate acceptable absolute fit at each step.
+-   Moving from Configural → Weak: $\Delta$CFI \< .01 and non-significant $\Delta\chi^2$ → **weak invariance supported**.
+-   Moving from Weak → Strong: significant $\Delta\chi^2$ → **full scalar invariance rejected**.
+-   Moving from Strong → Partial: significant $\Delta\chi^2$ improvement → **partial scalar invariance accepted**.
+-   **Partial scalar** fit comparable to **Weak**: confirms two freed intercepts were the only source of non-invariance.
 
 **Substantive conclusion**: Self-concept as measured by this four-item scale is **partially scalar invariant** across ages 8–12. Three of four item intercepts are stable over time, satisfying the minimum requirement for latent mean comparisons. The freed items (`satis08` and `nogd12`) may reflect genuine age-related shifts in how children interpret these specific items — a substantively interesting finding in its own right.
 
----
+------------------------------------------------------------------------
 
 # Session Information
 

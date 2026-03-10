@@ -9,9 +9,10 @@
 - $y_{it}$: observed outcome for individual $i$ at time point $t$
 - $\mathbf y_i = (y_{i1}, \dots, y_{iT_i})'$: full longitudinal observation vector for individual $i$
 - $x_{it}$: time score / time metric (e.g., $0,1,2,3$; can also be age, days since treatment, etc.)
-- $w_i$: time-invariant covariate (TIC)
-- $z_{it}$: time-varying covariate (TVC)
-- $\Delta y_{it} = y_{it} - y_{i,t-1}$: change from $t-1$ to $t$
+- $\mathbf D$: random effects covariance matrix (= $\Psi$ ,latent growth factor covariance matrix in the SEM literature)
+- $R_i$: residual covariance matrix (= $\Theta_i$ indicator residual covariance matrix in the SEM literature)
+- $\Lambda$: factor loading matrix / time score matrix
+- $\eta_i$: latent growth factor vector
 
 ### Unified Linear Growth Notation
 
@@ -49,22 +50,46 @@ $$
 - $\tau_{11}$: random slope variance
 - $\tau_{01}$: covariance between the random intercept and random slope
 
-### Correspondence with SEM Notation
+### Level-2 Predictors 
 
-In the longitudinal SEM / LGM literature, the covariance matrix of the random growth factors is commonly denoted $\Psi$, and the residual covariance matrix is denoted $\Theta$. Throughout this document, the correspondence is understood as:
+Let $w_i$ be a time-invariant covariate.
 
-- Random effects covariance matrix in MLM/LMM: $\mathbf D$
-- Latent growth factor covariance matrix in SEM/LGM: $\Psi$
-
-Under a simple linear growth model, the two refer to the same quantity and differ only in notation:
+In MLM, it can predict both the intercept and the slope:
 
 $$
-\mathbf D \equiv \Psi
+y_{it}
+=
+(\mu_0 + \beta_0 w_i)
++
+(\mu_1 + \beta_1 w_i)x_{it}
++
+b_{0i}
++
+b_{1i}x_{it}
++
+\varepsilon_{it}
 $$
 
-Similarly, the Level-1 residual structure $\mathbf R_i$ in MLM/LMM corresponds to the indicator residual structure $\Theta_i$ in SEM.
 
----
+In the SEM framework, the longitudinal growth model is written as:
+
+$$
+\mathbf y_i = \Lambda_i \eta_i + \varepsilon_i,
+\qquad
+\eta_i = \alpha + \zeta_i
+$$
+
+
+the same level-2 effect is written as:
+
+$$
+\eta_{0i} = \mu_0 + \beta_0 w_i + b_{0i}
+$$
+
+$$
+\eta_{1i} = \mu_1 + \beta_1 w_i + b_{1i}
+$$
+
 
 ## Methodological Rationale for Longitudinal Research: Why Longitudinal Data Cannot Be Analyzed Directly with OLS
 
@@ -78,17 +103,588 @@ $$
 
 Longitudinal data violate this assumption by design: observations from the same individual at different time points are influenced by the same genetic, personality, environmental, and historical factors, and thus exhibit systematic dependence.
 
-### Consequences of Applying OLS Naively
-
-- **Positive autocorrelation**: standard errors are systematically underestimated, inflating $t$ / $F$ statistics and increasing Type I error rates
-- **Heterogeneity misattributed to noise**: genuine stable differences between individuals are incorrectly absorbed into random error
-- **Confounding of within-person change and between-person differences**: it becomes impossible to distinguish "who started higher" from "who grew faster"
-- **Poor handling of missing data**: OLS is ill-suited for unbalanced data structures and is prone to sample bias and information loss
-
 ### What Longitudinal Modeling Actually Addresses
 
 Longitudinal models do not eliminate dependence; they **parameterize** it:
 the failure of the independence assumption is transformed into a question of how the covariance matrix is modeled.
+
+---
+
+## A Unified Mathematical Perspective: Explicitly Modeling Dependence
+
+This section integrates content from the original notes on **the matrix representation of LMM, the implied covariance structure in SEM, and the translation dictionary and equivalence between MLM and SEM/LGM**.
+
+### Matrix Form of MLM / LMM
+
+For individual $i$, the LMM is written as:
+
+$$
+\mathbf y_i = X_i\beta + Z_i\mathbf b_i + \boldsymbol\varepsilon_i
+$$
+
+where:
+
+- $X_i\beta$: fixed effects, representing the population mean structure
+- $Z_i\mathbf b_i$: random effects, representing individual deviations from the mean trajectory
+- $\boldsymbol\varepsilon_i$: residuals
+
+The marginal covariance matrix implied by this model is:
+
+$$
+V_i = \text{Cov}(\mathbf y_i) = Z_i\mathbf D Z_i' + R_i
+$$
+
+- $\mathbf D$: random effects covariance matrix, corresponding to heterogeneity in intercepts and slopes
+- $R_i$: within-individual residual structure, representing measurement error or short-term fluctuation
+
+This is how LMM "addresses dependence" at the matrix level:
+rather than requiring dependence to disappear, it explicitly specifies its sources.
+
+### The Same Idea at the Scalar Level
+
+For the linear growth model:
+
+$$
+y_{it} = \mu_0 + \mu_1x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
+$$
+
+the covariance between two time points $t$ and $s$ for the same individual is:
+
+$$
+\text{Cov}(y_{it}, y_{is})
+=
+\tau_{00}
++ x_{it}\tau_{01}
++ x_{is}\tau_{01}
++ x_{it}x_{is}\tau_{11}
++ \text{Cov}(\varepsilon_{it}, \varepsilon_{is})
+$$
+
+If Level-1 residuals are assumed to be independent conditional on the random effects, then:
+
+$$
+\text{Cov}(\varepsilon_{it}, \varepsilon_{is}) = 0
+\qquad (t \neq s)
+$$
+
+and the dependence arises entirely from the shared random intercept and random slope.
+
+In the simplest random-intercept model:
+
+$$
+\text{Cov}(y_{it}, y_{is}) = \tau_{00}
+\qquad (t \neq s)
+$$
+
+Under intensive longitudinal measurement, it is often necessary to additionally model residual serial dependence, for example AR(1):
+
+$$
+\text{Cov}(\varepsilon_{it}, \varepsilon_{is})
+=
+\sigma^2 \rho^{|x_{it} - x_{is}|}
+$$
+
+This indicates that errors at nearby time points are more similar, with the correlation weakening as the time interval increases.
+
+### Matrix Form of Longitudinal SEM / LGM
+
+In the SEM framework, the longitudinal growth model is written as:
+
+$$
+\mathbf y_i = \Lambda_i \eta_i + \varepsilon_i,
+\qquad
+\eta_i = \alpha + \zeta_i
+$$
+
+Therefore:
+
+$$
+E(\mathbf y_i) = \Lambda_i \alpha
+$$
+
+$$
+\Sigma_i = \text{Var}(\mathbf y_i) = \Lambda_i \Psi \Lambda_i' + \Theta_i
+$$
+
+where:
+
+- $\Lambda_i$: factor loading matrix, defining the temporal shape (linear, quadratic, latent basis, etc.)
+- $\Psi$: latent growth factor covariance matrix
+- $\Theta_i$: indicator residual covariance matrix
+
+For the $t$-th time point, if the loading row is $\lambda_t = [1, x_t]$, then the covariance between any two time points is:
+
+$$
+\text{Cov}(y_{it}, y_{is})
+=
+\psi_{00}
++ x_t\psi_{01}
++ x_s\psi_{01}
++ x_tx_s\psi_{11}
++ \theta_{ts}
+$$
+
+where:
+
+- $\psi_{00}, \psi_{11}, \psi_{01}$: variances and covariance of the latent intercept and latent slope
+- $\theta_{ts}$: residual covariance, used to represent residual dependence of the same indicator across time
+
+### MLM and SEM Are Mathematically the Same
+
+After integrating out the random effects, the marginal distribution of the LMM is:
+
+$$
+E(\mathbf y_i) = X_i\beta
+$$
+
+$$
+\text{Var}(\mathbf y_i) = Z_i\mathbf D Z_i' + R_i
+$$
+
+The marginal structure implied by SEM/LGM is:
+
+$$
+E(\mathbf y_i) = \Lambda_i\alpha
+$$
+
+$$
+\text{Var}(\mathbf y_i) = \Lambda_i\Psi\Lambda_i' + \Theta_i
+$$
+
+The two forms are isomorphic.
+
+### Translation Dictionary
+
+- $Z_i$ (MLM random-effects design matrix) $\leftrightarrow$ $\Lambda_i$ (SEM factor loading matrix)
+- $\mathbf b_i$ (random intercept / slope) $\leftrightarrow$ $\zeta_i$ (individual deviation of the latent growth factor)
+- $\mathbf D$ $\leftrightarrow$ $\Psi$
+- $R_i$ $\leftrightarrow$ $\Theta_i$
+- $X_i\beta$ $\leftrightarrow$ $\Lambda_i\alpha$
+
+The most important thing to remember is:
+
+> **The row vector $[1, x_{it}]$ in MLM corresponds to a row of the factor loading matrix $\Lambda_i$ in SEM.**
+
+### Concrete Correspondence for a Four-Wave Linear Growth Model
+
+For four equally spaced time points $t = 0,1,2,3$:
+
+$$
+Z_i = \Lambda_i =
+\begin{bmatrix}
+1 & 0\\
+1 & 1\\
+1 & 2\\
+1 & 3
+\end{bmatrix}
+$$
+
+- **MLM reading**:
+
+$$
+y_{it} = \mu_0 + \mu_1 t + b_{0i} + b_{1i}t + \varepsilon_{it}
+$$
+
+- **SEM reading**:
+
+$$
+\mathbf y_i = \Lambda_i \eta_i + \varepsilon_i,
+\qquad
+\eta_i =
+\begin{bmatrix}
+\mu_0 + b_{0i}\\
+\mu_1 + b_{1i}
+\end{bmatrix}
+$$
+
+As long as the time coding and error structure are consistent, these are two representations of the same growth model.
+
+### Random Intercept Only: Full Correspondence with the Null Model
+
+When only a random intercept is included:
+
+$$
+\mathbf D = [\tau_{00}]
+$$
+
+The corresponding SEM is an intercept-only latent factor with all loadings fixed to 1:
+
+$$
+\lambda =
+\begin{bmatrix}
+1\\
+1\\
+1
+\end{bmatrix}
+$$
+
+In this case:
+
+$$
+\text{Var}(\mathbf y_i)
+=
+\lambda \tau_{00}\lambda' + \sigma^2 I
+=
+\tau_{00}J + \sigma^2 I
+$$
+
+This is exactly equivalent to the random-intercept MLM / null model.
+
+
+### When Does the Equivalence Break Down?
+
+This equivalence holds under certain prerequisites:
+
+- Linear Gaussian model
+- Consistent time coding
+- Consistent residual structure specification
+- No additional explicit measurement model
+
+Once any of the following conditions arise, the two approaches diverge:
+
+1. **Different residual structures**
+
+   - LGM more readily allows residual variances to differ across time points by default
+   - MLM commonly assumes homogeneous Level-1 residuals by default
+2. **SEM explicitly incorporates a measurement model**
+   If each time point itself is a latent construct (e.g., depression measured by 5 items), SEM can first specify a measurement model and then a growth model; if MLM still uses sum scores as the outcome, the two are no longer isomorphic.
+
+Therefore, a more precise statement is:
+
+> **The equivalence between MLM and LGM holds for observed-variable simple linear growth models. When SEM further explicitly models measurement error and measurement structure, it goes beyond the scope of a simple one-to-one translation.**
+
+---
+
+## MLM / LMM: Conditional Model for Individual Trajectories
+
+### Basic Framework: Time at Level 1, Individuals at Level 2
+
+The fundamental idea of longitudinal MLM is:
+
+- **Level 1**: within-individual observations varying over time
+- **Level 2**: between-individual differences
+
+The most basic linear growth model is:
+
+$$
+y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
+$$
+
+This can also be understood as:
+
+- Each person has their own starting point: $\mu_0 + b_{0i}$
+- Each person also has their own rate of growth: $\mu_1 + b_{1i}$
+
+### Null Model / Random-Effects ANOVA: First Assessing the Strength of Dependence
+
+The simplest unconditional model is:
+
+$$
+y_{it} = \mu_0 + b_{0i} + \varepsilon_{it}
+$$
+
+where:
+
+$$
+b_{0i} \sim N(0, \tau_{00}),
+\qquad
+\varepsilon_{it} \sim N(0, \sigma^2)
+$$
+
+#### Three Core Implications
+
+1. **Expected value**
+
+$$
+E(y_{it}) = \mu_0
+$$
+
+1. **Total variance**
+
+$$
+\text{Var}(y_{it}) = \tau_{00} + \sigma^2
+$$
+
+1. **Covariance between two measurements from the same individual**
+
+$$
+\text{Cov}(y_{it}, y_{is}) = \tau_{00}
+\qquad (t \neq s)
+$$
+
+As long as $\tau_{00} > 0$, repeated measurements from the same individual are not independent.
+
+#### Intraclass Correlation Coefficient (ICC)
+
+$$
+\text{ICC} = \frac{\tau_{00}}{\tau_{00} + \sigma^2}
+$$
+
+The ICC indicates what proportion of total variance is attributable to between-individual differences, and simultaneously quantifies the strength of data dependence.
+
+- Higher ICC means repeated measurements are less independent
+- Higher ICC means OLS is less appropriate
+
+#### Explicit Covariance Matrix (for 3 Time Points)
+
+$$
+V_i =
+\begin{bmatrix}
+\tau_{00}+\sigma^2 & \tau_{00} & \tau_{00}\\
+\tau_{00} & \tau_{00}+\sigma^2 & \tau_{00}\\
+\tau_{00} & \tau_{00} & \tau_{00}+\sigma^2
+\end{bmatrix}
+$$
+
+- Diagonal entries: total variance
+- Off-diagonal entries: covariance between two measurements from the same individual
+
+This is why OLS fails:
+OLS implicitly assumes $V_i = \sigma^2 I$, i.e., all off-diagonal entries are zero.
+
+#### Why Is It Also Called "Random-Effects ANOVA"?
+
+In general clustered data, this model can also be written as a "random-effects ANOVA":
+
+- Traditional ANOVA treats group membership as a fixed factor
+- Random-effects ANOVA treats group membership as a set of clusters randomly sampled from a population
+
+In the longitudinal setting, the cluster is the "individual," so the same logic applies directly.
+
+#### Limitations of the ICC
+
+The ICC is not reliable in all situations:
+
+- **Binary outcomes**: in models such as logistic regression, there is no simple, unified Level-1 variance term, so the ICC is no longer straightforwardly defined
+- **Models with random slopes**: within-cluster correlation varies as a function of the predictor value, and a single ICC is insufficient as a summary
+- **Very small clusters**: population mean estimates are unstable, and ICC estimates tend to be biased
+
+### Random Intercept and Random Slope Models
+
+#### Random Intercept Model
+
+If only starting points are allowed to vary while the rate of change is fixed:
+
+$$
+y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + \varepsilon_{it}
+$$
+
+This indicates that each person has a different baseline, but the time effect is fixed.
+
+#### Random Slope Model
+
+If individuals differ not only in their starting points but also in their rates of change:
+
+$$
+y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
+$$
+
+In this case:
+
+- $b_{0i}$: accounts for "who starts higher"
+- $b_{1i}$: accounts for "who changes faster"
+
+#### How Are the Parameters Interpreted?
+
+- **$\mu_0$**: population mean level at time zero
+- **$\mu_1$**: population mean rate of change
+- **$\tau_{00}$**: magnitude of between-individual differences in starting point
+- **$\tau_{11}$**: magnitude of between-individual differences in rate of growth
+- **$\tau_{01}$**: whether starting point and rate of growth are correlated
+
+The interpretation of $\tau_{01}$ is often of particular research interest:
+
+- **Positive correlation**: individuals who start higher subsequently grow faster (Matthew effect)
+- **Negative correlation**: individuals who start higher subsequently grow more slowly (ceiling / plateau effect)
+
+---
+
+## One-Page Summary: The Core Thread of This Document
+
+The entire set of longitudinal modeling notes can be compressed into the following thread:
+
+1. **OLS is inappropriate** because longitudinal data violate the independence assumption
+2. **The core of modern longitudinal modeling** is not to avoid dependence but to write it into the covariance structure
+3. **GEE / MLM / Longitudinal SEM** correspond to three perspectives: population-averaged, individual trajectory, and latent process
+4. **MLM and LGM** are often mathematically equivalent under simple linear growth, but SEM can further explicitly address measurement error
+
+---
+
+## Design Matrix
+
+### Core Concept
+
+Multiple regression is expressed compactly in matrix form as: $Y' = X\hat{\beta}$
+
+- **$Y'$**: a column vector of predicted values
+- **$X$ (Design Matrix)**: a matrix containing a column of ones (for the intercept) and columns of observed values for all predictors
+- **$\hat{\beta}$**: a vector of estimated regression coefficients
+
+**Expanded form with a single predictor (5 observations):**
+
+$$
+Y'_i = \hat{\beta}_0 + \hat{\beta}_1 X_{1i} \;\equiv\; \hat{\beta}_0(1) + \hat{\beta}_1 X_{1i}
+$$
+
+$$
+\begin{bmatrix} Y'_1 \\ Y'_2 \\ Y'_3 \\ Y'_4 \\ Y'_5 \end{bmatrix} = \begin{bmatrix} 1 & X_{11} \\ 1 & X_{12} \\ 1 & X_{13} \\ 1 & X_{14} \\ 1 & X_{15} \end{bmatrix} \begin{bmatrix} \hat{\beta}_0 \\ \hat{\beta}_1 \end{bmatrix} = \begin{bmatrix} \hat{\beta}_0 + \hat{\beta}_1 X_{11} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{12} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{13} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{14} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{15} \end{bmatrix}
+$$
+
+**Expanded form with two predictors:**
+
+$$
+Y'_i = \hat{\beta}_0 + \hat{\beta}_1 X_{1i} + \hat{\beta}_2 X_{2i}
+$$
+
+$$
+\begin{bmatrix} Y'_1 \\ Y'_2 \\ Y'_3 \\ Y'_4 \\ Y'_5 \end{bmatrix} = \begin{bmatrix} 1 & X_{11} & X_{21} \\ 1 & X_{12} & X_{22} \\ 1 & X_{13} & X_{23} \\ 1 & X_{14} & X_{24} \\ 1 & X_{15} & X_{25} \end{bmatrix} \begin{bmatrix} \hat{\beta}_0 \\ \hat{\beta}_1 \\ \hat{\beta}_2 \end{bmatrix} = \begin{bmatrix} \hat{\beta}_0 + \hat{\beta}_1 X_{11} + \hat{\beta}_2 X_{21} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{12} + \hat{\beta}_2 X_{22} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{13} + \hat{\beta}_2 X_{23} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{14} + \hat{\beta}_2 X_{24} \\ \hat{\beta}_0 + \hat{\beta}_1 X_{15} + \hat{\beta}_2 X_{25} \end{bmatrix}
+$$
+
+### OLS Matrix Solution
+
+The coefficient vector is obtained in one step via matrix algebra: construct the design matrix $X$, compute its transpose $X'$, form the product $X'X$, invert it, and multiply by $X'Y$:
+
+$$
+\hat{\beta} = (X'X)^{-1}X'Y
+$$
+
+> As long as $X'X$ is invertible (no perfect multicollinearity), this formula yields the exact solution directly, with no iteration.
+
+### Covariance Matrix of the Coefficient Estimates
+
+The covariance matrix of the vector $\hat{\beta}$:
+
+$$
+\text{cov}(\hat{\beta}) = \sigma^2 (X'X)^{-1}
+$$
+
+where the residual variance $\sigma^2$ is estimated from the residual vector $\epsilon$:
+
+$$
+\sigma^2 = \frac{\epsilon'\epsilon}{n - s}
+$$
+
+- **$\epsilon$**: the residual vector ($= Y - X\hat{\beta}$)
+- **$s$**: the number of regression coefficients estimated in the model (including the intercept)
+- **$n - s$**: the residual degrees of freedom
+
+The diagonal elements of the covariance matrix are the variances of the individual coefficient estimates; their square roots are the **standard errors (SE)** of the respective coefficients. This matrix can be extracted in software via the `vcov()` function to verify the SE values reported in the output.
+
+### Matrix Representation of $\text{Var}(\mathbf{y})$ in OLS
+
+The OLS data-generating model is $\mathbf{y} = X\beta + \boldsymbol{\epsilon}$, where $X\beta$ is fixed (non-random), so:
+
+$$
+\text{Var}(\mathbf{y}) = \text{Var}(\boldsymbol{\epsilon}) = \sigma^2 \mathbf{I}_n
+$$
+
+Expanded as an $n \times n$ matrix:
+
+$$
+\text{Var}(\mathbf{y}) = \begin{bmatrix} \sigma^2 & 0 & \cdots & 0 \\ 0 & \sigma^2 & \cdots & 0 \\ \vdots & & \ddots & \vdots \\ 0 & 0 & \cdots & \sigma^2 \end{bmatrix}
+$$
+
+**The diagonal elements are the variance of each observation (all equal); the off-diagonal elements are all zero, indicating mutual independence across observations.**
+
+This is precisely the two core assumptions of OLS expressed in the language of covariance matrices: **Homoscedasticity + Independence**.
+
+#### Correspondence to MLM / LSEM
+
+- **OLS**: $\text{Var}(\mathbf{y}) = \sigma^2 \mathbf{I}_n$ — no random effects; residuals are independent and identically distributed
+- **MLM**: $V_i = Z_i G Z_i' + R_i$ — random effects plus within-individual residual structure
+- **LSEM**: $\Sigma(\theta) = \Lambda\Psi\Lambda' + \Theta$ — latent factors plus indicator residuals
+
+OLS is the **most constrained special case** of the three: setting $Z_i = \mathbf{0}$ (no random effects) and $R_i = \sigma^2 \mathbf{I}$ (homogeneous independent residuals) reduces the MLM formula immediately to the OLS form $\sigma^2\mathbf{I}$; likewise, setting $\Lambda = \mathbf{0}$ and $\Theta = \sigma^2\mathbf{I}$ reduces the LSEM to OLS.
+
+#### Extensions When Assumptions Are Violated
+
+- **Heteroscedasticity**: off-diagonal elements remain zero (independence holds), but diagonal elements differ:
+
+$$
+\text{Var}(\mathbf{y}) = \begin{bmatrix} \sigma_1^2 & & \\ & \ddots & \\ & & \sigma_n^2 \end{bmatrix} = \Omega
+$$
+
+- **Autocorrelation (e.g., AR(1))**: diagonal elements are equal, but off-diagonal elements are non-zero:
+
+$$
+\text{Var}(\mathbf{y}) = \sigma^2 \begin{bmatrix} 1 & \rho & \rho^2 & \cdots \\ \rho & 1 & \rho & \cdots \\ \rho^2 & \rho & 1 & \cdots \\ \vdots & & & \ddots \end{bmatrix}
+$$
+
+- **General case (GLS)**: $\text{Var}(\mathbf{y}) = \sigma^2\Omega$; the OLS formula becomes the Generalized Least Squares (GLS) estimator:
+
+$$
+\hat{\beta}_{\text{GLS}} = (X'\Omega^{-1}X)^{-1}X'\Omega^{-1}Y
+$$
+
+When $\Omega = \mathbf{I}$, this reduces back to the OLS estimator $\hat{\beta} = (X'X)^{-1}X'Y$.
+
+---
+
+## Within-Person / Between-Person Decomposition: Why Separation Is Necessary
+
+Understanding the WP/BP decomposition is central to MLM and longitudinal analysis. Without this decomposition, the estimated "total effect" conflates two fundamentally different processes, potentially resulting in an **Ecological Fallacy**—incorrectly inferring individual-level mechanisms from group-level associations.
+
+- **Between-Person (BP) differences**: stable differences between individuals (trait-level variation)
+- **Within-Person (WP) differences**: fluctuations within the same individual across time (state-level change)
+
+For a time-varying covariate $z_{it}$, its coefficient typically conflates:
+
+- **Within-person effect**: how does $y$ change when a person's $z$ is higher than their own usual level?
+- **Between-person effect**: do individuals with a consistently higher average $z$ also tend to have higher $y$ on average?
+
+These two effects may operate in the same direction or in opposite directions. A classic example is stress and negative affect:
+
+- **Between-person**: individuals under chronically high stress have higher average negative affect
+- **Within-person**: on days when a person's stress exceeds their own mean, is their negative affect also elevated?
+
+### Person-Mean Centering (Within-Person Centering)
+
+The time-varying covariate $z_{it}$ is decomposed into two **orthogonal** components:
+
+$$
+z_{it} = \underbrace{\bar z_i}_{\text{BP}} + \underbrace{(z_{it} - \bar z_i)}_{\text{WP}}
+$$
+
+- $\bar z_i$: individual mean, entered at Level 2 to capture **Between-Person** variation (the "who" effect)
+- $z_{it} - \bar z_i$: person-mean-centered value, entered at Level 1 to capture **Within-Person** variation (the "when" effect)
+
+Both components are entered simultaneously into MLM to estimate the WP and BP effects separately:
+
+$$
+y_{ij} = \gamma_{00} + \underbrace{\gamma_{10}(z_{ij} - \bar z_j)}_{\text{WP effect}} + \underbrace{\gamma_{01}\bar z_j}_{\text{BP effect}} + u_{0j} + r_{ij}
+$$
+
+- **$\gamma_{10}$ (Within-Person Effect)**: how $y$ changes when an individual's current $z$ is above their own mean
+- **$\gamma_{01}$ (Between-Person Effect)**: whether individuals with a higher average $z$ also have a higher average $y$
+- **$u_{0j}$**: random intercept (between-individual baseline differences); **$r_{ij}$**: residual
+
+**Benefits:**
+
+- The Level-1 $\gamma_{10}$ is a pure within-person dynamic effect, uncontaminated by stable individual differences
+- If $\gamma_{10} \neq \gamma_{01}$, the WP and BP processes differ, and failing to decompose them leads to severely biased parameter estimates
+
+### Specific Application Examples
+
+#### Example 1: Exercise and Heart Attack (Simpson's Paradox)
+
+- **Within-Person**: at the individual level, the instantaneous risk of cardiac events is elevated during vigorous exercise
+- **Between-Person**: at the population level, individuals who exercise regularly have a substantially lower baseline cardiac risk than sedentary individuals
+- **Conclusion**: without decomposition, one might incorrectly infer that "exercise is unrelated to heart disease" or even "exercise is harmful"
+
+#### Example 2: Self-Esteem and Self-Enhancement
+
+A study of 60 students on 14 personality traits, with "trait importance" person-mean-centered:
+
+- **Within-Person effect**: $\gamma_{10} = 0.37$, meaning that within the same student, traits perceived as more important are associated with greater self-enhancement on that trait
+- **Substantive implication**: demonstrates that self-enhancement is a context-sensitive psychological mechanism rather than a fixed trait
+
+#### Example 3: GDP and National Well-Being (Easterlin Paradox)
+
+- **Between-Country (BP)**: wealthier countries typically report higher average well-being than poorer countries
+- **Within-Country (WP)**: as a country's GDP grows from year to year, national well-being does not necessarily increase correspondingly (the WP effect may be near zero)
+- **Substantive implication**: this is the "Easterlin Paradox"—simply pursuing economic growth does not necessarily improve national well-being
+
+> **In summary**: Between-Person addresses "**who**" scores higher; Within-Person addresses "**when**" one scores higher. In longitudinal analysis, person-mean centering is consistently recommended to obtain clean WP estimates while simultaneously including individual means to capture BP estimates.
 
 ---
 
@@ -255,8 +851,12 @@ $$
 \text{Cov}(y_{i2}, y_{i1}) - \text{Var}(y_{i1})
 $$
 
-As long as the cross-time correlation is less than 1, this covariance tends to be negative:
+assume that the fluctuations (variances) of the two measurements are the same, i.e., Var($y_{i1}$) = Var($y_{i2}$) = σ². Then:
 
+- Correlation coefficient formula: $ρ = Cov(y_{i1}, y_{i2}) / (σ · σ)$
+- Substitute into the formula: $Cov(Δy_i, y_{i1}) = ρ σ² - σ² = σ² (ρ - 1)$
+- As long as ρ < 1 (as long as the *two measurements are not completely deterministic* ), then (ρ - 1) is necessarily negative.
+- This means that Change Score (change value) and Baseline (initial value) inherently have a negative correlation.
 - Individuals with a higher baseline are more likely to appear to have gained less
 - Individuals with a lower baseline are more likely to appear to have gained more
 
@@ -280,805 +880,6 @@ In such cases, the regression coefficient for the change score may even be in th
 - "How much did it change?" → both change score and ANCOVA are appropriate
 - "What is the shape of the change trajectory?" → two-wave methods are insufficient
 - "Do different individuals change at different rates?" → MLM / LGM is required
-- "How does a prior state drive subsequent change?" → CLPM or LCSM is required
+- "How does a prior state drive subsequent change?" → LGM is required
 
 This is also why the distinction between "absolute change vs. conditional change" will be revisited in the subsequent discussions of CLPM, LGM, and LCSM.
-
----
-
-## A Unified Mathematical Perspective: Explicitly Modeling Dependence
-
-This section integrates content from the original notes on **the matrix representation of LMM, the implied covariance structure in SEM, and the translation dictionary and equivalence between MLM and SEM/LGM**.
-
-### Matrix Form of MLM / LMM
-
-For individual $i$, the LMM is written as:
-
-$$
-\mathbf y_i = X_i\beta + Z_i\mathbf b_i + \boldsymbol\varepsilon_i
-$$
-
-where:
-
-- $X_i\beta$: fixed effects, representing the population mean structure
-- $Z_i\mathbf b_i$: random effects, representing individual deviations from the mean trajectory
-- $\boldsymbol\varepsilon_i$: residuals
-
-The marginal covariance matrix implied by this model is:
-
-$$
-V_i = \text{Cov}(\mathbf y_i) = Z_i\mathbf D Z_i' + R_i
-$$
-
-- $\mathbf D$: random effects covariance matrix, corresponding to heterogeneity in intercepts and slopes
-- $R_i$: within-individual residual structure, representing measurement error or short-term fluctuation
-
-This is how LMM "addresses dependence" at the matrix level:
-rather than requiring dependence to disappear, it explicitly specifies its sources.
-
-### The Same Idea at the Scalar Level
-
-For the linear growth model:
-
-$$
-y_{it} = \mu_0 + \mu_1x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
-$$
-
-the covariance between two time points $t$ and $s$ for the same individual is:
-
-$$
-\text{Cov}(y_{it}, y_{is})
-=
-\tau_{00}
-+ x_{it}\tau_{01}
-+ x_{is}\tau_{01}
-+ x_{it}x_{is}\tau_{11}
-+ \text{Cov}(\varepsilon_{it}, \varepsilon_{is})
-$$
-
-If Level-1 residuals are assumed to be independent conditional on the random effects, then:
-
-$$
-\text{Cov}(\varepsilon_{it}, \varepsilon_{is}) = 0
-\qquad (t \neq s)
-$$
-
-and the dependence arises entirely from the shared random intercept and random slope.
-
-In the simplest random-intercept model:
-
-$$
-\text{Cov}(y_{it}, y_{is}) = \tau_{00}
-\qquad (t \neq s)
-$$
-
-Under intensive longitudinal measurement, it is often necessary to additionally model residual serial dependence, for example AR(1):
-
-$$
-\text{Cov}(\varepsilon_{it}, \varepsilon_{is})
-=
-\sigma^2 \rho^{|x_{it} - x_{is}|}
-$$
-
-This indicates that errors at nearby time points are more similar, with the correlation weakening as the time interval increases.
-
-### Matrix Form of Longitudinal SEM / LGM
-
-In the SEM framework, the longitudinal growth model is written as:
-
-$$
-\mathbf y_i = \Lambda_i \eta_i + \varepsilon_i,
-\qquad
-\eta_i = \alpha + \zeta_i
-$$
-
-Therefore:
-
-$$
-E(\mathbf y_i) = \Lambda_i \alpha
-$$
-
-$$
-\Sigma_i = \text{Var}(\mathbf y_i) = \Lambda_i \Psi \Lambda_i' + \Theta_i
-$$
-
-where:
-
-- $\Lambda_i$: factor loading matrix, defining the temporal shape (linear, quadratic, latent basis, etc.)
-- $\Psi$: latent growth factor covariance matrix
-- $\Theta_i$: indicator residual covariance matrix
-
-For the $t$-th time point, if the loading row is $\lambda_t = [1, x_t]$, then the covariance between any two time points is:
-
-$$
-\text{Cov}(y_{it}, y_{is})
-=
-\psi_{00}
-+ x_t\psi_{01}
-+ x_s\psi_{01}
-+ x_tx_s\psi_{11}
-+ \theta_{ts}
-$$
-
-where:
-
-- $\psi_{00}, \psi_{11}, \psi_{01}$: variances and covariance of the latent intercept and latent slope
-- $\theta_{ts}$: residual covariance, used to represent residual dependence of the same indicator across time
-
-### From Conditional to Marginal Representation: MLM and SEM Are Mathematically the Same
-
-After integrating out the random effects, the marginal distribution of the LMM is:
-
-$$
-E(\mathbf y_i) = X_i\beta
-$$
-
-$$
-\text{Var}(\mathbf y_i) = Z_i\mathbf D Z_i' + R_i
-$$
-
-The marginal structure implied by SEM/LGM is:
-
-$$
-E(\mathbf y_i) = \Lambda_i\alpha
-$$
-
-$$
-\text{Var}(\mathbf y_i) = \Lambda_i\Psi\Lambda_i' + \Theta_i
-$$
-
-The two forms are isomorphic.
-
-### Translation Dictionary
-
-- $Z_i$ (MLM random-effects design matrix) $\leftrightarrow$ $\Lambda_i$ (SEM factor loading matrix)
-- $\mathbf b_i$ (random intercept / slope) $\leftrightarrow$ $\zeta_i$ (individual deviation of the latent growth factor)
-- $\mathbf D$ $\leftrightarrow$ $\Psi$
-- $R_i$ $\leftrightarrow$ $\Theta_i$
-- $X_i\beta$ $\leftrightarrow$ $\Lambda_i\alpha$
-
-The most important thing to remember is:
-
-> **The row vector $[1, x_{it}]$ in MLM corresponds to a row of the factor loading matrix $\Lambda_i$ in SEM.**
-
-### Concrete Correspondence for a Four-Wave Linear Growth Model
-
-For four equally spaced time points $t = 0,1,2,3$:
-
-$$
-Z_i = \Lambda_i =
-\begin{bmatrix}
-1 & 0\\
-1 & 1\\
-1 & 2\\
-1 & 3
-\end{bmatrix}
-$$
-
-- **MLM reading**:
-
-$$
-y_{it} = \mu_0 + \mu_1 t + b_{0i} + b_{1i}t + \varepsilon_{it}
-$$
-
-- **SEM reading**:
-
-$$
-\mathbf y_i = \Lambda_i \eta_i + \varepsilon_i,
-\qquad
-\eta_i =
-\begin{bmatrix}
-\mu_0 + b_{0i}\\
-\mu_1 + b_{1i}
-\end{bmatrix}
-$$
-
-As long as the time coding and error structure are consistent, these are two representations of the same growth model.
-
-### Random Intercept Only: Full Correspondence with the Null Model
-
-When only a random intercept is included:
-
-$$
-\mathbf D = [\tau_{00}]
-$$
-
-The corresponding SEM is an intercept-only latent factor with all loadings fixed to 1:
-
-$$
-\lambda =
-\begin{bmatrix}
-1\\
-1\\
-1
-\end{bmatrix}
-$$
-
-In this case:
-
-$$
-\text{Var}(\mathbf y_i)
-=
-\lambda \tau_{00}\lambda' + \sigma^2 I
-=
-\tau_{00}J + \sigma^2 I
-$$
-
-This is exactly equivalent to the random-intercept MLM / null model.
-
-### Level-2 Predictors in Both Frameworks
-
-Let $w_i$ be a time-invariant covariate.
-
-In MLM, it can predict both the intercept and the slope:
-
-$$
-y_{it}
-=
-(\mu_0 + \beta_0 w_i)
-+
-(\mu_1 + \beta_1 w_i)x_{it}
-+
-b_{0i}
-+
-b_{1i}x_{it}
-+
-\varepsilon_{it}
-$$
-
-In SEM, the same effect is written as:
-
-$$
-\eta_{0i} = \mu_0 + \beta_0 w_i + b_{0i}
-$$
-
-$$
-\eta_{1i} = \mu_1 + \beta_1 w_i + b_{1i}
-$$
-
-That is:
-
-- **Cross-level interaction in MLM**
-- **"Predicting the latent slope factor" in SEM**
-
-are mathematically the same thing.
-
-### When Does the Equivalence Break Down?
-
-This equivalence holds under certain prerequisites:
-
-- Linear Gaussian model
-- Consistent time coding
-- Consistent residual structure specification
-- No additional explicit measurement model
-
-Once any of the following conditions arise, the two approaches diverge:
-
-1. **Different residual structures**
-
-   - LGM more readily allows residual variances to differ across time points by default
-   - MLM commonly assumes homogeneous Level-1 residuals by default
-2. **SEM explicitly incorporates a measurement model**
-   If each time point itself is a latent construct (e.g., depression measured by 5 items), SEM can first specify a measurement model and then a growth model; if MLM still uses sum scores as the outcome, the two are no longer isomorphic.
-
-Therefore, a more precise statement is:
-
-> **The equivalence between MLM and LGM holds for observed-variable simple linear growth models. When SEM further explicitly models measurement error and measurement structure, it goes beyond the scope of a simple one-to-one translation.**
-
----
-
-## Three Major Frameworks: GEE, MLM/LMM, and Longitudinal SEM
-
-### GEE: A Marginal, Population-Averaged Perspective
-
-GEE focuses on:
-
-- How the **population-averaged response** changes when a covariate changes by one unit
-
-It approximates within-cluster dependence by specifying a "working correlation matrix" $R(\alpha)$, and uses a **sandwich variance estimator** to correct the standard errors.
-
-**Advantages:**
-
-- Even if the working correlation matrix is misspecified, the parameter estimates remain consistent as long as the mean model is correctly specified
-- Particularly well-suited for public health and policy evaluation contexts where the interest lies in population-level average trends
-
-**Limitations:**
-
-- Less effective at characterizing sources of individual variation
-- Missing data typically requires MCAR; handling missingness under MAR often requires multiple imputation (MI)
-
-### MLM / LMM: A Conditional Individual Trajectory Perspective
-
-MLM / LMM focuses on:
-
-- How a given individual's trajectory changes, conditional on that individual's random effects
-- How much individuals differ in their starting points and rates of change
-
-**In nonlinear models, the coefficients from LMM and GEE typically differ:**
-
-For example, in logistic regression, the fixed-effect estimates from LMM are generally larger than the marginal effects from GEE, because:
-
-- LMM more closely approximates a "pure effect after controlling for individual heterogeneity"
-- The GEE effect is attenuated by between-individual heterogeneity
-
-### Longitudinal SEM: A Latent Process Perspective
-
-The key advantage of longitudinal SEM is that it:
-
-- Can define a latent construct using multiple indicators
-- Explicitly separates "true change" from "measurement error" in growth modeling
-- Readily accommodates complex pathways involving mediation, moderation, and parallel process growth
-
-This is its principal advantage over LMM alone.
-
-### One-Page Comparison
-
-- **Level of interpretation**
-
-  - GEE = population-averaged trend
-  - MLM/LMM = individual conditional trajectory
-  - Longitudinal SEM = latent process trajectory
-- **Data format**
-
-  - GEE / MLM = long format is typically preferred
-  - Longitudinal SEM / LGM = wide format is typically preferred
-- **Statistical basis**
-
-  - GEE = quasi-likelihood / marginal model
-  - MLM = maximum likelihood (ML / REML)
-  - Longitudinal SEM = covariance structure analysis
-- **Missing data mechanism**
-
-  - GEE = relies more heavily on MCAR (or requires MI)
-  - MLM = can be estimated directly under MAR
-  - Longitudinal SEM = can use FIML under MAR
-- **Measurement error**
-
-  - GEE = not explicitly addressed
-  - MLM = treated as part of the residual
-  - Longitudinal SEM = can be explicitly modeled to "purify" the latent variable
-
----
-
-## MLM / LMM: Conditional Model for Individual Trajectories
-
-### Basic Framework: Time at Level 1, Individuals at Level 2
-
-The fundamental idea of longitudinal MLM is:
-
-- **Level 1**: within-individual observations varying over time
-- **Level 2**: between-individual differences
-
-The most basic linear growth model is:
-
-$$
-y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
-$$
-
-This can also be understood as:
-
-- Each person has their own starting point: $\mu_0 + b_{0i}$
-- Each person also has their own rate of growth: $\mu_1 + b_{1i}$
-
-### Null Model / Random-Effects ANOVA: First Assessing the Strength of Dependence
-
-The simplest unconditional model is:
-
-$$
-y_{it} = \mu_0 + b_{0i} + \varepsilon_{it}
-$$
-
-where:
-
-$$
-b_{0i} \sim N(0, \tau_{00}),
-\qquad
-\varepsilon_{it} \sim N(0, \sigma^2)
-$$
-
-#### Three Core Implications
-
-1. **Expected value**
-
-$$
-E(y_{it}) = \mu_0
-$$
-
-1. **Total variance**
-
-$$
-\text{Var}(y_{it}) = \tau_{00} + \sigma^2
-$$
-
-1. **Covariance between two measurements from the same individual**
-
-$$
-\text{Cov}(y_{it}, y_{is}) = \tau_{00}
-\qquad (t \neq s)
-$$
-
-As long as $\tau_{00} > 0$, repeated measurements from the same individual are not independent.
-
-#### Intraclass Correlation Coefficient (ICC)
-
-$$
-\text{ICC} = \frac{\tau_{00}}{\tau_{00} + \sigma^2}
-$$
-
-The ICC indicates what proportion of total variance is attributable to between-individual differences, and simultaneously quantifies the strength of data dependence.
-
-- Higher ICC means repeated measurements are less independent
-- Higher ICC means OLS is less appropriate
-
-#### Explicit Covariance Matrix (for 3 Time Points)
-
-$$
-V_i =
-\begin{bmatrix}
-\tau_{00}+\sigma^2 & \tau_{00} & \tau_{00}\\
-\tau_{00} & \tau_{00}+\sigma^2 & \tau_{00}\\
-\tau_{00} & \tau_{00} & \tau_{00}+\sigma^2
-\end{bmatrix}
-$$
-
-- Diagonal entries: total variance
-- Off-diagonal entries: covariance between two measurements from the same individual
-
-This is why OLS fails:
-OLS implicitly assumes $V_i = \sigma^2 I$, i.e., all off-diagonal entries are zero.
-
-#### Why Is It Also Called "Random-Effects ANOVA"?
-
-In general clustered data, this model can also be written as a "random-effects ANOVA":
-
-- Traditional ANOVA treats group membership as a fixed factor
-- Random-effects ANOVA treats group membership as a set of clusters randomly sampled from a population
-
-In the longitudinal setting, the cluster is the "individual," so the same logic applies directly.
-
-#### Limitations of the ICC
-
-The ICC is not reliable in all situations:
-
-- **Binary outcomes**: in models such as logistic regression, there is no simple, unified Level-1 variance term, so the ICC is no longer straightforwardly defined
-- **Models with random slopes**: within-cluster correlation varies as a function of the predictor value, and a single ICC is insufficient as a summary
-- **Very small clusters**: population mean estimates are unstable, and ICC estimates tend to be biased
-
-### Random Intercept and Random Slope Models
-
-#### Random Intercept Model
-
-If only starting points are allowed to vary while the rate of change is fixed:
-
-$$
-y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + \varepsilon_{it}
-$$
-
-This indicates that each person has a different baseline, but the time effect is fixed.
-
-#### Random Slope Model
-
-If individuals differ not only in their starting points but also in their rates of change:
-
-$$
-y_{it} = \mu_0 + \mu_1 x_{it} + b_{0i} + b_{1i}x_{it} + \varepsilon_{it}
-$$
-
-In this case:
-
-- $b_{0i}$: accounts for "who starts higher"
-- $b_{1i}$: accounts for "who changes faster"
-
-### How Are the Parameters Interpreted?
-
-- **$\mu_0$**: population mean level at time zero
-- **$\mu_1$**: population mean rate of change
-- **$\tau_{00}$**: magnitude of between-individual differences in starting point
-- **$\tau_{11}$**: magnitude of between-individual differences in rate of growth
-- **$\tau_{01}$**: whether starting point and rate of growth are correlated
-
-The interpretation of $\tau_{01}$ is often of particular research interest:
-
-- **Positive correlation**: individuals who start higher subsequently grow faster (Matthew effect)
-- **Negative correlation**: individuals who start higher subsequently grow more slowly (ceiling / plateau effect)
-
-### Four Key Quantities to Examine When Reading MLM Results
-
-- **Fixed time effect**: average growth / decline trend
-- **Random intercept variance**: between-individual differences in starting point
-- **Random slope variance**: between-individual differences in rate of change
-- **Intercept–slope covariance**: whether individuals who start higher subsequently accelerate or decelerate
-
-### R / lmer Code Example (GPA Setting)
-
-```r
-# Random intercept model: each student has a different starting point, slope is fixed
-m1 <- lmer(gpa ~ time + (1 | student), data = longdat)
-
-# Random intercept + random slope + sex interaction: starting point and growth rate both vary by individual
-m2 <- lmer(gpa ~ time * sex + (time | student), data = longdat)
-```
-
-Interpretation:
-
-- `(1 | student)`: allows only the intercept to vary across individuals
-- `(time | student)`: both the intercept and the time slope vary across individuals
-
-In LGM terms, "having a variable predict the intercept and slope" corresponds in MLM to "main effect + time interaction + random intercept / random slope."
-
-### Applied Example: Adolescent Alcohol Use Trajectories
-
-Alcohol use frequency was measured at ages 14, 15, and 16. After fitting a random slope model:
-
-- **Fixed effects**
-
-  - Intercept = 0.651: mean usage at age 14 is significantly different from zero
-  - Time slope = 0.271: average increase of 0.271 units per year
-- **Random effects**
-
-  - Intercept variance = 0.624: significant between-individual differences at baseline
-  - Slope variance = 0.151: individual differences in rate of growth are present
-  - Intercept–slope covariance = −0.07: higher initial use at age 14 is associated with slower subsequent growth
-- **Level-2 predictors**
-
-  - COA (children of alcoholics) significantly predicts higher initial use ($\beta = 0.743$)
-  - But does not significantly predict the rate of growth
-
-### Within-Person / Between-Person Decomposition: Why Separation Is Necessary
-
-Understanding the WP/BP decomposition is central to MLM and longitudinal analysis. Without this decomposition, the estimated "total effect" conflates two fundamentally different processes, potentially resulting in an **Ecological Fallacy**—incorrectly inferring individual-level mechanisms from group-level associations.
-
-- **Between-Person (BP) differences**: stable differences between individuals (trait-level variation)
-- **Within-Person (WP) differences**: fluctuations within the same individual across time (state-level change)
-
-For a time-varying covariate $z_{it}$, its coefficient typically conflates:
-
-- **Within-person effect**: how does $y$ change when a person's $z$ is higher than their own usual level?
-- **Between-person effect**: do individuals with a consistently higher average $z$ also tend to have higher $y$ on average?
-
-These two effects may operate in the same direction or in opposite directions. A classic example is stress and negative affect:
-
-- **Between-person**: individuals under chronically high stress have higher average negative affect
-- **Within-person**: on days when a person's stress exceeds their own mean, is their negative affect also elevated?
-
-#### Person-Mean Centering (Within-Person Centering)
-
-The time-varying covariate $z_{it}$ is decomposed into two **orthogonal** components:
-
-$$
-z_{it} = \underbrace{\bar z_i}_{\text{BP}} + \underbrace{(z_{it} - \bar z_i)}_{\text{WP}}
-$$
-
-- $\bar z_i$: individual mean, entered at Level 2 to capture **Between-Person** variation (the "who" effect)
-- $z_{it} - \bar z_i$: person-mean-centered value, entered at Level 1 to capture **Within-Person** variation (the "when" effect)
-
-Both components are entered simultaneously into MLM to estimate the WP and BP effects separately:
-
-$$
-y_{ij} = \gamma_{00} + \underbrace{\gamma_{10}(z_{ij} - \bar z_j)}_{\text{WP effect}} + \underbrace{\gamma_{01}\bar z_j}_{\text{BP effect}} + u_{0j} + r_{ij}
-$$
-
-- **$\gamma_{10}$ (Within-Person Effect)**: how $y$ changes when an individual's current $z$ is above their own mean
-- **$\gamma_{01}$ (Between-Person Effect)**: whether individuals with a higher average $z$ also have a higher average $y$
-- **$u_{0j}$**: random intercept (between-individual baseline differences); **$r_{ij}$**: residual
-
-**Benefits:**
-
-- The Level-1 $\gamma_{10}$ is a pure within-person dynamic effect, uncontaminated by stable individual differences
-- If $\gamma_{10} \neq \gamma_{01}$, the WP and BP processes differ, and failing to decompose them leads to severely biased parameter estimates
-
-#### Specific Application Examples
-
-##### Example 1: Exercise and Heart Attack (Simpson's Paradox)
-
-- **Within-Person**: at the individual level, the instantaneous risk of cardiac events is elevated during vigorous exercise
-- **Between-Person**: at the population level, individuals who exercise regularly have a substantially lower baseline cardiac risk than sedentary individuals
-- **Conclusion**: without decomposition, one might incorrectly infer that "exercise is unrelated to heart disease" or even "exercise is harmful"
-
-##### Example 2: Self-Esteem and Self-Enhancement
-
-A study of 60 students on 14 personality traits, with "trait importance" person-mean-centered:
-
-- **Within-Person effect**: $\gamma_{10} = 0.37$, meaning that within the same student, traits perceived as more important are associated with greater self-enhancement on that trait
-- **Substantive implication**: demonstrates that self-enhancement is a context-sensitive psychological mechanism rather than a fixed trait
-
-##### Example 3: GDP and National Well-Being (Easterlin Paradox)
-
-- **Between-Country (BP)**: wealthier countries typically report higher average well-being than poorer countries
-- **Within-Country (WP)**: as a country's GDP grows from year to year, national well-being does not necessarily increase correspondingly (the WP effect may be near zero)
-- **Substantive implication**: this is the "Easterlin Paradox"—simply pursuing economic growth does not necessarily improve national well-being
-
-> **In summary**: Between-Person addresses "**who**" scores higher; Within-Person addresses "**when**" one scores higher. In longitudinal analysis, person-mean centering is consistently recommended to obtain clean WP estimates while simultaneously including individual means to capture BP estimates.
-
----
-
-## Longitudinal SEM / LGM: Latent Processes, Time Coding, and Measurement Models
-
-### Basic Structure of LGM: Growth Parameters as Latent Variables
-
-In LGM, repeated measurements are typically arranged in wide-format data, with each time point as a manifest variable. Latent growth factors are identified by fixing factor loadings according to the temporal design.
-
-- **Latent intercept factor**: all time-point loadings fixed to 1
-- **Latent slope factor**: loadings fixed according to the time scores, e.g., $0,1,2,3$
-
-The factor loading matrix for a four-wave linear growth model is:
-
-$$
-\Lambda =
-\begin{bmatrix}
-1 & 0\\
-1 & 1\\
-1 & 2\\
-1 & 3
-\end{bmatrix}
-$$
-
-The corresponding latent growth factors can be written as:
-
-$$
-\eta_i =
-\begin{bmatrix}
-\mu_0 + b_{0i}\\
-\mu_1 + b_{1i}
-\end{bmatrix}
-$$
-
-Therefore:
-
-$$
-\mathbf y_i = \Lambda \eta_i + \varepsilon_i
-$$
-
-The core parameters of interest in LGM correspond almost one-to-one with those in MLM:
-
-- Intercept mean
-- Slope mean
-- Intercept variance
-- Slope variance
-- Intercept–slope covariance
-- Residual variance at each time point
-
-#### lavaan Code Example
-
-```r
-model <- '
-  i =~ 1*y1 + 1*y2 + 1*y3 + 1*y4
-  s =~ 0*y1 + 1*y2 + 2*y3 + 3*y4
-'
-fit <- growth(model, data = widedat)
-```
-
-### LGM Simultaneously Estimates Mean Structure and Covariance Structure
-
-LGM does not merely estimate "whether the average is changing"; it simultaneously estimates:
-
-- **Mean structure**: population-level average growth trajectory
-- **Covariance structure**: distribution of individual differences
-
-This is also why LGM is typically not a saturated model:
-you impose a functional form (e.g., linear growth), and the model then asks: can this form account for the data?
-
-If fit indices (e.g., CFI, TLI, RMSEA, SRMR) are poor, the imposed growth form is too simple to explain the true pattern of mean shifts and covariance structure.
-
-### Time Coding, Centering, and the Meaning of the Intercept
-
-Time coding is not a technical detail; it determines "what moment the intercept represents."
-
-#### In LGM
-
-- If the slope loading at the first time point is set to 0 → the intercept represents the **baseline level**
-- If the loading at some intermediate time point is set to 0 → the intercept represents the **mid-development level**
-
-#### In MLM
-
-The same logic applies:
-
-- wherever the zero point of $x_{it}$ is placed
-- that is what $\mu_0$ represents
-
-#### Common Time Metrics
-
-- **Wave number**: simple, but the intercept typically represents only "the first wave"
-- **Age**: more developmentally meaningful, but different individuals may have non-overlapping age ranges
-- **Days since treatment / time since event**: appropriate for clinical intervention studies
-- **Years to death**: appropriate for studies of terminal illness
-
-#### What Changes When the Zero Point Is Shifted?
-
-- The direction and unit of the slope are not affected
-- But the following change:
-  - Intercept mean
-  - Intercept variance
-  - Intercept–slope covariance
-
-### Latent Basis Model (LBM)
-
-To allow for growth that is not strictly linear, one may fix:
-
-- The loading at the first time point = 0
-- The loading at the last time point = 1
-- The loadings at intermediate time points to be freely estimated from the data
-
-The freely estimated intermediate loadings then represent:
-
-- The proportion of the total change that has been completed by that time point
-
-This approach is well suited for describing developmental trajectories that are "fast early and slow late" or "slow early and fast late."
-
-### Longitudinal Measurement Invariance: Verify the Scale Has Not Shifted Before Fitting a Growth Model
-
-If the construct of interest is latent (e.g., depression, motivation, self-esteem), measurement invariance across time points must be established before comparing change over time.
-
-#### Metric Invariance (Weak Invariance)
-
-- Factor loadings are equal across time points
-- Ensures that the unit of the latent variable is consistent
-
-#### Scalar Invariance (Strong Invariance)
-
-- Factor loadings and indicator intercepts are equal across time points
-- A necessary prerequisite for comparing latent variable means over time
-
-If scalar invariance does not hold, observed "growth" may reflect only:
-
-- Changes in the items themselves
-- Indicator drift
-- Shifts in how respondents interpret the scale
-
-rather than genuine change in the latent construct.
-
-## Modeling Decisions: Which Type of Longitudinal Model Should Be Used?
-
-### When MLM Is More Appropriate
-
-- Many time points (e.g., $\ge 10$ occasions)
-- Irregular time intervals
-- Severely unbalanced data
-- Need for multiple levels of nesting (students within classrooms, classrooms within schools)
-- Smaller samples (e.g., $N < 100$), where REML tends to be more stable
-
-#### When LGM / Longitudinal SEM Is More Appropriate
-
-- Fewer time points (e.g., 3–8 occasions) with regular intervals
-- The construct of interest is latent (depression, motivation, ability, etc.)
-- Multiple indicators per time point
-- Need to explicitly correct for measurement error
-- Need to test longitudinal measurement invariance
-- Need to evaluate overall model fit (CFI, RMSEA, etc.)
-- Uncertainty about the time scores, with a desire to let the data estimate them (e.g., latent basis model)
-
-## One-Page Summary: The Core Thread of This Document
-
-The entire set of longitudinal modeling notes can be compressed into the following thread:
-
-1. **OLS is inappropriate** because longitudinal data violate the independence assumption
-2. **Change can first be described with two-wave methods**, but change scores and residualized change scores do not answer the same question
-3. **The core of modern longitudinal modeling** is not to avoid dependence but to write it into the covariance structure
-4. **GEE / MLM / Longitudinal SEM** correspond to three perspectives: population-averaged, individual trajectory, and latent process
-5. **MLM and LGM** are often mathematically equivalent under simple linear growth, but SEM can further explicitly address measurement error
-6. **CLPM / RI-CLPM / LCSM** further address "who drives whom" and "how a prior state determines the next change"
-7. The true criterion for model selection is always: **research question + data structure + estimation target**
-
----
-
-## Appendix: Unified Symbol Reference Table
-
-- $y_{it}$: observed value for individual $i$ at time $t$
-- $x_{it}$: time score / time metric
-- $w_i$: time-invariant covariate (TIC)
-- $z_{it}$: time-varying covariate (TVC)
-- $\Delta y_{it}$: change score
-- $\mu_0$: population mean intercept
-- $\mu_1$: population mean slope
-- $b_{0i}$: random intercept deviation
-- $b_{1i}$: random slope deviation
-- $\tau_{00}$: random intercept variance
-- $\tau_{11}$: random slope variance
-- $\tau_{01}$: random intercept–random slope covariance
-- $\varepsilon_{it}$: residual / measurement error
-- $\mathbf D$: random effects covariance matrix (denoted $\Psi$ in the SEM literature)
-- $R_i$: residual covariance matrix (denoted $\Theta_i$ in the SEM literature)
-- $\Lambda$: factor loading matrix / time score matrix
-- $\eta_i$: latent growth factor vector
-- $\Psi$: latent growth factor covariance matrix
-- $\Theta_i$: indicator residual covariance matrix
