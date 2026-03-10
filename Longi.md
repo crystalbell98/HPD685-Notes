@@ -591,7 +591,7 @@ This is precisely the two core assumptions of OLS expressed in the language of c
 #### Correspondence to MLM / LSEM
 
 - **OLS**: $\text{Var}(\mathbf{y}) = \sigma^2 \mathbf{I}_n$ — no random effects; residuals are independent and identically distributed
-- **MLM**: $V_i = Z_i G Z_i' + R_i$ — random effects plus within-individual residual structure
+- **MLM**: $V_i = Z_i \mathbf{D} Z_i' + R_i$ — random effects plus within-individual residual structure
 - **LSEM**: $\Sigma(\theta) = \Lambda\Psi\Lambda' + \Theta$ — latent factors plus indicator residuals
 
 OLS is the **most constrained special case** of the three: setting $Z_i = \mathbf{0}$ (no random effects) and $R_i = \sigma^2 \mathbf{I}$ (homogeneous independent residuals) reduces the MLM formula immediately to the OLS form $\sigma^2\mathbf{I}$; likewise, setting $\Lambda = \mathbf{0}$ and $\Theta = \sigma^2\mathbf{I}$ reduces the LSEM to OLS.
@@ -651,17 +651,17 @@ $$
 Both components are entered simultaneously into MLM to estimate the WP and BP effects separately:
 
 $$
-y_{ij} = \gamma_{00} + \underbrace{\gamma_{10}(z_{ij} - \bar z_j)}_{\text{WP effect}} + \underbrace{\gamma_{01}\bar z_j}_{\text{BP effect}} + u_{0j} + r_{ij}
+y_{it} = \mu_0 + \underbrace{\beta_{\text{WP}}(z_{it} - \bar z_i)}_{\text{WP effect}} + \underbrace{\beta_{\text{BP}}\bar z_i}_{\text{BP effect}} + b_{0i} + \varepsilon_{it}
 $$
 
-- **$\gamma_{10}$ (Within-Person Effect)**: how $y$ changes when an individual's current $z$ is above their own mean
-- **$\gamma_{01}$ (Between-Person Effect)**: whether individuals with a higher average $z$ also have a higher average $y$
-- **$u_{0j}$**: random intercept (between-individual baseline differences); **$r_{ij}$**: residual
+- **$\beta_{\text{WP}}$ (Within-Person Effect)**: how $y$ changes when an individual's current $z$ is above their own mean
+- **$\beta_{\text{BP}}$ (Between-Person Effect)**: whether individuals with a higher average $z$ also have a higher average $y$
+- **$b_{0i}$**: random intercept (between-individual baseline differences); **$\varepsilon_{it}$**: residual
 
 **Benefits:**
 
-- The Level-1 $\gamma_{10}$ is a pure within-person dynamic effect, uncontaminated by stable individual differences
-- If $\gamma_{10} \neq \gamma_{01}$, the WP and BP processes differ, and failing to decompose them leads to severely biased parameter estimates
+- The Level-1 $\beta_{\text{WP}}$ is a pure within-person dynamic effect, uncontaminated by stable individual differences
+- If $\beta_{\text{WP}} \neq \beta_{\text{BP}}$, the WP and BP processes differ, and failing to decompose them leads to severely biased parameter estimates
 
 ### Specific Application Examples
 
@@ -675,7 +675,7 @@ $$
 
 A study of 60 students on 14 personality traits, with "trait importance" person-mean-centered:
 
-- **Within-Person effect**: $\gamma_{10} = 0.37$, meaning that within the same student, traits perceived as more important are associated with greater self-enhancement on that trait
+- **Within-Person effect**: $\beta_{\text{WP}} = 0.37$, meaning that within the same student, traits perceived as more important are associated with greater self-enhancement on that trait
 - **Substantive implication**: demonstrates that self-enhancement is a context-sensitive psychological mechanism rather than a fixed trait
 
 #### Example 3: GDP and National Well-Being (Easterlin Paradox)
