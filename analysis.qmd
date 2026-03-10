@@ -114,7 +114,7 @@ ggplot(means, aes(age, anti)) +
 
 Before fitting growth trajectories, we first determine how much between-person variance exists and whether MLM is warranted. The null model contains no predictors—it simply partitions total variance into between-person ($\tau_{00}$) and within-person ($\sigma^2$) components.
 
-$$y_{it} = \gamma_{00} + u_{0i} + \varepsilon_{it}$$
+$$y_{it} = \mu_0 + b_{0i} + \varepsilon_{it}$$
 
 ```{r}
 #| label: null-model
@@ -135,7 +135,7 @@ icc(m0)
 
 We add a fixed and random effect of age to model individual linear growth trajectories. Each child now has their own intercept (level at age 6) and slope (rate of annual change).
 
-$$y_{it} = (\gamma_{00} + u_{0i}) + (\gamma_{10} + u_{1i})\cdot\text{age}_{it} + \varepsilon_{it}$$
+$$y_{it} = \mu_0 + \mu_1 \cdot \text{age}_{it} + b_{0i} + b_{1i}\cdot\text{age}_{it} + \varepsilon_{it}$$
 
 ```{r}
 #| label: growth-model
@@ -146,8 +146,8 @@ confint(m1)
 
 **Interpretation**:
 
--   **Fixed intercept** ($\gamma_{00}$): 1.62891, Average antisocial behavior score at age 6 (centered age = 0).
--   **Fixed slope** ($\gamma_{10}$): 0.07425, Average annual rate of change across childhood. A positive value indicates behavior increases over time on average.
+-   **Fixed intercept** ($\mu_0$): 1.62891, Average antisocial behavior score at age 6 (centered age = 0).
+-   **Fixed slope** ($\mu_1$): 0.07425, Average annual rate of change across childhood. A positive value indicates behavior increases over time on average.
 -   **Random intercept variance** ($\tau_{00}$): 1.01338, variance among the intercepts, between-person differences in starting level, also corresponding to the **.sig01** (Random Intercept Std.Dev.)
 -   **Random slope variance** ($\tau_{11}$): 0.02295, variance among the slopes, Children differ meaningfully in their rate of change — some increase faster, others plateau or decline, **.sig03** (Random Slope Std.Dev.)
 -   **Intercept–slope covariance** ($\tau_{01}$): 0.48, positive though not significant (C.I. from -0.02 to 1.00), higher starters accelerate further. **.sig02 (Correlation)**
@@ -176,7 +176,7 @@ ggplot(antisocial_long, aes(age, predict(m1))) +
 
 We add `male` as a level-2 predictor of both the random intercept and random slope, yielding a cross-level interaction: `age × male`.
 
-$$y_{it} = (\gamma_{00} + u_{0i}) + \gamma_{01}\text{male}_i + (\gamma_{10} + u_{1i} +  \gamma_{11}\text{male}_i)\cdot\text{age}_{it} + \varepsilon_{it}$$
+$$y_{it} = (\mu_0 + \beta_0\,\text{male}_i) + (\mu_1 + \beta_1\,\text{male}_i)\cdot\text{age}_{it} + b_{0i} + b_{1i}\cdot\text{age}_{it} + \varepsilon_{it}$$
 
 ```{r}
 #| label: sex-moderation
@@ -256,8 +256,8 @@ gridExtra::grid.arrange(p_girls, p_boys, ncol = 2)
 
 **Interpretation**:
 
--   $\gamma_{01}$ (male on intercept): If positive and significant, boys start with higher antisocial behavior at age 6 than girls.
--   $\gamma_{11}$ (age × male): If positive and significant, boys increase at a faster rate than girls over time. Simple slopes decompose this interaction into sex-specific slopes with standard errors.
+-   $\beta_0$ (male on intercept): If positive and significant, boys start with higher antisocial behavior at age 6 than girls.
+-   $\beta_1$ (age × male): If positive and significant, boys increase at a faster rate than girls over time. Simple slopes decompose this interaction into sex-specific slopes with standard errors.
 -   **Practical significance**: Even if both trajectories are increasing, the *difference in slopes* indicates differential developmental risk.
 
 ------------------------------------------------------------------------
@@ -308,8 +308,8 @@ interact_plot(
 
 **Interpretation**:
 
--   $\gamma_{01}$ (homecog on intercept): If negative and significant, children from more cognitively stimulating homes start lower on antisocial behavior.
--   $\gamma_{11}$ (age × homecog): If negative and significant, a richer home cognitive environment buffers against the age-related *increase* in antisocial behavior — children from enriched environments show attenuated growth.
+-   $\beta_0$ (homecog on intercept): If negative and significant, children from more cognitively stimulating homes start lower on antisocial behavior.
+-   $\beta_1$ (age × homecog): If negative and significant, a richer home cognitive environment buffers against the age-related *increase* in antisocial behavior — children from enriched environments show attenuated growth.
 -   **Simple slopes** at −1 SD, mean, +1 SD allow readers to see the growth trajectory separately for low, average, and high home cognitive support.
 
 ------------------------------------------------------------------------

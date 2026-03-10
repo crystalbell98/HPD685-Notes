@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="">
-<meta name="dcterms.date" content="2026-03-08">
+<meta name="dcterms.date" content="2026-03-10">
 
 <title>Applied Longitudinal Data Analysis in R – HPD 685 Linear Longitudinal Modeling</title>
 <style>
@@ -250,7 +250,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 08, 2026</p>
+      <p class="date">March 10, 2026</p>
     </div>
   </div>
   
@@ -411,7 +411,7 @@ window.Quarto = {
 <section id="step-1-null-model-quantifying-clustering-icc" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="step-1-null-model-quantifying-clustering-icc"><span class="header-section-number">2.3</span> Step 1 — Null Model: Quantifying Clustering (ICC)</h2>
 <p>Before fitting growth trajectories, we first determine how much between-person variance exists and whether MLM is warranted. The null model contains no predictors—it simply partitions total variance into between-person (<span class="math inline">\(\tau_{00}\)</span>) and within-person (<span class="math inline">\(\sigma^2\)</span>) components.</p>
-<p><span class="math display">\[y_{it} = \gamma_{00} + u_{0i} + \varepsilon_{it}\]</span></p>
+<p><span class="math display">\[y_{it} = \mu_0 + b_{0i} + \varepsilon_{it}\]</span></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -461,7 +461,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="step-2-unconditional-growth-model" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="step-2-unconditional-growth-model"><span class="header-section-number">2.4</span> Step 2 — Unconditional Growth Model</h2>
 <p>We add a fixed and random effect of age to model individual linear growth trajectories. Each child now has their own intercept (level at age 6) and slope (rate of annual change).</p>
-<p><span class="math display">\[y_{it} = (\gamma_{00} + u_{0i}) + (\gamma_{10} + u_{1i})\cdot\text{age}_{it} + \varepsilon_{it}\]</span></p>
+<p><span class="math display">\[y_{it} = \mu_0 + \mu_1 \cdot \text{age}_{it} + b_{0i} + b_{1i}\cdot\text{age}_{it} + \varepsilon_{it}\]</span></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -514,8 +514,8 @@ age          0.03941064 0.1092060</code></pre>
 </div>
 <p><strong>Interpretation</strong>:</p>
 <ul>
-<li><strong>Fixed intercept</strong> (<span class="math inline">\(\gamma_{00}\)</span>): 1.62891, Average antisocial behavior score at age 6 (centered age = 0).</li>
-<li><strong>Fixed slope</strong> (<span class="math inline">\(\gamma_{10}\)</span>): 0.07425, Average annual rate of change across childhood. A positive value indicates behavior increases over time on average.</li>
+<li><strong>Fixed intercept</strong> (<span class="math inline">\(\mu_0\)</span>): 1.62891, Average antisocial behavior score at age 6 (centered age = 0).</li>
+<li><strong>Fixed slope</strong> (<span class="math inline">\(\mu_1\)</span>): 0.07425, Average annual rate of change across childhood. A positive value indicates behavior increases over time on average.</li>
 <li><strong>Random intercept variance</strong> (<span class="math inline">\(\tau_{00}\)</span>): 1.01338, variance among the intercepts, between-person differences in starting level, also corresponding to the <strong>.sig01</strong> (Random Intercept Std.Dev.)</li>
 <li><strong>Random slope variance</strong> (<span class="math inline">\(\tau_{11}\)</span>): 0.02295, variance among the slopes, Children differ meaningfully in their rate of change — some increase faster, others plateau or decline, <strong>.sig03</strong> (Random Slope Std.Dev.)</li>
 <li><strong>Intercept–slope covariance</strong> (<span class="math inline">\(\tau_{01}\)</span>): 0.48, positive though not significant (C.I. from -0.02 to 1.00), higher starters accelerate further. <strong>.sig02 (Correlation)</strong></li>
@@ -548,7 +548,7 @@ age          0.03941064 0.1092060</code></pre>
 <h2 data-number="2.5" class="anchored" data-anchor-id="step-3-moderation-by-sex"><span class="header-section-number">2.5</span> Step 3 — Moderation by Sex</h2>
 <p><strong>Research question</strong>: Do boys and girls differ in their baseline level of antisocial behavior <em>and</em> in their rate of change over time?</p>
 <p>We add <code>male</code> as a level-2 predictor of both the random intercept and random slope, yielding a cross-level interaction: <code>age × male</code>.</p>
-<p><span class="math display">\[y_{it} = (\gamma_{00} + u_{0i}) + \gamma_{01}\text{male}_i + (\gamma_{10} + u_{1i} +  \gamma_{11}\text{male}_i)\cdot\text{age}_{it} + \varepsilon_{it}\]</span></p>
+<p><span class="math display">\[y_{it} = (\mu_0 + \beta_0\,\text{male}_i) + (\mu_1 + \beta_1\,\text{male}_i)\cdot\text{age}_{it} + b_{0i} + b_{1i}\cdot\text{age}_{it} + \varepsilon_{it}\]</span></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -696,8 +696,8 @@ Conditional intercept         2.03   0.12    17.32   0.00</code></pre>
 </div>
 <p><strong>Interpretation</strong>:</p>
 <ul>
-<li><span class="math inline">\(\gamma_{01}\)</span> (male on intercept): If positive and significant, boys start with higher antisocial behavior at age 6 than girls.</li>
-<li><span class="math inline">\(\gamma_{11}\)</span> (age × male): If positive and significant, boys increase at a faster rate than girls over time. Simple slopes decompose this interaction into sex-specific slopes with standard errors.</li>
+<li><span class="math inline">\(\beta_0\)</span> (male on intercept): If positive and significant, boys start with higher antisocial behavior at age 6 than girls.</li>
+<li><span class="math inline">\(\beta_1\)</span> (age × male): If positive and significant, boys increase at a faster rate than girls over time. Simple slopes decompose this interaction into sex-specific slopes with standard errors.</li>
 <li><strong>Practical significance</strong>: Even if both trajectories are increasing, the <em>difference in slopes</em> indicates differential developmental risk.</li>
 </ul>
 <hr>
@@ -817,8 +817,8 @@ Conditional intercept         1.55   0.09    16.99   0.00</code></pre>
 </div>
 <p><strong>Interpretation</strong>:</p>
 <ul>
-<li><span class="math inline">\(\gamma_{01}\)</span> (homecog on intercept): If negative and significant, children from more cognitively stimulating homes start lower on antisocial behavior.</li>
-<li><span class="math inline">\(\gamma_{11}\)</span> (age × homecog): If negative and significant, a richer home cognitive environment buffers against the age-related <em>increase</em> in antisocial behavior — children from enriched environments show attenuated growth.</li>
+<li><span class="math inline">\(\beta_0\)</span> (homecog on intercept): If negative and significant, children from more cognitively stimulating homes start lower on antisocial behavior.</li>
+<li><span class="math inline">\(\beta_1\)</span> (age × homecog): If negative and significant, a richer home cognitive environment buffers against the age-related <em>increase</em> in antisocial behavior — children from enriched environments show attenuated growth.</li>
 <li><strong>Simple slopes</strong> at −1 SD, mean, +1 SD allow readers to see the growth trajectory separately for low, average, and high home cognitive support.</li>
 </ul>
 <hr>
